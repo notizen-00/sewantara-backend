@@ -133,6 +133,10 @@ Data dibuat melalui seeder per feature dan aman dijalankan berulang:
 - `TenantBookingSeeder`: booking, item, alokasi unit, serta histori status.
 - `TenantBillingSeeder`: pembayaran, invoice, invoice item, dan deposit.
 
+Registration seeder juga membersihkan schema demo orphan yang tertinggal setelah
+`migrate:fresh`. Cleanup hanya berlaku pada schema tanpa row tenant central yang
+memiliki owner demo, sehingga schema tenant lain tidak ikut terhapus.
+
 Seeder feature dapat dijalankan sendiri setelah demo tenant tersedia, misalnya:
 
 ```bash

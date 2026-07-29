@@ -6,6 +6,7 @@ use App\Models\Tenant;
 use App\Modules\TenantOnboarding\Application\Data\RegisterTenantCommand;
 use App\Modules\TenantOnboarding\Application\RegisterTenant;
 use App\Modules\TenantOnboarding\Contracts\TenantEnvironmentProvisioner;
+use Database\Seeders\Support\OrphanedDemoTenantSchemaCleaner;
 use Illuminate\Database\Seeder;
 
 class DemoTenantRegistrationSeeder extends Seeder
@@ -20,6 +21,16 @@ class DemoTenantRegistrationSeeder extends Seeder
 
     public function run(): void
     {
+        $deletedSchemas = app(
+            OrphanedDemoTenantSchemaCleaner::class,
+        )->clean();
+
+        foreach ($deletedSchemas as $schema) {
+            $this->command?->warn(
+                "Schema demo orphan dihapus: {$schema}",
+            );
+        }
+
         $tenant = Tenant::withTrashed()
             ->where('slug', self::TENANT_SLUG)
             ->first();
