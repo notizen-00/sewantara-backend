@@ -1,0 +1,971 @@
+{
+    "info": {
+        "name": "Sewantara-App",
+        "description": "API Documentation",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+        {
+            "name": "v1",
+            "item": [
+                {
+                    "name": "health",
+                    "item": [
+                        {
+                            "name": "[GET] api/v1/health",
+                            "request": {
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Accept",
+                                        "value": "application/json",
+                                        "type": "text"
+                                    },
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json",
+                                        "type": "text"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{base_url}}/api/v1/health",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "v1",
+                                        "health"
+                                    ]
+                                }
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "plans",
+                    "item": [
+                        {
+                            "name": "[GET] api/v1/plans",
+                            "request": {
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Accept",
+                                        "value": "application/json",
+                                        "type": "text"
+                                    },
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json",
+                                        "type": "text"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{base_url}}/api/v1/plans",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "v1",
+                                        "plans"
+                                    ]
+                                }
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "billing",
+                    "item": [
+                        {
+                            "name": "midtrans",
+                            "item": [
+                                {
+                                    "name": "webhook",
+                                    "item": [
+                                        {
+                                            "name": "[POST] api/v1/billing/midtrans/webhook",
+                                            "request": {
+                                                "method": "POST",
+                                                "header": [
+                                                    {
+                                                        "key": "Accept",
+                                                        "value": "application/json",
+                                                        "type": "text"
+                                                    },
+                                                    {
+                                                        "key": "Content-Type",
+                                                        "value": "application/json",
+                                                        "type": "text"
+                                                    }
+                                                ],
+                                                "url": {
+                                                    "raw": "{{base_url}}/api/v1/billing/midtrans/webhook",
+                                                    "host": [
+                                                        "{{base_url}}"
+                                                    ],
+                                                    "path": [
+                                                        "api",
+                                                        "v1",
+                                                        "billing",
+                                                        "midtrans",
+                                                        "webhook"
+                                                    ]
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "auth",
+                    "item": [
+                        {
+                            "name": "register",
+                            "item": [
+                                {
+                                    "name": "[POST] api/v1/auth/register",
+                                    "request": {
+                                        "method": "POST",
+                                        "header": [
+                                            {
+                                                "key": "Accept",
+                                                "value": "application/json",
+                                                "type": "text"
+                                            },
+                                            {
+                                                "key": "Content-Type",
+                                                "value": "application/json",
+                                                "type": "text"
+                                            }
+                                        ],
+                                        "url": {
+                                            "raw": "{{base_url}}/api/v1/auth/register",
+                                            "host": [
+                                                "{{base_url}}"
+                                            ],
+                                            "path": [
+                                                "api",
+                                                "v1",
+                                                "auth",
+                                                "register"
+                                            ]
+                                        },
+                                        "body": {
+                                            "mode": "raw",
+                                            "raw": "{\n    \"business_name\": \"sample_text\",\n    \"business_type\": \"sample_text\",\n    \"subdomain\": \"sample_text\",\n    \"owner\": {\n        \"name\": \"sample_text\",\n        \"email\": \"sample_text\",\n        \"phone\": \"sample_text\",\n        \"password\": \"sample_text\"\n    },\n    \"plan_id\": 3,\n    \"billing_interval\": \"sample_text\",\n    \"timezone\": \"sample_text\",\n    \"currency\": \"sample_text\",\n    \"terms_accepted\": \"sample_text\"\n}",
+                                            "options": []
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "tenants",
+                    "item": [
+                        {
+                            "name": "[GET] api/v1/tenants",
+                            "request": {
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Accept",
+                                        "value": "application/json",
+                                        "type": "text"
+                                    },
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json",
+                                        "type": "text"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{base_url}}/api/v1/tenants",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "v1",
+                                        "tenants"
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "name": "[POST] api/v1/tenants",
+                            "request": {
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Accept",
+                                        "value": "application/json",
+                                        "type": "text"
+                                    },
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json",
+                                        "type": "text"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{base_url}}/api/v1/tenants",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "v1",
+                                        "tenants"
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "name": "[GET] api/v1/tenants/{tenant}",
+                            "request": {
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Accept",
+                                        "value": "application/json",
+                                        "type": "text"
+                                    },
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json",
+                                        "type": "text"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{base_url}}/api/v1/tenants/:tenant",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "v1",
+                                        "tenants",
+                                        ":tenant"
+                                    ],
+                                    "variable": []
+                                }
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "me",
+                    "item": [
+                        {
+                            "name": "[GET] api/v1/{tenant}/me",
+                            "request": {
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Accept",
+                                        "value": "application/json",
+                                        "type": "text"
+                                    },
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json",
+                                        "type": "text"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{base_url}}/api/v1/:tenant/me",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "v1",
+                                        ":tenant",
+                                        "me"
+                                    ],
+                                    "variable": []
+                                }
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "branches",
+                    "item": [
+                        {
+                            "name": "[GET] api/v1/{tenant}/branches",
+                            "request": {
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Accept",
+                                        "value": "application/json",
+                                        "type": "text"
+                                    },
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json",
+                                        "type": "text"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{base_url}}/api/v1/:tenant/branches",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "v1",
+                                        ":tenant",
+                                        "branches"
+                                    ],
+                                    "variable": []
+                                }
+                            }
+                        },
+                        {
+                            "name": "[POST] api/v1/{tenant}/branches",
+                            "request": {
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Accept",
+                                        "value": "application/json",
+                                        "type": "text"
+                                    },
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json",
+                                        "type": "text"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{base_url}}/api/v1/:tenant/branches",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "v1",
+                                        ":tenant",
+                                        "branches"
+                                    ],
+                                    "variable": []
+                                }
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "products",
+                    "item": [
+                        {
+                            "name": "[GET] api/v1/{tenant}/products",
+                            "request": {
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Accept",
+                                        "value": "application/json",
+                                        "type": "text"
+                                    },
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json",
+                                        "type": "text"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{base_url}}/api/v1/:tenant/products",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "v1",
+                                        ":tenant",
+                                        "products"
+                                    ],
+                                    "variable": []
+                                }
+                            }
+                        },
+                        {
+                            "name": "[POST] api/v1/{tenant}/products",
+                            "request": {
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Accept",
+                                        "value": "application/json",
+                                        "type": "text"
+                                    },
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json",
+                                        "type": "text"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{base_url}}/api/v1/:tenant/products",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "v1",
+                                        ":tenant",
+                                        "products"
+                                    ],
+                                    "variable": []
+                                }
+                            }
+                        },
+                        {
+                            "name": "[GET] api/v1/{tenant}/products/{product}",
+                            "request": {
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Accept",
+                                        "value": "application/json",
+                                        "type": "text"
+                                    },
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json",
+                                        "type": "text"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{base_url}}/api/v1/:tenant/products/:product",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "v1",
+                                        ":tenant",
+                                        "products",
+                                        ":product"
+                                    ],
+                                    "variable": []
+                                }
+                            }
+                        },
+                        {
+                            "name": "[PUT] api/v1/{tenant}/products/{product}",
+                            "request": {
+                                "method": "PUT",
+                                "header": [
+                                    {
+                                        "key": "Accept",
+                                        "value": "application/json",
+                                        "type": "text"
+                                    },
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json",
+                                        "type": "text"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{base_url}}/api/v1/:tenant/products/:product",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "v1",
+                                        ":tenant",
+                                        "products",
+                                        ":product"
+                                    ],
+                                    "variable": []
+                                }
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "product-units",
+                    "item": [
+                        {
+                            "name": "[GET] api/v1/{tenant}/product-units",
+                            "request": {
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Accept",
+                                        "value": "application/json",
+                                        "type": "text"
+                                    },
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json",
+                                        "type": "text"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{base_url}}/api/v1/:tenant/product-units",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "v1",
+                                        ":tenant",
+                                        "product-units"
+                                    ],
+                                    "variable": []
+                                }
+                            }
+                        },
+                        {
+                            "name": "[POST] api/v1/{tenant}/product-units",
+                            "request": {
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Accept",
+                                        "value": "application/json",
+                                        "type": "text"
+                                    },
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json",
+                                        "type": "text"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{base_url}}/api/v1/:tenant/product-units",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "v1",
+                                        ":tenant",
+                                        "product-units"
+                                    ],
+                                    "variable": []
+                                }
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "customers",
+                    "item": [
+                        {
+                            "name": "[GET] api/v1/{tenant}/customers",
+                            "request": {
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Accept",
+                                        "value": "application/json",
+                                        "type": "text"
+                                    },
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json",
+                                        "type": "text"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{base_url}}/api/v1/:tenant/customers",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "v1",
+                                        ":tenant",
+                                        "customers"
+                                    ],
+                                    "variable": []
+                                }
+                            }
+                        },
+                        {
+                            "name": "[POST] api/v1/{tenant}/customers",
+                            "request": {
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Accept",
+                                        "value": "application/json",
+                                        "type": "text"
+                                    },
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json",
+                                        "type": "text"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{base_url}}/api/v1/:tenant/customers",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "v1",
+                                        ":tenant",
+                                        "customers"
+                                    ],
+                                    "variable": []
+                                }
+                            }
+                        },
+                        {
+                            "name": "[GET] api/v1/{tenant}/customers/{customer}",
+                            "request": {
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Accept",
+                                        "value": "application/json",
+                                        "type": "text"
+                                    },
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json",
+                                        "type": "text"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{base_url}}/api/v1/:tenant/customers/:customer",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "v1",
+                                        ":tenant",
+                                        "customers",
+                                        ":customer"
+                                    ],
+                                    "variable": []
+                                }
+                            }
+                        },
+                        {
+                            "name": "[PUT] api/v1/{tenant}/customers/{customer}",
+                            "request": {
+                                "method": "PUT",
+                                "header": [
+                                    {
+                                        "key": "Accept",
+                                        "value": "application/json",
+                                        "type": "text"
+                                    },
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json",
+                                        "type": "text"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{base_url}}/api/v1/:tenant/customers/:customer",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "v1",
+                                        ":tenant",
+                                        "customers",
+                                        ":customer"
+                                    ],
+                                    "variable": []
+                                }
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "bookings",
+                    "item": [
+                        {
+                            "name": "[GET] api/v1/{tenant}/bookings",
+                            "request": {
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Accept",
+                                        "value": "application/json",
+                                        "type": "text"
+                                    },
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json",
+                                        "type": "text"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{base_url}}/api/v1/:tenant/bookings",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "v1",
+                                        ":tenant",
+                                        "bookings"
+                                    ],
+                                    "variable": []
+                                }
+                            }
+                        },
+                        {
+                            "name": "[POST] api/v1/{tenant}/bookings",
+                            "request": {
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Accept",
+                                        "value": "application/json",
+                                        "type": "text"
+                                    },
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json",
+                                        "type": "text"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{base_url}}/api/v1/:tenant/bookings",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "v1",
+                                        ":tenant",
+                                        "bookings"
+                                    ],
+                                    "variable": []
+                                }
+                            }
+                        },
+                        {
+                            "name": "[GET] api/v1/{tenant}/bookings/{booking}",
+                            "request": {
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Accept",
+                                        "value": "application/json",
+                                        "type": "text"
+                                    },
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json",
+                                        "type": "text"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{base_url}}/api/v1/:tenant/bookings/:booking",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "v1",
+                                        ":tenant",
+                                        "bookings",
+                                        ":booking"
+                                    ],
+                                    "variable": []
+                                }
+                            }
+                        },
+                        {
+                            "name": "payments",
+                            "item": [
+                                {
+                                    "name": "[POST] api/v1/{tenant}/bookings/{booking}/payments",
+                                    "request": {
+                                        "method": "POST",
+                                        "header": [
+                                            {
+                                                "key": "Accept",
+                                                "value": "application/json",
+                                                "type": "text"
+                                            },
+                                            {
+                                                "key": "Content-Type",
+                                                "value": "application/json",
+                                                "type": "text"
+                                            }
+                                        ],
+                                        "url": {
+                                            "raw": "{{base_url}}/api/v1/:tenant/bookings/:booking/payments",
+                                            "host": [
+                                                "{{base_url}}"
+                                            ],
+                                            "path": [
+                                                "api",
+                                                "v1",
+                                                ":tenant",
+                                                "bookings",
+                                                ":booking",
+                                                "payments"
+                                            ],
+                                            "variable": []
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "availability",
+                    "item": [
+                        {
+                            "name": "check",
+                            "item": [
+                                {
+                                    "name": "[POST] api/v1/{tenant}/availability/check",
+                                    "request": {
+                                        "method": "POST",
+                                        "header": [
+                                            {
+                                                "key": "Accept",
+                                                "value": "application/json",
+                                                "type": "text"
+                                            },
+                                            {
+                                                "key": "Content-Type",
+                                                "value": "application/json",
+                                                "type": "text"
+                                            }
+                                        ],
+                                        "url": {
+                                            "raw": "{{base_url}}/api/v1/:tenant/availability/check",
+                                            "host": [
+                                                "{{base_url}}"
+                                            ],
+                                            "path": [
+                                                "api",
+                                                "v1",
+                                                ":tenant",
+                                                "availability",
+                                                "check"
+                                            ],
+                                            "variable": []
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "reports",
+                    "item": [
+                        {
+                            "name": "dashboard",
+                            "item": [
+                                {
+                                    "name": "[GET] api/v1/{tenant}/reports/dashboard",
+                                    "request": {
+                                        "method": "GET",
+                                        "header": [
+                                            {
+                                                "key": "Accept",
+                                                "value": "application/json",
+                                                "type": "text"
+                                            },
+                                            {
+                                                "key": "Content-Type",
+                                                "value": "application/json",
+                                                "type": "text"
+                                            }
+                                        ],
+                                        "url": {
+                                            "raw": "{{base_url}}/api/v1/:tenant/reports/dashboard",
+                                            "host": [
+                                                "{{base_url}}"
+                                            ],
+                                            "path": [
+                                                "api",
+                                                "v1",
+                                                ":tenant",
+                                                "reports",
+                                                "dashboard"
+                                            ],
+                                            "variable": []
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "internal",
+            "item": [
+                {
+                    "name": "v1",
+                    "item": [
+                        {
+                            "name": "health",
+                            "item": [
+                                {
+                                    "name": "[GET] api/internal/v1/health",
+                                    "request": {
+                                        "method": "GET",
+                                        "header": [
+                                            {
+                                                "key": "Accept",
+                                                "value": "application/json",
+                                                "type": "text"
+                                            },
+                                            {
+                                                "key": "Content-Type",
+                                                "value": "application/json",
+                                                "type": "text"
+                                            }
+                                        ],
+                                        "url": {
+                                            "raw": "{{base_url}}/api/internal/v1/health",
+                                            "host": [
+                                                "{{base_url}}"
+                                            ],
+                                            "path": [
+                                                "api",
+                                                "internal",
+                                                "v1",
+                                                "health"
+                                            ]
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "variable": [
+        {
+            "key": "base_url",
+            "value": "http://localhost"
+        }
+    ]
+}

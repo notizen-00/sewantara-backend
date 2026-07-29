@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\Tenant\AvailabilityController;
 use App\Http\Controllers\Api\Tenant\BookingController;
 use App\Http\Controllers\Api\Tenant\BranchController;
 use App\Http\Controllers\Api\Tenant\CustomerController;
+use App\Http\Controllers\Api\Tenant\CurrentTenantController;
 use App\Http\Controllers\Api\Tenant\DashboardReportController;
 use App\Http\Controllers\Api\Tenant\PaymentController;
 use App\Http\Controllers\Api\Tenant\ProductController;
@@ -18,13 +19,7 @@ Route::prefix('v1/{tenant}')
         'tenant.subscription',
     ])
     ->group(function () {
-        Route::get('/me', fn () => [
-            'success' => true,
-            'data' => [
-                'tenant' => request()->attributes->get('tenant'),
-                'user' => request()->user(),
-            ],
-        ]);
+        Route::get('/me', CurrentTenantController::class);
 
         Route::apiResource('branches', BranchController::class)->only(['index', 'store']);
         Route::apiResource('products', ProductController::class)->only(['index', 'store', 'show', 'update']);
