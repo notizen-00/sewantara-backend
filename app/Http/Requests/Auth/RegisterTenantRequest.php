@@ -2,6 +2,10 @@
 
 namespace App\Http\Requests\Auth;
 
+use App\Models\CentralUser;
+use App\Models\Domain;
+use App\Support\TenantHostname;
+use Closure;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Password;
@@ -32,11 +36,22 @@ class RegisterTenantRequest extends FormRequest
                 'max:63',
                 'regex:/^[a-z0-9](?:[a-z0-9-]{1,61}[a-z0-9])?$/',
                 Rule::notIn(config('tenancy.reserved_subdomains', [])),
-                Rule::unique('domains', 'domain'),
+                function (string $attribute, mixed $value, Closure $fail): void {
+                    $hostname = TenantHostname::fromSubdomain((string) $value);
+
+                    if (Domain::query()->where('domain', $hostname)->exists()) {
+                        $fail('Subdomain tersebut sudah digunakan.');
+                    }
+                },
             ],
             'owner' => ['required', 'array'],
             'owner.name' => ['required', 'string', 'max:150'],
-            'owner.email' => ['required', 'email:rfc,dns', 'max:150'],
+            'owner.email' => [
+                'required',
+                'email:rfc,dns',
+                'max:150',
+                Rule::unique(CentralUser::class, 'email'),
+            ],
             'owner.phone' => ['nullable', 'string', 'max:30'],
             'owner.password' => [
                 'required',

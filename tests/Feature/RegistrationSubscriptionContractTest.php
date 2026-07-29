@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\Auth\RegisterController;
 use App\Http\Requests\Auth\RegisterTenantRequest;
 use Database\Seeders\PlanSeeder;
+use Illuminate\Validation\Rules\Unique;
 use Laravelcm\Subscriptions\Interval;
 
 test('registration only accepts essential onboarding fields', function () {
@@ -29,6 +30,14 @@ test('registration defaults are controlled by the backend', function () {
     expect(config('tenancy.registration_defaults'))
         ->timezone->toBe('Asia/Jakarta')
         ->currency->toBe('IDR');
+});
+
+test('registration requires a unique central owner email', function () {
+    $emailRules = (new RegisterTenantRequest)->rules()['owner.email'];
+
+    expect(collect($emailRules)->contains(
+        fn (mixed $rule): bool => $rule instanceof Unique,
+    ))->toBeTrue();
 });
 
 test('the public registration route is rate limited', function () {

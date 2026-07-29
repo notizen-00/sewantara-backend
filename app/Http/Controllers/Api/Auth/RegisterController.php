@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\RegisterTenantRequest;
 use App\Modules\TenantOnboarding\Application\Data\RegisterTenantCommand;
 use App\Modules\TenantOnboarding\Application\RegisterTenant;
+use App\Support\TenantHostname;
 use DateTimeZone;
 use Illuminate\Http\JsonResponse;
 
@@ -33,12 +34,7 @@ class RegisterController extends Controller
                 ],
                 'domain' => [
                     'domain' => $result->domain,
-                    'url' => sprintf(
-                        '%s://%s.%s',
-                        config('app.env') === 'production' ? 'https' : 'http',
-                        $result->domain,
-                        config('tenancy.tenant_base_domain'),
-                    ),
+                    'url' => TenantHostname::url($result->domain),
                 ],
                 'owner' => [
                     'id' => $result->ownerId,

@@ -1,8 +1,14 @@
 <?php
 
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 test('central migration creates the platform users table', function () {
+    config()->set('database.default', 'sqlite');
+    config()->set('database.connections.sqlite.database', ':memory:');
+    DB::purge('sqlite');
+    DB::setDefaultConnection('sqlite');
+
     $migration = require database_path(
         'migrations/central/0001_01_01_000000_create_users_table.php',
     );

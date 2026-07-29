@@ -203,8 +203,8 @@ Proses registrasi:
 
 1. Memastikan plan aktif dan subdomain tersedia.
 2. Membuat Tenant dengan UUID dan slug unik dari nama bisnis.
-3. Membuat domain utama.
-4. Menyimpan data owner terenkripsi/hash untuk proses provisioning.
+3. Membuat domain utama dengan format hostname penuh, misalnya `kendokenceng.localhost`.
+4. Membuat owner di database central dan menyimpan hash yang sama untuk provisioning user tenant.
 5. Membuat subscription package bernama `main`.
 6. Mengaktifkan trial sesuai plan.
 7. Langsung membuat database tenant, menjalankan tenant migration, lalu membuat owner tanpa menunggu pembayaran.

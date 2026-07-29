@@ -2,11 +2,13 @@
 
 namespace App\Modules\TenantOnboarding\Infrastructure\Persistence;
 
+use App\Models\CentralUser;
 use App\Models\Domain;
 use App\Models\Tenant;
 use App\Modules\TenantOnboarding\Application\Data\ProvisionedTenant;
 use App\Modules\TenantOnboarding\Application\Data\RegisterTenantCommand;
 use App\Modules\TenantOnboarding\Contracts\TenantProvisioningRepository;
+use App\Support\TenantHostname;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
@@ -26,9 +28,11 @@ class EloquentTenantProvisioningRepository implements TenantProvisioningReposito
             'provisioning_status' => 'pending',
         ]);
 
+        $hostname = TenantHostname::fromSubdomain($command->subdomain);
+
         /** @var Domain $domain */
         $domain = $tenant->createDomain([
-            'domain' => $command->subdomain,
+            'domain' => $hostname,
             'is_primary' => true,
             'verification_status' => 'verified',
             'verified_at' => now(),
@@ -36,13 +40,24 @@ class EloquentTenantProvisioningRepository implements TenantProvisioningReposito
         ]);
 
         $ownerId = (string) Str::uuid();
+        $password = Hash::make($command->ownerPassword);
+
+        CentralUser::query()->create([
+            'id' => $ownerId,
+            'name' => $command->ownerName,
+            'email' => $command->ownerEmail,
+            'phone' => $command->ownerPhone,
+            'password' => $password,
+            'is_active' => true,
+        ]);
+
         $tenant->setInternal('pending_owner', [
             'id' => $ownerId,
             'tenant_id' => $tenant->getTenantKey(),
             'name' => $command->ownerName,
             'email' => $command->ownerEmail,
             'phone' => $command->ownerPhone,
-            'password' => Hash::make($command->ownerPassword),
+            'password' => $password,
             'is_active' => true,
         ]);
         $tenant->save();
