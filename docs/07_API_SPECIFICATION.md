@@ -54,6 +54,35 @@ Logout dan revoke token aktif:
 POST /api/tenant/{tenant}/auth/logout
 ```
 
+## Product Category Master
+
+```text
+GET    /api/tenant/{tenant}/categories
+POST   /api/tenant/{tenant}/categories
+GET    /api/tenant/{tenant}/categories/{category}
+PATCH  /api/tenant/{tenant}/categories/{category}
+DELETE /api/tenant/{tenant}/categories/{category}
+```
+
+Query list mendukung `search`, `parent_id`, `roots_only`, `is_active`, dan
+`per_page`.
+
+Contoh request create:
+
+```json
+{
+  "parent_id": null,
+  "name": "Kamera",
+  "description": "Peralatan kamera dan aksesorinya",
+  "image_path": "categories/camera.jpg",
+  "sort_order": 10,
+  "is_active": true
+}
+```
+
+`slug` dibuat otomatis jika tidak dikirim. Parent wajib berasal dari tenant
+yang sama dan kategori tidak dapat menjadi parent bagi dirinya sendiri.
+
 ## Product Master
 
 ```text

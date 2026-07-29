@@ -15,7 +15,7 @@ Sewantara adalah backend SaaS multi-tenant untuk pengelolaan berbagai jenis bisn
 | Midtrans Snap adapter | Fondasi selesai | Sudah memakai SDK resmi `midtrans/midtrans-php` |
 | Billing subscription | Sebagian selesai | Webhook pembayaran terverifikasi; checkout, reconciliation, dan renewal belum dibuat |
 | Authentication token | Selesai | Login tenant menggunakan Laravel Sanctum Bearer token |
-| Master produk | Selesai | CRUD, filter, soft delete, dan tenant isolation |
+| Master produk | Selesai | CRUD kategori dan produk, hierarchy, filter, soft delete, dan tenant isolation |
 | Role dan permission | Belum selesai | Authorization berbasis permission masih dalam roadmap |
 | Migration modul rental | Selesai | Migration central dan schema tenant dipisahkan |
 
@@ -159,6 +159,8 @@ Semua endpoint berikut memakai prefix `/api/tenant/{tenant}`:
 - `POST /auth/logout`
 - `GET /me`
 - `/branches`
+- `GET|POST /categories`
+- `GET|PATCH|DELETE /categories/{category}`
 - `GET|POST /products`
 - `GET|PATCH|DELETE /products/{product}`
 - `/product-units`
@@ -282,8 +284,8 @@ Status test saat README ini diperbarui:
 427 assertions
 ```
 
-Test mencakup Sanctum login/logout, CRUD dan isolation produk, tenant middleware,
-subscription status, central domain routing, onboarding, Midtrans, dan webhook.
+Test mencakup Sanctum login/logout, hierarchy kategori, CRUD dan isolation
+produk, tenant middleware, subscription, onboarding, Midtrans, dan webhook.
 
 ## Pekerjaan Berikutnya
 

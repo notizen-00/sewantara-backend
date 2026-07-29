@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\Tenant\AvailabilityController;
 use App\Http\Controllers\Api\Tenant\BookingController;
 use App\Http\Controllers\Api\Tenant\BranchController;
+use App\Http\Controllers\Api\Tenant\CategoryController;
 use App\Http\Controllers\Api\Tenant\CurrentTenantController;
 use App\Http\Controllers\Api\Tenant\CustomerController;
 use App\Http\Controllers\Api\Tenant\DashboardReportController;
@@ -31,6 +32,7 @@ Route::prefix('tenant/{tenant}')
             Route::get('/me', CurrentTenantController::class)->name('me');
 
             Route::apiResource('branches', BranchController::class)->only(['index', 'store']);
+            Route::apiResource('categories', CategoryController::class);
             Route::apiResource('products', ProductController::class);
             Route::apiResource('product-units', ProductUnitController::class)->only(['index', 'store']);
             Route::apiResource('customers', CustomerController::class)->only(['index', 'store', 'show', 'update']);
