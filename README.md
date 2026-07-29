@@ -16,7 +16,7 @@ Sewantara adalah backend SaaS multi-tenant untuk pengelolaan berbagai jenis bisn
 | Billing subscription | Sebagian selesai | Webhook pembayaran terverifikasi; checkout, reconciliation, dan renewal belum dibuat |
 | Authentication token | Belum selesai | Laravel Sanctum dan penerbitan access token belum dipasang |
 | Role dan permission | Belum selesai | Authorization berbasis permission masih dalam roadmap |
-| Migration modul rental | Selesai | Central dan tenant database migrations dipisahkan |
+| Migration modul rental | Selesai | Migration central dan schema tenant dipisahkan |
 
 ## Teknologi
 
@@ -65,7 +65,7 @@ Sewantara menggunakan central database dan database terpisah untuk setiap tenant
 
 - `tenants`, `domains`, plan, dan subscription merupakan data central.
 - User platform/super-admin berada di tabel `users` central.
-- User dan data operasional berada pada database tenant.
+- User dan data operasional berada pada schema PostgreSQL milik tenant.
 - `DatabaseTenancyBootstrapper` mengalihkan koneksi setelah tenant diidentifikasi.
 - Database tenant dibuat dan dimigrasikan otomatis saat registrasi agar trial dapat langsung digunakan.
 - Tenant merupakan subscriber subscription, bukan User.
@@ -207,7 +207,7 @@ Proses registrasi:
 4. Membuat owner di database central dan menyimpan hash yang sama untuk provisioning user tenant.
 5. Membuat subscription package bernama `main`.
 6. Mengaktifkan trial sesuai plan.
-7. Langsung membuat database tenant, menjalankan tenant migration, lalu membuat owner tanpa menunggu pembayaran.
+7. Langsung membuat schema tenant, menjalankan tenant migration, lalu membuat owner tanpa menunggu pembayaran.
 8. Tenant berstatus aktif selama trial setelah seluruh provisioning berhasil.
 
 Frontend tidak mengirim `slug`, `timezone`, `currency`, atau `status`. Backend membuat

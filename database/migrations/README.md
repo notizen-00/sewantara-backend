@@ -4,7 +4,7 @@
 
 - `central/` contains framework, Stancl tenancy, subscription package, SaaS
   billing, and global authorization tables.
-- `tenant/` contains operational tables for each tenant database. It is not
+- `tenant/` contains operational tables for each tenant schema. It is not
   registered with Laravel's central migrator.
 
 Run central migrations using:
@@ -13,5 +13,5 @@ Run central migrations using:
 php artisan migrate
 ```
 
-Tenant migrations run automatically after a verified subscription payment, or
-manually using `php artisan tenants:migrate`.
+Tenant migrations run automatically during trial registration, or manually
+using `php artisan tenants:migrate`.

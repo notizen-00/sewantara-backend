@@ -5,10 +5,13 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Stancl\Tenancy\Bootstrappers\DatabaseTenancyBootstrapper;
+use Stancl\Tenancy\TenantDatabaseManagers\PostgreSQLSchemaManager;
 
-test('multi database provisioning uses the tenant migration directory', function () {
+test('PostgreSQL tenant schemas use the tenant migration directory', function () {
     expect(config('tenancy.bootstrappers'))
         ->toContain(DatabaseTenancyBootstrapper::class)
+        ->and(config('tenancy.database.managers.pgsql'))
+        ->toBe(PostgreSQLSchemaManager::class)
         ->and(config('tenancy.migration_parameters.--path'))
         ->toBe([database_path('migrations/tenant')]);
 });

@@ -5,7 +5,7 @@ customers, inventory, bookings, payments, fulfillment, maintenance, and logs.
 
 This directory is not loaded by `php artisan migrate`.
 
-Stancl runs these files against each tenant database through
+Stancl runs these files against each tenant schema through
 `php artisan tenants:migrate`. Foreign keys to the central `tenants` table are
-intentionally forbidden because PostgreSQL cannot enforce cross-database foreign
-keys.
+intentionally forbidden to keep operational migrations isolated from the
+central schema.

@@ -240,9 +240,9 @@ AuditLog
 
 Aturan tambahan:
 
-DatabaseTenancyBootstrapper dinonaktifkan karena tidak ada perpindahan database per tenant.
+DatabaseTenancyBootstrapper aktif untuk mengubah `search_path` PostgreSQL ke schema tenant.
 
-Job pembuatan, migrasi, dan penghapusan database tenant tidak digunakan.
+Provisioning membuat, memigrasikan, dan mengelola schema tenant melalui `PostgreSQLSchemaManager`.
 
 Tenant diidentifikasi melalui domain, subdomain, path, atau request data sesuai route group.
 
@@ -2587,7 +2587,7 @@ Web tenant → domain atau subdomain
 Custom domain → domain penuh pada tabel domains
 Mobile/API → domain tenant atau X-Tenant header sesuai deployment
 
-Tenant Module tidak membuat database per tenant karena Sewantara memakai shared database/shared schema.
+Tenant Module tidak membuat database terpisah. Sewantara memakai satu database PostgreSQL dengan schema terpisah untuk setiap tenant.
 
 13.2 Organization Module
 

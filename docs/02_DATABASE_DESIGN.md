@@ -72,7 +72,7 @@ Rental lainnya
 
 2.1 Multi-Tenant dengan stancl/tenancy
 
-Sewantara menggunakan central database dan database PostgreSQL terpisah untuk setiap tenant. Model Tenant mengikuti model database-aware stancl/tenancy. Tabel operasional berada pada database tenant; kolom tenant_id tetap dipakai sebagai defense-in-depth.
+Sewantara menggunakan satu central database PostgreSQL dengan schema terpisah untuk setiap tenant. Model Tenant mengikuti model database-aware stancl/tenancy. Tabel operasional berada pada schema tenant; kolom tenant_id tetap dipakai sebagai defense-in-depth.
 
 Model primary tenant seperti Branch, Customer, Category, Product, ProductUnit, Booking, dan Payment wajib memakai:
 
