@@ -163,7 +163,7 @@
                                         },
                                         "body": {
                                             "mode": "raw",
-                                            "raw": "{\n    \"business_name\": \"sample_text\",\n    \"business_type\": \"sample_text\",\n    \"subdomain\": \"sample_text\",\n    \"owner\": {\n        \"name\": \"sample_text\",\n        \"email\": \"sample_text\",\n        \"phone\": \"sample_text\",\n        \"password\": \"sample_text\"\n    },\n    \"plan_id\": 2,\n    \"billing_interval\": \"sample_text\",\n    \"terms_accepted\": \"sample_text\"\n}",
+                                            "raw": "{\n    \"business_name\": \"sample_text\",\n    \"business_type\": \"sample_text\",\n    \"subdomain\": \"sample_text\",\n    \"owner\": {\n        \"name\": \"sample_text\",\n        \"email\": \"sample_text\",\n        \"phone\": \"sample_text\",\n        \"password\": \"sample_text\"\n    },\n    \"plan_id\": 1,\n    \"billing_interval\": \"sample_text\",\n    \"terms_accepted\": \"sample_text\"\n}",
                                             "options": []
                                         }
                                     }
@@ -272,6 +272,99 @@
             "name": "tenant",
             "item": [
                 {
+                    "name": "auth",
+                    "item": [
+                        {
+                            "name": "login",
+                            "item": [
+                                {
+                                    "name": "[POST] api/tenant/{tenant}/auth/login",
+                                    "request": {
+                                        "method": "POST",
+                                        "header": [
+                                            {
+                                                "key": "Accept",
+                                                "value": "application/json",
+                                                "type": "text"
+                                            },
+                                            {
+                                                "key": "Content-Type",
+                                                "value": "application/json",
+                                                "type": "text"
+                                            }
+                                        ],
+                                        "url": {
+                                            "raw": "{{base_url}}/api/tenant/:tenant/auth/login",
+                                            "host": [
+                                                "{{base_url}}"
+                                            ],
+                                            "path": [
+                                                "api",
+                                                "tenant",
+                                                ":tenant",
+                                                "auth",
+                                                "login"
+                                            ],
+                                            "variable": []
+                                        },
+                                        "body": {
+                                            "mode": "raw",
+                                            "raw": "{\n    \"email\": \"owner@example.test\",\n    \"password\": \"<TENANT_PASSWORD>\",\n    \"device_name\": \"web\"\n}",
+                                            "options": []
+                                        }
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "name": "logout",
+                            "item": [
+                                {
+                                    "name": "[POST] api/tenant/{tenant}/auth/logout",
+                                    "request": {
+                                        "method": "POST",
+                                        "header": [
+                                            {
+                                                "key": "Accept",
+                                                "value": "application/json",
+                                                "type": "text"
+                                            },
+                                            {
+                                                "key": "Content-Type",
+                                                "value": "application/json",
+                                                "type": "text"
+                                            }
+                                        ],
+                                        "url": {
+                                            "raw": "{{base_url}}/api/tenant/:tenant/auth/logout",
+                                            "host": [
+                                                "{{base_url}}"
+                                            ],
+                                            "path": [
+                                                "api",
+                                                "tenant",
+                                                ":tenant",
+                                                "auth",
+                                                "logout"
+                                            ],
+                                            "variable": []
+                                        },
+                                        "auth": {
+                                            "type": "bearer",
+                                            "bearer": [
+                                                {
+                                                    "key": "token",
+                                                    "value": "{{auth_token}}"
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
                     "name": "me",
                     "item": [
                         {
@@ -302,6 +395,15 @@
                                         "me"
                                     ],
                                     "variable": []
+                                },
+                                "auth": {
+                                    "type": "bearer",
+                                    "bearer": [
+                                        {
+                                            "key": "token",
+                                            "value": "{{auth_token}}"
+                                        }
+                                    ]
                                 }
                             }
                         }
@@ -338,6 +440,15 @@
                                         "branches"
                                     ],
                                     "variable": []
+                                },
+                                "auth": {
+                                    "type": "bearer",
+                                    "bearer": [
+                                        {
+                                            "key": "token",
+                                            "value": "{{auth_token}}"
+                                        }
+                                    ]
                                 }
                             }
                         },
@@ -369,6 +480,15 @@
                                         "branches"
                                     ],
                                     "variable": []
+                                },
+                                "auth": {
+                                    "type": "bearer",
+                                    "bearer": [
+                                        {
+                                            "key": "token",
+                                            "value": "{{auth_token}}"
+                                        }
+                                    ]
                                 }
                             }
                         }
@@ -405,6 +525,15 @@
                                         "products"
                                     ],
                                     "variable": []
+                                },
+                                "auth": {
+                                    "type": "bearer",
+                                    "bearer": [
+                                        {
+                                            "key": "token",
+                                            "value": "{{auth_token}}"
+                                        }
+                                    ]
                                 }
                             }
                         },
@@ -436,6 +565,20 @@
                                         "products"
                                     ],
                                     "variable": []
+                                },
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n    \"category_id\": \"sample_text\",\n    \"name\": \"sample_text\",\n    \"slug\": \"sample_text\",\n    \"sku\": \"sample_text\",\n    \"brand\": \"sample_text\",\n    \"model\": \"sample_text\",\n    \"description\": \"sample_text\",\n    \"inventory_type\": \"serialized\",\n    \"default_pricing_type\": \"daily\",\n    \"minimum_rental_duration\": 5,\n    \"deposit_amount\": 37,\n    \"late_fee_amount\": 18,\n    \"is_featured\": 0,\n    \"is_active\": 1\n}",
+                                    "options": []
+                                },
+                                "auth": {
+                                    "type": "bearer",
+                                    "bearer": [
+                                        {
+                                            "key": "token",
+                                            "value": "{{auth_token}}"
+                                        }
+                                    ]
                                 }
                             }
                         },
@@ -468,6 +611,15 @@
                                         ":product"
                                     ],
                                     "variable": []
+                                },
+                                "auth": {
+                                    "type": "bearer",
+                                    "bearer": [
+                                        {
+                                            "key": "token",
+                                            "value": "{{auth_token}}"
+                                        }
+                                    ]
                                 }
                             }
                         },
@@ -500,6 +652,61 @@
                                         ":product"
                                     ],
                                     "variable": []
+                                },
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n    \"category_id\": \"sample_text\",\n    \"name\": \"sample_text\",\n    \"slug\": \"sample_text\",\n    \"sku\": \"sample_text\",\n    \"brand\": \"sample_text\",\n    \"model\": \"sample_text\",\n    \"description\": \"sample_text\",\n    \"inventory_type\": \"serialized\",\n    \"default_pricing_type\": \"daily\",\n    \"minimum_rental_duration\": 5,\n    \"deposit_amount\": 68,\n    \"late_fee_amount\": 29,\n    \"is_featured\": 0,\n    \"is_active\": 1\n}",
+                                    "options": []
+                                },
+                                "auth": {
+                                    "type": "bearer",
+                                    "bearer": [
+                                        {
+                                            "key": "token",
+                                            "value": "{{auth_token}}"
+                                        }
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "name": "[DELETE] api/tenant/{tenant}/products/{product}",
+                            "request": {
+                                "method": "DELETE",
+                                "header": [
+                                    {
+                                        "key": "Accept",
+                                        "value": "application/json",
+                                        "type": "text"
+                                    },
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json",
+                                        "type": "text"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{base_url}}/api/tenant/:tenant/products/:product",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "tenant",
+                                        ":tenant",
+                                        "products",
+                                        ":product"
+                                    ],
+                                    "variable": []
+                                },
+                                "auth": {
+                                    "type": "bearer",
+                                    "bearer": [
+                                        {
+                                            "key": "token",
+                                            "value": "{{auth_token}}"
+                                        }
+                                    ]
                                 }
                             }
                         }
@@ -536,6 +743,15 @@
                                         "product-units"
                                     ],
                                     "variable": []
+                                },
+                                "auth": {
+                                    "type": "bearer",
+                                    "bearer": [
+                                        {
+                                            "key": "token",
+                                            "value": "{{auth_token}}"
+                                        }
+                                    ]
                                 }
                             }
                         },
@@ -567,6 +783,15 @@
                                         "product-units"
                                     ],
                                     "variable": []
+                                },
+                                "auth": {
+                                    "type": "bearer",
+                                    "bearer": [
+                                        {
+                                            "key": "token",
+                                            "value": "{{auth_token}}"
+                                        }
+                                    ]
                                 }
                             }
                         }
@@ -603,6 +828,15 @@
                                         "customers"
                                     ],
                                     "variable": []
+                                },
+                                "auth": {
+                                    "type": "bearer",
+                                    "bearer": [
+                                        {
+                                            "key": "token",
+                                            "value": "{{auth_token}}"
+                                        }
+                                    ]
                                 }
                             }
                         },
@@ -634,6 +868,15 @@
                                         "customers"
                                     ],
                                     "variable": []
+                                },
+                                "auth": {
+                                    "type": "bearer",
+                                    "bearer": [
+                                        {
+                                            "key": "token",
+                                            "value": "{{auth_token}}"
+                                        }
+                                    ]
                                 }
                             }
                         },
@@ -666,6 +909,15 @@
                                         ":customer"
                                     ],
                                     "variable": []
+                                },
+                                "auth": {
+                                    "type": "bearer",
+                                    "bearer": [
+                                        {
+                                            "key": "token",
+                                            "value": "{{auth_token}}"
+                                        }
+                                    ]
                                 }
                             }
                         },
@@ -698,6 +950,15 @@
                                         ":customer"
                                     ],
                                     "variable": []
+                                },
+                                "auth": {
+                                    "type": "bearer",
+                                    "bearer": [
+                                        {
+                                            "key": "token",
+                                            "value": "{{auth_token}}"
+                                        }
+                                    ]
                                 }
                             }
                         }
@@ -734,6 +995,15 @@
                                         "bookings"
                                     ],
                                     "variable": []
+                                },
+                                "auth": {
+                                    "type": "bearer",
+                                    "bearer": [
+                                        {
+                                            "key": "token",
+                                            "value": "{{auth_token}}"
+                                        }
+                                    ]
                                 }
                             }
                         },
@@ -765,6 +1035,15 @@
                                         "bookings"
                                     ],
                                     "variable": []
+                                },
+                                "auth": {
+                                    "type": "bearer",
+                                    "bearer": [
+                                        {
+                                            "key": "token",
+                                            "value": "{{auth_token}}"
+                                        }
+                                    ]
                                 }
                             }
                         },
@@ -797,6 +1076,15 @@
                                         ":booking"
                                     ],
                                     "variable": []
+                                },
+                                "auth": {
+                                    "type": "bearer",
+                                    "bearer": [
+                                        {
+                                            "key": "token",
+                                            "value": "{{auth_token}}"
+                                        }
+                                    ]
                                 }
                             }
                         },
@@ -833,6 +1121,15 @@
                                                 "payments"
                                             ],
                                             "variable": []
+                                        },
+                                        "auth": {
+                                            "type": "bearer",
+                                            "bearer": [
+                                                {
+                                                    "key": "token",
+                                                    "value": "{{auth_token}}"
+                                                }
+                                            ]
                                         }
                                     }
                                 }
@@ -875,6 +1172,15 @@
                                                 "check"
                                             ],
                                             "variable": []
+                                        },
+                                        "auth": {
+                                            "type": "bearer",
+                                            "bearer": [
+                                                {
+                                                    "key": "token",
+                                                    "value": "{{auth_token}}"
+                                                }
+                                            ]
                                         }
                                     }
                                 }
@@ -917,6 +1223,15 @@
                                                 "dashboard"
                                             ],
                                             "variable": []
+                                        },
+                                        "auth": {
+                                            "type": "bearer",
+                                            "bearer": [
+                                                {
+                                                    "key": "token",
+                                                    "value": "{{auth_token}}"
+                                                }
+                                            ]
                                         }
                                     }
                                 }
@@ -931,6 +1246,22 @@
         {
             "key": "base_url",
             "value": "http://localhost"
+        },
+        {
+            "key": "auth_token",
+            "value": "your-access-token",
+            "type": "string",
+            "description": "Bearer token for API authentication"
         }
-    ]
+    ],
+    "auth": {
+        "type": "bearer",
+        "bearer": [
+            {
+                "key": "token",
+                "value": "{{auth_token}}",
+                "type": "string"
+            }
+        ]
+    }
 }

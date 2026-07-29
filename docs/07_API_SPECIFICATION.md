@@ -53,3 +53,31 @@ Logout dan revoke token aktif:
 ```http
 POST /api/tenant/{tenant}/auth/logout
 ```
+
+## Product Master
+
+```text
+GET    /api/tenant/{tenant}/products
+POST   /api/tenant/{tenant}/products
+GET    /api/tenant/{tenant}/products/{product}
+PATCH  /api/tenant/{tenant}/products/{product}
+DELETE /api/tenant/{tenant}/products/{product}
+```
+
+Contoh request create:
+
+```json
+{
+  "name": "Sony Alpha A7 IV",
+  "sku": "CAM-SONY-A7IV",
+  "brand": "Sony",
+  "model": "A7 IV",
+  "inventory_type": "serialized",
+  "default_pricing_type": "daily",
+  "minimum_rental_duration": 1,
+  "deposit_amount": 1000000,
+  "late_fee_amount": 250000,
+  "is_featured": true,
+  "is_active": true
+}
+```

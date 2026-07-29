@@ -31,8 +31,7 @@ Route::prefix('tenant/{tenant}')
             Route::get('/me', CurrentTenantController::class)->name('me');
 
             Route::apiResource('branches', BranchController::class)->only(['index', 'store']);
-            Route::apiResource('products', ProductController::class)
-                ->only(['index', 'store', 'show', 'update']);
+            Route::apiResource('products', ProductController::class);
             Route::apiResource('product-units', ProductUnitController::class)->only(['index', 'store']);
             Route::apiResource('customers', CustomerController::class)->only(['index', 'store', 'show', 'update']);
             Route::apiResource('bookings', BookingController::class)->only(['index', 'store', 'show']);

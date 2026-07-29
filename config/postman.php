@@ -89,6 +89,8 @@ return [
                 'password' => '<TENANT_PASSWORD>',
                 'device_name' => 'web',
                 'plan_id' => 1,
+                'inventory_type' => 'serialized',
+                'default_pricing_type' => 'daily',
             ],
         ],
     ],
