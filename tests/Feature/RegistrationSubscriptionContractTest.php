@@ -23,7 +23,7 @@ test('registration accepts all documented onboarding fields', function () {
 });
 
 test('the public registration route is rate limited', function () {
-    $route = app('router')->getRoutes()->getByName('auth.register');
+    $route = app('router')->getRoutes()->getByName('central.auth.register');
 
     expect($route->getActionName())->toBe(RegisterController::class)
         ->and($route->gatherMiddleware())->toContain('throttle:5,1');

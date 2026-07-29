@@ -398,20 +398,20 @@ GetActiveSessionsQuery
 
 5.8 API
 
-POST /api/v1/auth/register
-POST /api/v1/auth/login
-POST /api/v1/auth/logout
-POST /api/v1/auth/forgot-password
-POST /api/v1/auth/reset-password
-POST /api/v1/auth/verify-email
-GET /api/v1/auth/me
-GET /api/v1/users
-POST /api/v1/users
-GET /api/v1/users/{id}
-PATCH /api/v1/users/{id}
-DELETE /api/v1/users/{id}
-GET /api/v1/roles
-POST /api/v1/users/{id}/roles
+POST /api/central/auth/register
+POST /api/tenant/{tenant}/auth/login
+POST /api/tenant/{tenant}/auth/logout
+POST /api/tenant/{tenant}/auth/forgot-password
+POST /api/tenant/{tenant}/auth/reset-password
+POST /api/tenant/{tenant}/auth/verify-email
+GET /api/tenant/{tenant}/auth/me
+GET /api/tenant/{tenant}/users
+POST /api/tenant/{tenant}/users
+GET /api/tenant/{tenant}/users/{id}
+PATCH /api/tenant/{tenant}/users/{id}
+DELETE /api/tenant/{tenant}/users/{id}
+GET /api/tenant/{tenant}/roles
+POST /api/tenant/{tenant}/users/{id}/roles
 
 5.9 Event yang Diterbitkan
 
@@ -652,27 +652,27 @@ GetStockByBranchQuery
 
 6.8 API
 
-GET /api/v1/categories
-POST /api/v1/categories
-PATCH /api/v1/categories/{id}
-DELETE /api/v1/categories/{id}
+GET /api/tenant/{tenant}/categories
+POST /api/tenant/{tenant}/categories
+PATCH /api/tenant/{tenant}/categories/{id}
+DELETE /api/tenant/{tenant}/categories/{id}
 
-GET /api/v1/products
-POST /api/v1/products
-GET /api/v1/products/{id}
-PATCH /api/v1/products/{id}
-DELETE /api/v1/products/{id}
+GET /api/tenant/{tenant}/products
+POST /api/tenant/{tenant}/products
+GET /api/tenant/{tenant}/products/{id}
+PATCH /api/tenant/{tenant}/products/{id}
+DELETE /api/tenant/{tenant}/products/{id}
 
-GET /api/v1/products/{id}/units
-POST /api/v1/products/{id}/units
-PATCH /api/v1/product-units/{id}
-POST /api/v1/product-units/{id}/transfer
-POST /api/v1/product-units/{id}/status
+GET /api/tenant/{tenant}/products/{id}/units
+POST /api/tenant/{tenant}/products/{id}/units
+PATCH /api/tenant/{tenant}/product-units/{id}
+POST /api/tenant/{tenant}/product-units/{id}/transfer
+POST /api/tenant/{tenant}/product-units/{id}/status
 
-GET /api/v1/inventory/availability
-POST /api/v1/inventory/adjustments
-POST /api/v1/inventory/stock-opname
-GET /api/v1/inventory/movements
+GET /api/tenant/{tenant}/inventory/availability
+POST /api/tenant/{tenant}/inventory/adjustments
+POST /api/tenant/{tenant}/inventory/stock-opname
+GET /api/tenant/{tenant}/inventory/movements
 
 6.9 Event yang Diterbitkan
 
@@ -962,25 +962,25 @@ GetBookingAvailabilityQuery
 
 7.8 API
 
-GET /api/v1/bookings
-POST /api/v1/bookings
-GET /api/v1/bookings/{id}
-PATCH /api/v1/bookings/{id}
+GET /api/tenant/{tenant}/bookings
+POST /api/tenant/{tenant}/bookings
+GET /api/tenant/{tenant}/bookings/{id}
+PATCH /api/tenant/{tenant}/bookings/{id}
 
-POST /api/v1/bookings/{id}/submit
-POST /api/v1/bookings/{id}/confirm
-POST /api/v1/bookings/{id}/reject
-POST /api/v1/bookings/{id}/cancel
-POST /api/v1/bookings/{id}/prepare
-POST /api/v1/bookings/{id}/ready
-POST /api/v1/bookings/{id}/checkout
-POST /api/v1/bookings/{id}/return
-POST /api/v1/bookings/{id}/complete
-POST /api/v1/bookings/{id}/extend
-POST /api/v1/bookings/{id}/reschedule
+POST /api/tenant/{tenant}/bookings/{id}/submit
+POST /api/tenant/{tenant}/bookings/{id}/confirm
+POST /api/tenant/{tenant}/bookings/{id}/reject
+POST /api/tenant/{tenant}/bookings/{id}/cancel
+POST /api/tenant/{tenant}/bookings/{id}/prepare
+POST /api/tenant/{tenant}/bookings/{id}/ready
+POST /api/tenant/{tenant}/bookings/{id}/checkout
+POST /api/tenant/{tenant}/bookings/{id}/return
+POST /api/tenant/{tenant}/bookings/{id}/complete
+POST /api/tenant/{tenant}/bookings/{id}/extend
+POST /api/tenant/{tenant}/bookings/{id}/reschedule
 
-GET /api/v1/bookings/calendar
-GET /api/v1/bookings/availability
+GET /api/tenant/{tenant}/bookings/calendar
+GET /api/tenant/{tenant}/bookings/availability
 
 7.9 Event yang Diterbitkan
 
@@ -1227,19 +1227,19 @@ GetBlacklistedCustomersQuery
 
 8.7 API
 
-GET /api/v1/customers
-POST /api/v1/customers
-GET /api/v1/customers/{id}
-PATCH /api/v1/customers/{id}
-DELETE /api/v1/customers/{id}
+GET /api/tenant/{tenant}/customers
+POST /api/tenant/{tenant}/customers
+GET /api/tenant/{tenant}/customers/{id}
+PATCH /api/tenant/{tenant}/customers/{id}
+DELETE /api/tenant/{tenant}/customers/{id}
 
-POST /api/v1/customers/{id}/documents
-POST /api/v1/customers/{id}/documents/{documentId}/verify
-POST /api/v1/customers/{id}/blacklist
-DELETE /api/v1/customers/{id}/blacklist
+POST /api/tenant/{tenant}/customers/{id}/documents
+POST /api/tenant/{tenant}/customers/{id}/documents/{documentId}/verify
+POST /api/tenant/{tenant}/customers/{id}/blacklist
+DELETE /api/tenant/{tenant}/customers/{id}/blacklist
 
-GET /api/v1/customers/{id}/bookings
-GET /api/v1/customers/{id}/payments
+GET /api/tenant/{tenant}/customers/{id}/bookings
+GET /api/tenant/{tenant}/customers/{id}/payments
 
 8.8 Event yang Diterbitkan
 
@@ -1454,23 +1454,23 @@ GetRevenueSummaryQuery
 
 9.7 API
 
-GET /api/v1/payments
-POST /api/v1/payments
-GET /api/v1/payments/{id}
-POST /api/v1/payments/{id}/verify
-POST /api/v1/payments/{id}/cancel
-POST /api/v1/payments/{id}/refund
+GET /api/tenant/{tenant}/payments
+POST /api/tenant/{tenant}/payments
+GET /api/tenant/{tenant}/payments/{id}
+POST /api/tenant/{tenant}/payments/{id}/verify
+POST /api/tenant/{tenant}/payments/{id}/cancel
+POST /api/tenant/{tenant}/payments/{id}/refund
 
-GET /api/v1/invoices
-GET /api/v1/invoices/{id}
-GET /api/v1/invoices/{id}/pdf
+GET /api/tenant/{tenant}/invoices
+GET /api/tenant/{tenant}/invoices/{id}
+GET /api/tenant/{tenant}/invoices/{id}/pdf
 
-POST /api/v1/bookings/{id}/charges
-POST /api/v1/bookings/{id}/deposit/hold
-POST /api/v1/bookings/{id}/deposit/deduct
-POST /api/v1/bookings/{id}/deposit/refund
+POST /api/tenant/{tenant}/bookings/{id}/charges
+POST /api/tenant/{tenant}/bookings/{id}/deposit/hold
+POST /api/tenant/{tenant}/bookings/{id}/deposit/deduct
+POST /api/tenant/{tenant}/bookings/{id}/deposit/refund
 
-POST /api/v1/webhooks/payments/{gateway}
+POST /api/tenant/{tenant}/webhooks/payments/{gateway}
 
 9.8 Payment Gateway Adapter
 
@@ -1739,16 +1739,16 @@ ListNotificationTemplatesQuery
 
 10.8 API
 
-GET /api/v1/notifications
-POST /api/v1/notifications/{id}/read
-POST /api/v1/notifications/read-all
-GET /api/v1/notification-preferences
-PATCH /api/v1/notification-preferences
-POST /api/v1/device-tokens
-DELETE /api/v1/device-tokens/{id}
+GET /api/tenant/{tenant}/notifications
+POST /api/tenant/{tenant}/notifications/{id}/read
+POST /api/tenant/{tenant}/notifications/read-all
+GET /api/tenant/{tenant}/notification-preferences
+PATCH /api/tenant/{tenant}/notification-preferences
+POST /api/tenant/{tenant}/device-tokens
+DELETE /api/tenant/{tenant}/device-tokens/{id}
 
-GET /api/v1/notification-templates
-PATCH /api/v1/notification-templates/{id}
+GET /api/tenant/{tenant}/notification-templates
+PATCH /api/tenant/{tenant}/notification-templates/{id}
 
 10.9 Event yang Diterbitkan
 
@@ -1977,20 +1977,20 @@ GetBranchPerformanceQuery
 
 11.8 API
 
-GET /api/v1/dashboard
-GET /api/v1/reports/bookings
-GET /api/v1/reports/revenue
-GET /api/v1/reports/payments
-GET /api/v1/reports/inventory
-GET /api/v1/reports/products
-GET /api/v1/reports/customers
-GET /api/v1/reports/deposits
-GET /api/v1/reports/charges
-GET /api/v1/reports/maintenance
-GET /api/v1/reports/branches
+GET /api/tenant/{tenant}/dashboard
+GET /api/tenant/{tenant}/reports/bookings
+GET /api/tenant/{tenant}/reports/revenue
+GET /api/tenant/{tenant}/reports/payments
+GET /api/tenant/{tenant}/reports/inventory
+GET /api/tenant/{tenant}/reports/products
+GET /api/tenant/{tenant}/reports/customers
+GET /api/tenant/{tenant}/reports/deposits
+GET /api/tenant/{tenant}/reports/charges
+GET /api/tenant/{tenant}/reports/maintenance
+GET /api/tenant/{tenant}/reports/branches
 
-POST /api/v1/reports/exports
-GET /api/v1/reports/exports/{id}
+POST /api/tenant/{tenant}/reports/exports
+GET /api/tenant/{tenant}/reports/exports/{id}
 
 11.9 Event yang Diterbitkan
 
@@ -2267,30 +2267,30 @@ ListEndingSubscriptionsQuery
 
 Tenant API:
 
-GET /api/v1/subscription
-GET /api/v1/subscription/plans
-GET /api/v1/subscription/features
-GET /api/v1/subscription/usage
-POST /api/v1/subscription/change-plan
-POST /api/v1/subscription/renew
-POST /api/v1/subscription/cancel
-GET /api/v1/subscription/invoices
-GET /api/v1/subscription/invoices/{id}
+GET /api/tenant/{tenant}/subscription
+GET /api/tenant/{tenant}/subscription/plans
+GET /api/tenant/{tenant}/subscription/features
+GET /api/tenant/{tenant}/subscription/usage
+POST /api/tenant/{tenant}/subscription/change-plan
+POST /api/tenant/{tenant}/subscription/renew
+POST /api/tenant/{tenant}/subscription/cancel
+GET /api/tenant/{tenant}/subscription/invoices
+GET /api/tenant/{tenant}/subscription/invoices/{id}
 
 Central super-admin API:
 
-GET /api/v1/admin/plans
-POST /api/v1/admin/plans
-PATCH /api/v1/admin/plans/{id}
-POST /api/v1/admin/plans/{id}/features
-GET /api/v1/admin/plan-subscriptions
-POST /api/v1/admin/tenants/{id}/change-plan
-POST /api/v1/admin/tenants/{id}/suspend
-POST /api/v1/admin/tenants/{id}/restore
+GET /api/central/admin/plans
+POST /api/central/admin/plans
+PATCH /api/central/admin/plans/{id}
+POST /api/central/admin/plans/{id}/features
+GET /api/central/admin/plan-subscriptions
+POST /api/central/admin/tenants/{id}/change-plan
+POST /api/central/admin/tenants/{id}/suspend
+POST /api/central/admin/tenants/{id}/restore
 
 Webhook billing:
 
-POST /api/v1/webhooks/subscription-payments/{gateway}
+POST /api/tenant/{tenant}/webhooks/subscription-payments/{gateway}
 
 Route plan management dan billing webhook berada pada central route. Route penggunaan fitur tenant berjalan setelah tenant identification.
 

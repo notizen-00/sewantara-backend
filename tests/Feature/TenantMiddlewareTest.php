@@ -25,7 +25,7 @@ afterEach(function () {
 
 function tenantRequest(?User $user = null): Request
 {
-    $request = Request::create('/api/v1/tenant-id/probe');
+    $request = Request::create('/api/tenant/tenant-id/probe');
     $request->setUserResolver(fn () => $user);
 
     return $request;
@@ -58,8 +58,8 @@ test('path initialization exposes the tenant and always clears its context', fun
     $tenant = tenantModel();
     $resolver = Mockery::mock(PathTenantResolver::class);
     $middleware = new InitializeTenantByPath($this->tenancy, $resolver);
-    $request = Request::create('/api/v1/tenant-a/probe');
-    $route = new Route(['GET'], 'api/v1/{tenant}/probe', fn () => null);
+    $request = Request::create('/api/tenant/tenant-a/probe');
+    $route = new Route(['GET'], 'api/tenant/{tenant}/probe', fn () => null);
     $route->bind($request);
     $request->setRouteResolver(fn () => $route);
 
@@ -83,8 +83,8 @@ test('path initialization exposes the tenant and always clears its context', fun
 test('unknown path tenant returns the documented safe error', function () {
     $resolver = Mockery::mock(PathTenantResolver::class);
     $middleware = new InitializeTenantByPath($this->tenancy, $resolver);
-    $request = Request::create('/api/v1/missing/probe');
-    $route = new Route(['GET'], 'api/v1/{tenant}/probe', fn () => null);
+    $request = Request::create('/api/tenant/missing/probe');
+    $route = new Route(['GET'], 'api/tenant/{tenant}/probe', fn () => null);
     $route->bind($request);
     $request->setRouteResolver(fn () => $route);
 
@@ -174,7 +174,7 @@ test('main subscription must exist and be active', function () {
 });
 
 test('tenant API routes use the complete guard chain in order', function () {
-    $route = app('router')->getRoutes()->getByName('products.index');
+    $route = app('router')->getRoutes()->getByName('tenant.products.index');
     $expected = [
         InitializeTenantByPath::class,
         EnsureUserBelongsToTenant::class,

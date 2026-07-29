@@ -62,7 +62,7 @@ test('a verified paid notification automatically provisions the tenant', functio
 
     $payload = paidMidtransPayload('SUB-INV-PAID-1');
 
-    $this->postJson('/api/v1/billing/midtrans/webhook', $payload)
+    $this->postJson('/api/central/billing/midtrans/webhook', $payload)
         ->assertOk()
         ->assertJsonPath('success', true);
 
@@ -93,7 +93,7 @@ test('an invalid payment signature never provisions a tenant', function () {
     $payload = paidMidtransPayload('SUB-INV-UNPAID-1');
     $payload['signature_key'] = 'invalid';
 
-    $this->postJson('/api/v1/billing/midtrans/webhook', $payload)
+    $this->postJson('/api/central/billing/midtrans/webhook', $payload)
         ->assertForbidden();
 
     expect(
@@ -112,7 +112,7 @@ test('a non-final Midtrans status does not provision a tenant', function () {
     $payload['transaction_status'] = 'pending';
     $payload['signature_key'] = midtransSignature($payload);
 
-    $this->postJson('/api/v1/billing/midtrans/webhook', $payload)
+    $this->postJson('/api/central/billing/midtrans/webhook', $payload)
         ->assertOk();
 });
 

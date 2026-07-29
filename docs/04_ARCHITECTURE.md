@@ -1515,18 +1515,18 @@ Middleware:
 use Stancl\Tenancy\Middleware\InitializeTenancyByPath;
 Format URL:
 
-/api/v1/{tenant}/...
+/api/tenant/{tenant}/...
 Rekomendasi identifier:
 
 Tenant UUID
 Contoh:
 
-GET /api/v1/8aa487e7-5e13-4f56-a63d-82ce54da2f04/products
-POST /api/v1/8aa487e7-5e13-4f56-a63d-82ce54da2f04/bookings
-GET /api/v1/8aa487e7-5e13-4f56-a63d-82ce54da2f04/customers
+GET /api/tenant/8aa487e7-5e13-4f56-a63d-82ce54da2f04/products
+POST /api/tenant/8aa487e7-5e13-4f56-a63d-82ce54da2f04/bookings
+GET /api/tenant/8aa487e7-5e13-4f56-a63d-82ce54da2f04/customers
 Route:
 
-Route::prefix('api/v1/{tenant}')
+Route::prefix('api/tenant/{tenant}')
 ->middleware([
 InitializeTenancyByPath::class,
 'auth:sanctum',
@@ -1556,7 +1556,7 @@ Lebih sederhana untuk staging dan local development.
 
 Contoh Flutter:
 
-const baseUrl = 'https://api.sewantara.id/api/v1';
+const baseUrl = 'https://api.sewantara.id/api/tenant';
 
 final endpoint = '$baseUrl/$tenantId/bookings';
 15.6 User dan Tenant Validation
@@ -2064,10 +2064,10 @@ Tidak menyimpan object Eloquent besar dalam payload.
 
 Central API:
 
-/api/v1
+/api/tenant/{tenant}
 Tenant mobile API:
 
-/api/v1/{tenant}
+/api/tenant/{tenant}
 Landing page tenant menggunakan domain atau subdomain melalui InitializeTenancyByDomainOrSubdomain.
 
 Controller memanggil Action atau Query.
@@ -2328,7 +2328,7 @@ Tidak ada dependency terbalik.
 Tidak ada direct cross-module write.
 
 31. Contoh Alur Create Booking
-    POST /api/v1/{tenant}/bookings
+    POST /api/tenant/{tenant}/bookings
     ↓
     CreateBookingRequest
     ↓

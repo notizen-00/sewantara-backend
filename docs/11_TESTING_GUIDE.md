@@ -649,7 +649,7 @@ it('authenticates an active tenant user', function () {
             'password' => bcrypt('Secret123!'),
         ]);
 
-    $response = $this->postJson('/api/v1/auth/login', [
+    $response = $this->postJson('/api/tenant/{tenant}/auth/login', [
         'tenant_id' => $tenant->id,
         'email' => $user->email,
         'password' => 'Secret123!',
@@ -784,7 +784,7 @@ it('prevents a tenant user from accessing another tenant path', function () {
     Sanctum::actingAs($userA);
 
     $response = $this->getJson(
-        "/api/v1/{$tenantB->id}/products"
+        "/api/tenant/{$tenantB->id}/products"
     );
 
     $response
@@ -884,7 +884,7 @@ it('blocks features unavailable on the current plan', function () {
     Sanctum::actingAs($user);
 
     $response = $this->getJson(
-        "/api/v1/{$tenant->id}/reports/revenue"
+        "/api/tenant/{$tenant->id}/reports/revenue"
     );
 
     $response
@@ -1235,7 +1235,7 @@ Test:
 Endpoint:
 
 ```text
-/api/v1
+/api/tenant/{tenant}
 ```
 
 Test memastikan:
@@ -1374,7 +1374,7 @@ Uji alur mobile:
 
 - Login.
 - Menyimpan tenant ID.
-- Memanggil `/api/v1/{tenant}`.
+- Memanggil `/api/tenant/{tenant}`.
 - Token refresh atau re-login.
 - Create booking.
 - Offline error.
@@ -1474,7 +1474,7 @@ export default function () {
     const tenantId = __ENV.TENANT_ID;
     const token = __ENV.ACCESS_TOKEN;
 
-    const response = http.get(`${__ENV.BASE_URL}/api/v1/${tenantId}/products`, {
+    const response = http.get(`${__ENV.BASE_URL}/api/tenant/${tenantId}/products`, {
         headers: {
             Authorization: `Bearer ${token}`,
             Accept: "application/json",

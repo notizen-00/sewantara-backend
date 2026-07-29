@@ -6,13 +6,13 @@
     },
     "item": [
         {
-            "name": "v1",
+            "name": "shared",
             "item": [
                 {
                     "name": "health",
                     "item": [
                         {
-                            "name": "[GET] api/v1/health",
+                            "name": "[GET] api/shared/health",
                             "request": {
                                 "method": "GET",
                                 "header": [
@@ -28,25 +28,30 @@
                                     }
                                 ],
                                 "url": {
-                                    "raw": "{{base_url}}/api/v1/health",
+                                    "raw": "{{base_url}}/api/shared/health",
                                     "host": [
                                         "{{base_url}}"
                                     ],
                                     "path": [
                                         "api",
-                                        "v1",
+                                        "shared",
                                         "health"
                                     ]
                                 }
                             }
                         }
                     ]
-                },
+                }
+            ]
+        },
+        {
+            "name": "central",
+            "item": [
                 {
                     "name": "plans",
                     "item": [
                         {
-                            "name": "[GET] api/v1/plans",
+                            "name": "[GET] api/central/plans",
                             "request": {
                                 "method": "GET",
                                 "header": [
@@ -62,13 +67,13 @@
                                     }
                                 ],
                                 "url": {
-                                    "raw": "{{base_url}}/api/v1/plans",
+                                    "raw": "{{base_url}}/api/central/plans",
                                     "host": [
                                         "{{base_url}}"
                                     ],
                                     "path": [
                                         "api",
-                                        "v1",
+                                        "central",
                                         "plans"
                                     ]
                                 }
@@ -86,7 +91,7 @@
                                     "name": "webhook",
                                     "item": [
                                         {
-                                            "name": "[POST] api/v1/billing/midtrans/webhook",
+                                            "name": "[POST] api/central/billing/midtrans/webhook",
                                             "request": {
                                                 "method": "POST",
                                                 "header": [
@@ -102,13 +107,13 @@
                                                     }
                                                 ],
                                                 "url": {
-                                                    "raw": "{{base_url}}/api/v1/billing/midtrans/webhook",
+                                                    "raw": "{{base_url}}/api/central/billing/midtrans/webhook",
                                                     "host": [
                                                         "{{base_url}}"
                                                     ],
                                                     "path": [
                                                         "api",
-                                                        "v1",
+                                                        "central",
                                                         "billing",
                                                         "midtrans",
                                                         "webhook"
@@ -129,7 +134,7 @@
                             "name": "register",
                             "item": [
                                 {
-                                    "name": "[POST] api/v1/auth/register",
+                                    "name": "[POST] api/central/auth/register",
                                     "request": {
                                         "method": "POST",
                                         "header": [
@@ -145,13 +150,13 @@
                                             }
                                         ],
                                         "url": {
-                                            "raw": "{{base_url}}/api/v1/auth/register",
+                                            "raw": "{{base_url}}/api/central/auth/register",
                                             "host": [
                                                 "{{base_url}}"
                                             ],
                                             "path": [
                                                 "api",
-                                                "v1",
+                                                "central",
                                                 "auth",
                                                 "register"
                                             ]
@@ -171,7 +176,7 @@
                     "name": "tenants",
                     "item": [
                         {
-                            "name": "[GET] api/v1/tenants",
+                            "name": "[GET] api/central/tenants",
                             "request": {
                                 "method": "GET",
                                 "header": [
@@ -187,20 +192,20 @@
                                     }
                                 ],
                                 "url": {
-                                    "raw": "{{base_url}}/api/v1/tenants",
+                                    "raw": "{{base_url}}/api/central/tenants",
                                     "host": [
                                         "{{base_url}}"
                                     ],
                                     "path": [
                                         "api",
-                                        "v1",
+                                        "central",
                                         "tenants"
                                     ]
                                 }
                             }
                         },
                         {
-                            "name": "[POST] api/v1/tenants",
+                            "name": "[POST] api/central/tenants",
                             "request": {
                                 "method": "POST",
                                 "header": [
@@ -216,20 +221,20 @@
                                     }
                                 ],
                                 "url": {
-                                    "raw": "{{base_url}}/api/v1/tenants",
+                                    "raw": "{{base_url}}/api/central/tenants",
                                     "host": [
                                         "{{base_url}}"
                                     ],
                                     "path": [
                                         "api",
-                                        "v1",
+                                        "central",
                                         "tenants"
                                     ]
                                 }
                             }
                         },
                         {
-                            "name": "[GET] api/v1/tenants/{tenant}",
+                            "name": "[GET] api/central/tenants/{tenant}",
                             "request": {
                                 "method": "GET",
                                 "header": [
@@ -245,13 +250,13 @@
                                     }
                                 ],
                                 "url": {
-                                    "raw": "{{base_url}}/api/v1/tenants/:tenant",
+                                    "raw": "{{base_url}}/api/central/tenants/:tenant",
                                     "host": [
                                         "{{base_url}}"
                                     ],
                                     "path": [
                                         "api",
-                                        "v1",
+                                        "central",
                                         "tenants",
                                         ":tenant"
                                     ],
@@ -260,12 +265,17 @@
                             }
                         }
                     ]
-                },
+                }
+            ]
+        },
+        {
+            "name": "tenant",
+            "item": [
                 {
                     "name": "me",
                     "item": [
                         {
-                            "name": "[GET] api/v1/{tenant}/me",
+                            "name": "[GET] api/tenant/{tenant}/me",
                             "request": {
                                 "method": "GET",
                                 "header": [
@@ -281,13 +291,13 @@
                                     }
                                 ],
                                 "url": {
-                                    "raw": "{{base_url}}/api/v1/:tenant/me",
+                                    "raw": "{{base_url}}/api/tenant/:tenant/me",
                                     "host": [
                                         "{{base_url}}"
                                     ],
                                     "path": [
                                         "api",
-                                        "v1",
+                                        "tenant",
                                         ":tenant",
                                         "me"
                                     ],
@@ -301,7 +311,7 @@
                     "name": "branches",
                     "item": [
                         {
-                            "name": "[GET] api/v1/{tenant}/branches",
+                            "name": "[GET] api/tenant/{tenant}/branches",
                             "request": {
                                 "method": "GET",
                                 "header": [
@@ -317,13 +327,13 @@
                                     }
                                 ],
                                 "url": {
-                                    "raw": "{{base_url}}/api/v1/:tenant/branches",
+                                    "raw": "{{base_url}}/api/tenant/:tenant/branches",
                                     "host": [
                                         "{{base_url}}"
                                     ],
                                     "path": [
                                         "api",
-                                        "v1",
+                                        "tenant",
                                         ":tenant",
                                         "branches"
                                     ],
@@ -332,7 +342,7 @@
                             }
                         },
                         {
-                            "name": "[POST] api/v1/{tenant}/branches",
+                            "name": "[POST] api/tenant/{tenant}/branches",
                             "request": {
                                 "method": "POST",
                                 "header": [
@@ -348,13 +358,13 @@
                                     }
                                 ],
                                 "url": {
-                                    "raw": "{{base_url}}/api/v1/:tenant/branches",
+                                    "raw": "{{base_url}}/api/tenant/:tenant/branches",
                                     "host": [
                                         "{{base_url}}"
                                     ],
                                     "path": [
                                         "api",
-                                        "v1",
+                                        "tenant",
                                         ":tenant",
                                         "branches"
                                     ],
@@ -368,7 +378,7 @@
                     "name": "products",
                     "item": [
                         {
-                            "name": "[GET] api/v1/{tenant}/products",
+                            "name": "[GET] api/tenant/{tenant}/products",
                             "request": {
                                 "method": "GET",
                                 "header": [
@@ -384,13 +394,13 @@
                                     }
                                 ],
                                 "url": {
-                                    "raw": "{{base_url}}/api/v1/:tenant/products",
+                                    "raw": "{{base_url}}/api/tenant/:tenant/products",
                                     "host": [
                                         "{{base_url}}"
                                     ],
                                     "path": [
                                         "api",
-                                        "v1",
+                                        "tenant",
                                         ":tenant",
                                         "products"
                                     ],
@@ -399,7 +409,7 @@
                             }
                         },
                         {
-                            "name": "[POST] api/v1/{tenant}/products",
+                            "name": "[POST] api/tenant/{tenant}/products",
                             "request": {
                                 "method": "POST",
                                 "header": [
@@ -415,13 +425,13 @@
                                     }
                                 ],
                                 "url": {
-                                    "raw": "{{base_url}}/api/v1/:tenant/products",
+                                    "raw": "{{base_url}}/api/tenant/:tenant/products",
                                     "host": [
                                         "{{base_url}}"
                                     ],
                                     "path": [
                                         "api",
-                                        "v1",
+                                        "tenant",
                                         ":tenant",
                                         "products"
                                     ],
@@ -430,7 +440,7 @@
                             }
                         },
                         {
-                            "name": "[GET] api/v1/{tenant}/products/{product}",
+                            "name": "[GET] api/tenant/{tenant}/products/{product}",
                             "request": {
                                 "method": "GET",
                                 "header": [
@@ -446,13 +456,13 @@
                                     }
                                 ],
                                 "url": {
-                                    "raw": "{{base_url}}/api/v1/:tenant/products/:product",
+                                    "raw": "{{base_url}}/api/tenant/:tenant/products/:product",
                                     "host": [
                                         "{{base_url}}"
                                     ],
                                     "path": [
                                         "api",
-                                        "v1",
+                                        "tenant",
                                         ":tenant",
                                         "products",
                                         ":product"
@@ -462,7 +472,7 @@
                             }
                         },
                         {
-                            "name": "[PUT] api/v1/{tenant}/products/{product}",
+                            "name": "[PUT] api/tenant/{tenant}/products/{product}",
                             "request": {
                                 "method": "PUT",
                                 "header": [
@@ -478,13 +488,13 @@
                                     }
                                 ],
                                 "url": {
-                                    "raw": "{{base_url}}/api/v1/:tenant/products/:product",
+                                    "raw": "{{base_url}}/api/tenant/:tenant/products/:product",
                                     "host": [
                                         "{{base_url}}"
                                     ],
                                     "path": [
                                         "api",
-                                        "v1",
+                                        "tenant",
                                         ":tenant",
                                         "products",
                                         ":product"
@@ -499,7 +509,7 @@
                     "name": "product-units",
                     "item": [
                         {
-                            "name": "[GET] api/v1/{tenant}/product-units",
+                            "name": "[GET] api/tenant/{tenant}/product-units",
                             "request": {
                                 "method": "GET",
                                 "header": [
@@ -515,13 +525,13 @@
                                     }
                                 ],
                                 "url": {
-                                    "raw": "{{base_url}}/api/v1/:tenant/product-units",
+                                    "raw": "{{base_url}}/api/tenant/:tenant/product-units",
                                     "host": [
                                         "{{base_url}}"
                                     ],
                                     "path": [
                                         "api",
-                                        "v1",
+                                        "tenant",
                                         ":tenant",
                                         "product-units"
                                     ],
@@ -530,7 +540,7 @@
                             }
                         },
                         {
-                            "name": "[POST] api/v1/{tenant}/product-units",
+                            "name": "[POST] api/tenant/{tenant}/product-units",
                             "request": {
                                 "method": "POST",
                                 "header": [
@@ -546,13 +556,13 @@
                                     }
                                 ],
                                 "url": {
-                                    "raw": "{{base_url}}/api/v1/:tenant/product-units",
+                                    "raw": "{{base_url}}/api/tenant/:tenant/product-units",
                                     "host": [
                                         "{{base_url}}"
                                     ],
                                     "path": [
                                         "api",
-                                        "v1",
+                                        "tenant",
                                         ":tenant",
                                         "product-units"
                                     ],
@@ -566,7 +576,7 @@
                     "name": "customers",
                     "item": [
                         {
-                            "name": "[GET] api/v1/{tenant}/customers",
+                            "name": "[GET] api/tenant/{tenant}/customers",
                             "request": {
                                 "method": "GET",
                                 "header": [
@@ -582,13 +592,13 @@
                                     }
                                 ],
                                 "url": {
-                                    "raw": "{{base_url}}/api/v1/:tenant/customers",
+                                    "raw": "{{base_url}}/api/tenant/:tenant/customers",
                                     "host": [
                                         "{{base_url}}"
                                     ],
                                     "path": [
                                         "api",
-                                        "v1",
+                                        "tenant",
                                         ":tenant",
                                         "customers"
                                     ],
@@ -597,7 +607,7 @@
                             }
                         },
                         {
-                            "name": "[POST] api/v1/{tenant}/customers",
+                            "name": "[POST] api/tenant/{tenant}/customers",
                             "request": {
                                 "method": "POST",
                                 "header": [
@@ -613,13 +623,13 @@
                                     }
                                 ],
                                 "url": {
-                                    "raw": "{{base_url}}/api/v1/:tenant/customers",
+                                    "raw": "{{base_url}}/api/tenant/:tenant/customers",
                                     "host": [
                                         "{{base_url}}"
                                     ],
                                     "path": [
                                         "api",
-                                        "v1",
+                                        "tenant",
                                         ":tenant",
                                         "customers"
                                     ],
@@ -628,7 +638,7 @@
                             }
                         },
                         {
-                            "name": "[GET] api/v1/{tenant}/customers/{customer}",
+                            "name": "[GET] api/tenant/{tenant}/customers/{customer}",
                             "request": {
                                 "method": "GET",
                                 "header": [
@@ -644,13 +654,13 @@
                                     }
                                 ],
                                 "url": {
-                                    "raw": "{{base_url}}/api/v1/:tenant/customers/:customer",
+                                    "raw": "{{base_url}}/api/tenant/:tenant/customers/:customer",
                                     "host": [
                                         "{{base_url}}"
                                     ],
                                     "path": [
                                         "api",
-                                        "v1",
+                                        "tenant",
                                         ":tenant",
                                         "customers",
                                         ":customer"
@@ -660,7 +670,7 @@
                             }
                         },
                         {
-                            "name": "[PUT] api/v1/{tenant}/customers/{customer}",
+                            "name": "[PUT] api/tenant/{tenant}/customers/{customer}",
                             "request": {
                                 "method": "PUT",
                                 "header": [
@@ -676,13 +686,13 @@
                                     }
                                 ],
                                 "url": {
-                                    "raw": "{{base_url}}/api/v1/:tenant/customers/:customer",
+                                    "raw": "{{base_url}}/api/tenant/:tenant/customers/:customer",
                                     "host": [
                                         "{{base_url}}"
                                     ],
                                     "path": [
                                         "api",
-                                        "v1",
+                                        "tenant",
                                         ":tenant",
                                         "customers",
                                         ":customer"
@@ -697,7 +707,7 @@
                     "name": "bookings",
                     "item": [
                         {
-                            "name": "[GET] api/v1/{tenant}/bookings",
+                            "name": "[GET] api/tenant/{tenant}/bookings",
                             "request": {
                                 "method": "GET",
                                 "header": [
@@ -713,13 +723,13 @@
                                     }
                                 ],
                                 "url": {
-                                    "raw": "{{base_url}}/api/v1/:tenant/bookings",
+                                    "raw": "{{base_url}}/api/tenant/:tenant/bookings",
                                     "host": [
                                         "{{base_url}}"
                                     ],
                                     "path": [
                                         "api",
-                                        "v1",
+                                        "tenant",
                                         ":tenant",
                                         "bookings"
                                     ],
@@ -728,7 +738,7 @@
                             }
                         },
                         {
-                            "name": "[POST] api/v1/{tenant}/bookings",
+                            "name": "[POST] api/tenant/{tenant}/bookings",
                             "request": {
                                 "method": "POST",
                                 "header": [
@@ -744,13 +754,13 @@
                                     }
                                 ],
                                 "url": {
-                                    "raw": "{{base_url}}/api/v1/:tenant/bookings",
+                                    "raw": "{{base_url}}/api/tenant/:tenant/bookings",
                                     "host": [
                                         "{{base_url}}"
                                     ],
                                     "path": [
                                         "api",
-                                        "v1",
+                                        "tenant",
                                         ":tenant",
                                         "bookings"
                                     ],
@@ -759,7 +769,7 @@
                             }
                         },
                         {
-                            "name": "[GET] api/v1/{tenant}/bookings/{booking}",
+                            "name": "[GET] api/tenant/{tenant}/bookings/{booking}",
                             "request": {
                                 "method": "GET",
                                 "header": [
@@ -775,13 +785,13 @@
                                     }
                                 ],
                                 "url": {
-                                    "raw": "{{base_url}}/api/v1/:tenant/bookings/:booking",
+                                    "raw": "{{base_url}}/api/tenant/:tenant/bookings/:booking",
                                     "host": [
                                         "{{base_url}}"
                                     ],
                                     "path": [
                                         "api",
-                                        "v1",
+                                        "tenant",
                                         ":tenant",
                                         "bookings",
                                         ":booking"
@@ -794,7 +804,7 @@
                             "name": "payments",
                             "item": [
                                 {
-                                    "name": "[POST] api/v1/{tenant}/bookings/{booking}/payments",
+                                    "name": "[POST] api/tenant/{tenant}/bookings/{booking}/payments",
                                     "request": {
                                         "method": "POST",
                                         "header": [
@@ -810,13 +820,13 @@
                                             }
                                         ],
                                         "url": {
-                                            "raw": "{{base_url}}/api/v1/:tenant/bookings/:booking/payments",
+                                            "raw": "{{base_url}}/api/tenant/:tenant/bookings/:booking/payments",
                                             "host": [
                                                 "{{base_url}}"
                                             ],
                                             "path": [
                                                 "api",
-                                                "v1",
+                                                "tenant",
                                                 ":tenant",
                                                 "bookings",
                                                 ":booking",
@@ -837,7 +847,7 @@
                             "name": "check",
                             "item": [
                                 {
-                                    "name": "[POST] api/v1/{tenant}/availability/check",
+                                    "name": "[POST] api/tenant/{tenant}/availability/check",
                                     "request": {
                                         "method": "POST",
                                         "header": [
@@ -853,13 +863,13 @@
                                             }
                                         ],
                                         "url": {
-                                            "raw": "{{base_url}}/api/v1/:tenant/availability/check",
+                                            "raw": "{{base_url}}/api/tenant/:tenant/availability/check",
                                             "host": [
                                                 "{{base_url}}"
                                             ],
                                             "path": [
                                                 "api",
-                                                "v1",
+                                                "tenant",
                                                 ":tenant",
                                                 "availability",
                                                 "check"
@@ -879,7 +889,7 @@
                             "name": "dashboard",
                             "item": [
                                 {
-                                    "name": "[GET] api/v1/{tenant}/reports/dashboard",
+                                    "name": "[GET] api/tenant/{tenant}/reports/dashboard",
                                     "request": {
                                         "method": "GET",
                                         "header": [
@@ -895,63 +905,18 @@
                                             }
                                         ],
                                         "url": {
-                                            "raw": "{{base_url}}/api/v1/:tenant/reports/dashboard",
+                                            "raw": "{{base_url}}/api/tenant/:tenant/reports/dashboard",
                                             "host": [
                                                 "{{base_url}}"
                                             ],
                                             "path": [
                                                 "api",
-                                                "v1",
+                                                "tenant",
                                                 ":tenant",
                                                 "reports",
                                                 "dashboard"
                                             ],
                                             "variable": []
-                                        }
-                                    }
-                                }
-                            ]
-                        }
-                    ]
-                }
-            ]
-        },
-        {
-            "name": "internal",
-            "item": [
-                {
-                    "name": "v1",
-                    "item": [
-                        {
-                            "name": "health",
-                            "item": [
-                                {
-                                    "name": "[GET] api/internal/v1/health",
-                                    "request": {
-                                        "method": "GET",
-                                        "header": [
-                                            {
-                                                "key": "Accept",
-                                                "value": "application/json",
-                                                "type": "text"
-                                            },
-                                            {
-                                                "key": "Content-Type",
-                                                "value": "application/json",
-                                                "type": "text"
-                                            }
-                                        ],
-                                        "url": {
-                                            "raw": "{{base_url}}/api/internal/v1/health",
-                                            "host": [
-                                                "{{base_url}}"
-                                            ],
-                                            "path": [
-                                                "api",
-                                                "internal",
-                                                "v1",
-                                                "health"
-                                            ]
                                         }
                                     }
                                 }

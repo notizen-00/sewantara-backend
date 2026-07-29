@@ -326,7 +326,7 @@ Contoh:
 ```text
 GET
 
-/api/v1/{tenant-b}/bookings
+/api/tenant/{tenant-b}/bookings
 ```
 
 Response:

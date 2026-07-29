@@ -139,18 +139,18 @@ Jangan menyimpan Server Key asli di repository.
 | Method | Endpoint | Keterangan |
 |---|---|---|
 | GET | `/` | Informasi backend Sewantara |
-| GET | `/api/v1/health` | Health check |
-| GET | `/api/v1/plans` | Daftar plan aktif beserta feature |
-| POST | `/api/v1/auth/register` | Registrasi tenant dengan trial |
-| GET | `/api/v1/tenants` | Daftar tenant sementara |
-| POST | `/api/v1/tenants` | Membuat tenant sementara |
-| GET | `/api/v1/tenants/{tenant}` | Detail tenant |
+| GET | `/api/shared/health` | Health check bersama |
+| GET | `/api/central/plans` | Daftar plan aktif beserta feature |
+| POST | `/api/central/auth/register` | Registrasi tenant dengan trial |
+| GET | `/api/central/tenants` | Daftar tenant sementara |
+| POST | `/api/central/tenants` | Membuat tenant sementara |
+| GET | `/api/central/tenants/{tenant}` | Detail tenant |
 
 Endpoint registrasi dibatasi `5 request/menit/IP`.
 
 ### Tenant API
 
-Semua endpoint berikut memakai prefix `/api/v1/{tenant}` dan middleware tenant lengkap:
+Semua endpoint berikut memakai prefix `/api/tenant/{tenant}` dan middleware tenant lengkap:
 
 - `/me`
 - `/branches`
@@ -166,7 +166,7 @@ Endpoint tenant belum siap untuk production sebelum authentication token, permis
 
 ## Alur Registrasi dan Trial
 
-`POST /api/v1/auth/register` menerima data bisnis, owner, subdomain, dan plan.
+`POST /api/central/auth/register` menerima data bisnis, owner, subdomain, dan plan.
 
 Registrasi diimplementasikan sebagai modul mandiri:
 

@@ -11,7 +11,8 @@ use App\Http\Controllers\Api\Tenant\ProductController;
 use App\Http\Controllers\Api\Tenant\ProductUnitController;
 use Illuminate\Support\Facades\Route;
 
-Route::prefix('v1/{tenant}')
+Route::prefix('tenant/{tenant}')
+    ->name('tenant.')
     ->middleware([
         'tenant.path',
         'tenant.user',
@@ -19,14 +20,17 @@ Route::prefix('v1/{tenant}')
         'tenant.subscription',
     ])
     ->group(function () {
-        Route::get('/me', CurrentTenantController::class);
+        Route::get('/me', CurrentTenantController::class)->name('me');
 
         Route::apiResource('branches', BranchController::class)->only(['index', 'store']);
         Route::apiResource('products', ProductController::class)->only(['index', 'store', 'show', 'update']);
         Route::apiResource('product-units', ProductUnitController::class)->only(['index', 'store']);
         Route::apiResource('customers', CustomerController::class)->only(['index', 'store', 'show', 'update']);
         Route::apiResource('bookings', BookingController::class)->only(['index', 'store', 'show']);
-        Route::post('/bookings/{booking}/payments', [PaymentController::class, 'store']);
-        Route::post('/availability/check', AvailabilityController::class);
-        Route::get('/reports/dashboard', DashboardReportController::class);
+        Route::post('/bookings/{booking}/payments', [PaymentController::class, 'store'])
+            ->name('bookings.payments.store');
+        Route::post('/availability/check', AvailabilityController::class)
+            ->name('availability.check');
+        Route::get('/reports/dashboard', DashboardReportController::class)
+            ->name('reports.dashboard');
     });

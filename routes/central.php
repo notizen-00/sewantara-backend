@@ -4,13 +4,10 @@ use App\Http\Controllers\Api\Auth\RegisterController;
 use App\Http\Controllers\Api\Central\PlanController;
 use App\Http\Controllers\Api\Central\MidtransSubscriptionWebhookController;
 use App\Http\Controllers\Api\Central\TenantController;
-use App\Http\Controllers\Api\Central\HealthController;
 use Illuminate\Support\Facades\Route;
 
-Route::prefix('v1')->group(function () {
-    Route::get('/health', HealthController::class);
-
-    Route::get('/plans', PlanController::class);
+Route::prefix('central')->name('central.')->group(function () {
+    Route::get('/plans', PlanController::class)->name('plans.index');
     Route::post(
         '/billing/midtrans/webhook',
         MidtransSubscriptionWebhookController::class,

@@ -95,7 +95,7 @@ Contoh:
 use Illuminate\Support\Facades\Route;
 
 Route::domain('api.sewantara.id')
-    ->prefix('api/v1')
+    ->prefix('api/central')
     ->group(function () {
         Route::post('/auth/register', RegisterTenantController::class);
         Route::post('/auth/login', CentralLoginController::class);
@@ -300,7 +300,7 @@ use Stancl\Tenancy\Middleware\InitializeTenancyByPath;
 Format API:
 
 ```text
-/api/v1/{tenant}/...
+/api/tenant/{tenant}/...
 ```
 
 Parameter `{tenant}` dapat berisi:
@@ -319,9 +319,9 @@ Tenant UUID
 Contoh:
 
 ```text
-/api/v1/8aa487e7-5e13-4f56-a63d-82ce54da2f04/products
-/api/v1/8aa487e7-5e13-4f56-a63d-82ce54da2f04/bookings
-/api/v1/8aa487e7-5e13-4f56-a63d-82ce54da2f04/customers
+/api/tenant/8aa487e7-5e13-4f56-a63d-82ce54da2f04/products
+/api/tenant/8aa487e7-5e13-4f56-a63d-82ce54da2f04/bookings
+/api/tenant/8aa487e7-5e13-4f56-a63d-82ce54da2f04/customers
 ```
 
 ---
@@ -350,7 +350,7 @@ https://api.sewantara.id
 Endpoint tenant:
 
 ```text
-https://api.sewantara.id/api/v1/{tenant}/products
+https://api.sewantara.id/api/tenant/{tenant}/products
 ```
 
 ---
@@ -363,7 +363,7 @@ Contoh implementasi:
 use Illuminate\Support\Facades\Route;
 use Stancl\Tenancy\Middleware\InitializeTenancyByPath;
 
-Route::prefix('api/v1/{tenant}')
+Route::prefix('api/tenant/{tenant}')
     ->middleware([
         InitializeTenancyByPath::class,
         'auth:sanctum',
@@ -406,7 +406,7 @@ Route::prefix('api/v1/{tenant}')
 Base URL:
 
 ```dart
-const baseUrl = 'https://api.sewantara.id/api/v1';
+const baseUrl = 'https://api.sewantara.id/api/tenant';
 ```
 
 Tenant path:
@@ -481,7 +481,7 @@ final class EnsureUserBelongsToTenant
 Route:
 
 ```php
-Route::prefix('api/v1/{tenant}')
+Route::prefix('api/tenant/{tenant}')
     ->middleware([
         InitializeTenancyByPath::class,
         'auth:sanctum',
@@ -564,7 +564,7 @@ Public client tidak boleh memilih tenant bebas melalui header.
 use Illuminate\Support\Facades\Route;
 use Stancl\Tenancy\Middleware\InitializeTenancyByRequestData;
 
-Route::prefix('internal/v1')
+Route::prefix('shared')
     ->middleware([
         'auth.internal',
         InitializeTenancyByRequestData::class,
@@ -806,7 +806,7 @@ InitializeTenancyByPath::class
 Prefix:
 
 ```text
-/api/v1/{tenant}
+/api/tenant/{tenant}
 ```
 
 ---
@@ -872,10 +872,10 @@ InitializeTenancyByRequestData::class
 ## Central API
 
 ```text
-POST /api/v1/auth/register
-POST /api/v1/auth/login
-GET  /api/v1/plans
-POST /api/v1/tenants
+POST /api/central/auth/register
+POST /api/tenant/{tenant}/auth/login
+GET  /api/central/plans
+POST /api/central/tenants
 ```
 
 Base:
@@ -889,16 +889,16 @@ https://api.sewantara.id
 ## Mobile Tenant API
 
 ```text
-GET  /api/v1/{tenant}/products
-POST /api/v1/{tenant}/bookings
-GET  /api/v1/{tenant}/customers
-GET  /api/v1/{tenant}/reports/dashboard
+GET  /api/tenant/{tenant}/products
+POST /api/tenant/{tenant}/bookings
+GET  /api/tenant/{tenant}/customers
+GET  /api/tenant/{tenant}/reports/dashboard
 ```
 
 Contoh:
 
 ```text
-https://api.sewantara.id/api/v1/
+https://api.sewantara.id/api/tenant/{tenant}/
 8aa487e7-5e13-4f56-a63d-82ce54da2f04/
 bookings
 ```
@@ -1028,7 +1028,7 @@ Permission
 Contoh:
 
 ```php
-Route::prefix('api/v1/{tenant}')
+Route::prefix('api/tenant/{tenant}')
     ->middleware([
         InitializeTenancyByPath::class,
         'auth:sanctum',
@@ -1134,7 +1134,7 @@ Contoh:
 
 ```text
 Token Tenant A
-GET /api/v1/tenant-b-id/bookings
+GET /api/tenant/tenant-b-id/bookings
 ```
 
 Response:
@@ -1267,7 +1267,7 @@ Keputusan utama:
 
 1. Landing page tenant menggunakan domain atau subdomain.
 2. Custom domain tenant menggunakan domain resolution yang sama.
-3. Mobile app menggunakan path `/api/v1/{tenant}`.
+3. Mobile app menggunakan path `/api/tenant/{tenant}`.
 4. Tenant pada mobile direkomendasikan menggunakan UUID.
 5. Internal service dapat menggunakan `X-Tenant-ID`.
 6. Central SaaS tidak menggunakan tenant middleware.

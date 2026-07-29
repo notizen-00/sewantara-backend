@@ -18,3 +18,15 @@ test('all documented API routes use reflectable controllers', function () {
             ->toBeTrue();
     }
 });
+
+test('API endpoints are grouped without URL versioning', function () {
+    $uris = collect(app('router')->getRoutes()->getRoutes())
+        ->map(fn (Route $route): string => $route->uri())
+        ->filter(fn (string $uri): bool => str_starts_with($uri, 'api/'));
+
+    foreach ($uris as $uri) {
+        expect($uri)
+            ->toMatch('#^api/(central|tenant|shared)(?:/|$)#')
+            ->not->toMatch('#/(?:v|version)\d+(?:/|$)#i');
+    }
+});

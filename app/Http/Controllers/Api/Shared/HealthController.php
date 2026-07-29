@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api\Central;
+namespace App\Http\Controllers\Api\Shared;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;

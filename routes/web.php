@@ -9,7 +9,7 @@ foreach (config('tenancy.central_domains') as $domain) {
             'data' => [
                 'service' => 'Sewantara API',
                 'status' => 'running',
-                'health' => url('/api/v1/health'),
+                'health' => url('/api/shared/health'),
             ],
         ]));
     });
