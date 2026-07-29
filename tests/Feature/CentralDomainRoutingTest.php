@@ -24,3 +24,7 @@ test('the central landing route does not initialize tenancy', function () {
 
     expect(tenancy()->initialized)->toBeFalse();
 });
+
+test('local tenant URLs use localhost as their base domain', function () {
+    expect(config('tenancy.tenant_base_domain'))->toBe('localhost');
+});

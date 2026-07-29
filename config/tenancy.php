@@ -29,7 +29,7 @@ return [
         'localhost',
     ],
 
-    'tenant_base_domain' => env('TENANT_BASE_DOMAIN', 'sewantara.id'),
+    'tenant_base_domain' => env('TENANT_BASE_DOMAIN', 'localhost'),
 
     'registration_defaults' => [
         'timezone' => 'Asia/Jakarta',

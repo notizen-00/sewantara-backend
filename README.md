@@ -118,7 +118,7 @@ DB_DATABASE=sewantara_app
 DB_USERNAME=postgres
 DB_PASSWORD=
 
-TENANT_BASE_DOMAIN=sewantara.id
+TENANT_BASE_DOMAIN=localhost
 ```
 
 Konfigurasi Midtrans Sandbox:
