@@ -64,6 +64,7 @@ app/Modules/{Feature}/
 Sewantara menggunakan central database dan database terpisah untuk setiap tenant.
 
 - `tenants`, `domains`, plan, dan subscription merupakan data central.
+- User platform/super-admin berada di tabel `users` central.
 - User dan data operasional berada pada database tenant.
 - `DatabaseTenancyBootstrapper` mengalihkan koneksi setelah tenant diidentifikasi.
 - Database tenant dibuat dan dimigrasikan otomatis saat registrasi agar trial dapat langsung digunakan.
