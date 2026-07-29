@@ -11,5 +11,12 @@ class DatabaseSeeder extends Seeder
         $this->call([
             PlanSeeder::class,
         ]);
+
+        if ($this->command?->confirm(
+            'Seed demo tenant beserta data operasional?',
+            app()->environment('local'),
+        )) {
+            $this->call(DemoDataSeeder::class);
+        }
     }
 }

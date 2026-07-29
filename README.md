@@ -106,6 +106,39 @@ Seeder akan membuat plan:
 
 Semua plan memiliki trial 14 hari dan grace period 3 hari.
 
+### Demo Data
+
+Pada environment local, `php artisan db:seed` akan menawarkan pembuatan demo
+tenant lengkap. Seeder dapat dijalankan langsung tanpa prompt:
+
+```bash
+php artisan db:seed --class=DemoDataSeeder
+```
+
+Demo tenant:
+
+```text
+URL      : http://demo-rental.localhost
+Email    : owner@demo.localhost
+Password : DemoTenant123!
+```
+
+Data dibuat melalui seeder per feature dan aman dijalankan berulang:
+
+- `DemoTenantRegistrationSeeder`: central user, tenant, domain, trial, schema, migration, dan owner.
+- `TenantOrganizationSeeder`: pengaturan bisnis dan cabang.
+- `TenantAccessControlSeeder`: role owner dan permission.
+- `TenantCustomerSeeder`: pelanggan, alamat, dan dokumen.
+- `TenantInventorySeeder`: hierarchy kategori, produk, harga, gambar, unit, dan stok.
+- `TenantBookingSeeder`: booking, item, alokasi unit, serta histori status.
+- `TenantBillingSeeder`: pembayaran, invoice, invoice item, dan deposit.
+
+Seeder feature dapat dijalankan sendiri setelah demo tenant tersedia, misalnya:
+
+```bash
+php artisan db:seed --class=TenantInventorySeeder
+```
+
 ## Konfigurasi Environment
 
 Konfigurasi minimum:
