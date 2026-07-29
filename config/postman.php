@@ -85,9 +85,10 @@ return [
         'requests' => [
             'default_body_type' => 'raw',
             'default_values' => [
-                // 'email' => 'test@example.com',
-                // 'password' => '123456',
-                // 'otp_code' => '1234',
+                'email' => 'owner@example.test',
+                'password' => '<TENANT_PASSWORD>',
+                'device_name' => 'web',
+                'plan_id' => 1,
             ],
         ],
     ],
@@ -106,7 +107,7 @@ return [
     */
     'auth' => [
         // Enable authentication documentation
-        'enabled' => false,
+        'enabled' => true,
 
         // Supported: 'bearer', 'basic', 'api_key'
         'type' => 'bearer',
@@ -124,7 +125,7 @@ return [
         ],
 
         // Middleware that indicate protected routes
-        'protected_middleware' => ['auth:api'],
+        'protected_middleware' => ['auth:sanctum'],
     ],
 
     /*

@@ -10,11 +10,11 @@ Sewantara adalah backend SaaS multi-tenant untuk pengelolaan berbagai jenis bisn
 | Tenant isolation | Selesai | Model operasional memakai global scope `BelongsToTenant` dari Stancl |
 | Tenant middleware | Selesai | Validasi context, user tenant, status tenant, dan subscription aktif |
 | Plan dan feature | Selesai | Seeder Starter, Growth, dan Scale menggunakan LaravelCM Subscriptions |
-| Registrasi tenant | Selesai | Tenant, database, migration, dan owner langsung disiapkan untuk masa trial |
+| Registrasi tenant | Selesai | Tenant, schema, migration, dan owner langsung disiapkan untuk masa trial |
 | Trial subscription | Selesai | Subscription `main` memperoleh trial 14 hari dari konfigurasi plan |
 | Midtrans Snap adapter | Fondasi selesai | Sudah memakai SDK resmi `midtrans/midtrans-php` |
 | Billing subscription | Sebagian selesai | Webhook pembayaran terverifikasi; checkout, reconciliation, dan renewal belum dibuat |
-| Authentication token | Belum selesai | Laravel Sanctum dan penerbitan access token belum dipasang |
+| Authentication token | Selesai | Login tenant menggunakan Laravel Sanctum Bearer token |
 | Role dan permission | Belum selesai | Authorization berbasis permission masih dalam roadmap |
 | Migration modul rental | Selesai | Migration central dan schema tenant dipisahkan |
 
@@ -61,13 +61,13 @@ app/Modules/{Feature}/
 
 ## Arsitektur Multi-Tenant
 
-Sewantara menggunakan central database dan database terpisah untuk setiap tenant.
+Sewantara menggunakan satu database PostgreSQL dengan schema terpisah untuk setiap tenant.
 
 - `tenants`, `domains`, plan, dan subscription merupakan data central.
 - User platform/super-admin berada di tabel `users` central.
 - User dan data operasional berada pada schema PostgreSQL milik tenant.
 - `DatabaseTenancyBootstrapper` mengalihkan koneksi setelah tenant diidentifikasi.
-- Database tenant dibuat dan dimigrasikan otomatis saat registrasi agar trial dapat langsung digunakan.
+- Schema tenant dibuat dan dimigrasikan otomatis saat registrasi agar trial dapat langsung digunakan.
 - Tenant merupakan subscriber subscription, bukan User.
 - Subscription utama selalu menggunakan nama `main`.
 
@@ -75,6 +75,7 @@ Urutan middleware tenant API:
 
 ```text
 Initialize tenant
+→ Authenticate Sanctum Bearer token
 → Validate authenticated user tenant
 → Validate tenant status
 → Validate active subscription
@@ -151,9 +152,11 @@ Endpoint registrasi dibatasi `5 request/menit/IP`.
 
 ### Tenant API
 
-Semua endpoint berikut memakai prefix `/api/tenant/{tenant}` dan middleware tenant lengkap:
+Semua endpoint berikut memakai prefix `/api/tenant/{tenant}`:
 
-- `/me`
+- `POST /auth/login`
+- `POST /auth/logout`
+- `GET /me`
 - `/branches`
 - `/products`
 - `/product-units`
@@ -163,7 +166,24 @@ Semua endpoint berikut memakai prefix `/api/tenant/{tenant}` dan middleware tena
 - `/availability/check`
 - `/reports/dashboard`
 
-Endpoint tenant belum siap untuk production sebelum authentication token, permission, policy, dan seluruh migration operasional selesai.
+Endpoint selain login wajib mengirim header:
+
+```http
+Authorization: Bearer {access_token}
+Accept: application/json
+```
+
+Contoh login:
+
+```json
+{
+  "email": "owner@example.test",
+  "password": "<TENANT_PASSWORD>",
+  "device_name": "web"
+}
+```
+
+Endpoint tenant belum siap untuk production sebelum permission dan policy selesai.
 
 ## Alur Registrasi dan Trial
 
@@ -188,10 +208,10 @@ HTTP controller registrasi berada di `app/Http/Controllers/Api/Auth` dan Form Re
   "subdomain": "rentalkamerajember",
   "owner": {
     "name": "Owner Rental",
-    "email": "owner@example.com",
+    "email": "owner@example.test",
     "phone": "081234567890",
-    "password": "StrongPassword123!",
-    "password_confirmation": "StrongPassword123!"
+    "password": "<TENANT_PASSWORD>",
+    "password_confirmation": "<TENANT_PASSWORD>"
   },
   "plan_id": 1,
   "billing_interval": "month",
@@ -256,23 +276,23 @@ composer test
 Status test saat README ini diperbarui:
 
 ```text
-31 test passed
-210 assertions
+35 tests passed
+227 assertions
 ```
 
-Test mencakup tenant middleware, cross-tenant protection, subscription status, central domain routing, plan seeder, onboarding use case, boundary controller/module, Midtrans Snap adapter, dan webhook signature.
+Test mencakup Sanctum login/logout, tenant middleware, subscription status,
+central domain routing, onboarding, Midtrans, dan webhook.
 
 ## Pekerjaan Berikutnya
 
 Prioritas implementasi:
 
-1. Pasang Laravel Sanctum dan implementasikan login/access token.
-2. Buat subscription invoice dan snapshot harga plan.
-3. Buat endpoint checkout Midtrans.
-4. Renew subscription hanya setelah pembayaran tervalidasi.
-5. Buat scheduler trial reminder, invoice, grace period, dan suspension.
-6. Implementasikan role, permission, policy, dan audit log.
-7. Tambahkan integration test provisioning database PostgreSQL.
+1. Buat subscription invoice dan snapshot harga plan.
+2. Buat endpoint checkout Midtrans.
+3. Renew subscription hanya setelah pembayaran tervalidasi.
+4. Buat scheduler trial reminder, invoice, grace period, dan suspension.
+5. Implementasikan role, permission, policy, dan audit log.
+6. Tambahkan integration test provisioning schema PostgreSQL.
 
 ## Dokumentasi
 

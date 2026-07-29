@@ -5,6 +5,7 @@ use App\Http\Middleware\EnsureTenantSubscriptionActive;
 use App\Http\Middleware\EnsureUserBelongsToTenant;
 use App\Http\Middleware\InitializeTenantByPath;
 use App\Modules\TenantOnboarding\Application\Exceptions\BillingIntervalUnavailable;
+use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -27,6 +28,17 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
+        $exceptions->render(
+            fn (AuthenticationException $exception, Request $request) => response()->json([
+                'success' => false,
+                'error' => [
+                    'code' => 'UNAUTHENTICATED',
+                    'message' => 'Bearer token diperlukan.',
+                    'details' => null,
+                ],
+            ], 401),
+        );
+
         $exceptions->render(
             fn (BillingIntervalUnavailable $exception, Request $request) => response()->json([
                 'success' => false,

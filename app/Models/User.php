@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
 use Stancl\Tenancy\Database\Concerns\BelongsToTenant;
 
 #[Fillable(['tenant_id', 'name', 'email', 'phone', 'password', 'avatar_path', 'is_active', 'last_login_at'])]
@@ -18,7 +19,7 @@ use Stancl\Tenancy\Database\Concerns\BelongsToTenant;
 class User extends Authenticatable
 {
     /** @use HasFactory<UserFactory> */
-    use BelongsToTenant, HasFactory, HasUuids, Notifiable, SoftDeletes;
+    use BelongsToTenant, HasApiTokens, HasFactory, HasUuids, Notifiable, SoftDeletes;
 
     /**
      * Get the attributes that should be cast.
