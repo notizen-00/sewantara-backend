@@ -163,7 +163,7 @@
                                         },
                                         "body": {
                                             "mode": "raw",
-                                            "raw": "{\n    \"business_name\": \"sample_text\",\n    \"business_type\": \"sample_text\",\n    \"subdomain\": \"sample_text\",\n    \"owner\": {\n        \"name\": \"sample_text\",\n        \"email\": \"sample_text\",\n        \"phone\": \"sample_text\",\n        \"password\": \"sample_text\"\n    },\n    \"plan_id\": 3,\n    \"billing_interval\": \"sample_text\",\n    \"timezone\": \"sample_text\",\n    \"currency\": \"sample_text\",\n    \"terms_accepted\": \"sample_text\"\n}",
+                                            "raw": "{\n    \"business_name\": \"sample_text\",\n    \"business_type\": \"sample_text\",\n    \"subdomain\": \"sample_text\",\n    \"owner\": {\n        \"name\": \"sample_text\",\n        \"email\": \"sample_text\",\n        \"phone\": \"sample_text\",\n        \"password\": \"sample_text\"\n    },\n    \"plan_id\": 2,\n    \"billing_interval\": \"sample_text\",\n    \"terms_accepted\": \"sample_text\"\n}",
                                             "options": []
                                         }
                                     }

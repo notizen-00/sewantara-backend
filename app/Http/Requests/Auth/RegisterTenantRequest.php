@@ -17,7 +17,6 @@ class RegisterTenantRequest extends FormRequest
     {
         $this->merge([
             'subdomain' => strtolower((string) $this->input('subdomain')),
-            'currency' => strtoupper((string) $this->input('currency')),
         ]);
     }
 
@@ -52,8 +51,6 @@ class RegisterTenantRequest extends FormRequest
                     ->whereNull('deleted_at'),
             ],
             'billing_interval' => ['required', Rule::in(['month', 'year'])],
-            'timezone' => ['required', 'timezone:all'],
-            'currency' => ['required', Rule::in(['IDR'])],
             'terms_accepted' => ['accepted'],
         ];
     }
@@ -63,7 +60,6 @@ class RegisterTenantRequest extends FormRequest
         return [
             'subdomain.regex' => 'Subdomain hanya boleh berisi huruf kecil, angka, dan tanda hubung.',
             'subdomain.not_in' => 'Subdomain tersebut tidak dapat digunakan.',
-            'currency.in' => 'Midtrans saat ini hanya mendukung mata uang IDR.',
         ];
     }
 }

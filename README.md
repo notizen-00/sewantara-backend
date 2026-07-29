@@ -194,8 +194,6 @@ HTTP controller registrasi berada di `app/Http/Controllers/Api/Auth` dan Form Re
   },
   "plan_id": 1,
   "billing_interval": "month",
-  "timezone": "Asia/Jakarta",
-  "currency": "IDR",
   "terms_accepted": true
 }
 ```
@@ -203,13 +201,17 @@ HTTP controller registrasi berada di `app/Http/Controllers/Api/Auth` dan Form Re
 Proses registrasi:
 
 1. Memastikan plan aktif dan subdomain tersedia.
-2. Membuat Tenant dengan UUID.
+2. Membuat Tenant dengan UUID dan slug unik dari nama bisnis.
 3. Membuat domain utama.
 4. Menyimpan data owner terenkripsi/hash sebagai data provisioning tertunda.
 5. Membuat subscription package bernama `main`.
 6. Mengaktifkan trial sesuai plan.
 7. Setelah webhook pembayaran valid, membuat database tenant, menjalankan tenant migration, lalu membuat owner.
 8. Tenant baru berstatus aktif setelah seluruh provisioning berhasil.
+
+Frontend tidak mengirim `slug`, `timezone`, `currency`, atau `status`. Backend membuat
+slug secara otomatis, menggunakan timezone `Asia/Jakarta` dan currency `IDR`, serta
+mengelola status tenant berdasarkan proses pembayaran dan provisioning.
 
 Tidak ada transaksi Midtrans saat registrasi. Checkout baru akan dibuat saat invoice subscription perlu dibayar.
 

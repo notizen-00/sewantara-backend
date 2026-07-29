@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 use App\Models\Domain;
 use App\Models\Tenant;
-use Stancl\Tenancy\Bootstrappers\DatabaseTenancyBootstrapper;
 use Stancl\Tenancy\Bootstrappers\CacheTenancyBootstrapper;
+use Stancl\Tenancy\Bootstrappers\DatabaseTenancyBootstrapper;
 use Stancl\Tenancy\Bootstrappers\FilesystemTenancyBootstrapper;
 use Stancl\Tenancy\Bootstrappers\QueueTenancyBootstrapper;
 use Stancl\Tenancy\TenantDatabaseManagers\MySQLDatabaseManager;
@@ -30,6 +30,11 @@ return [
     ],
 
     'tenant_base_domain' => env('TENANT_BASE_DOMAIN', 'sewantara.id'),
+
+    'registration_defaults' => [
+        'timezone' => 'Asia/Jakarta',
+        'currency' => 'IDR',
+    ],
 
     'reserved_subdomains' => [
         'admin',

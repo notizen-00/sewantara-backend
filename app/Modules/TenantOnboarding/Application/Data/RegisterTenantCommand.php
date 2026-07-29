@@ -14,8 +14,6 @@ readonly class RegisterTenantCommand
         public string $ownerPassword,
         public int $planId,
         public string $billingInterval,
-        public string $timezone,
-        public string $currency,
     ) {}
 
     /**
@@ -33,8 +31,6 @@ readonly class RegisterTenantCommand
             ownerPassword: $data['owner']['password'],
             planId: (int) $data['plan_id'],
             billingInterval: $data['billing_interval'],
-            timezone: $data['timezone'],
-            currency: $data['currency'],
         );
     }
 }

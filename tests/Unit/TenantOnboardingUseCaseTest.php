@@ -90,8 +90,6 @@ function onboardingCommand(string $billingInterval = 'month'): RegisterTenantCom
         ownerPassword: 'StrongPassword123!',
         planId: 1,
         billingInterval: $billingInterval,
-        timezone: 'Asia/Jakarta',
-        currency: 'IDR',
     );
 }
 

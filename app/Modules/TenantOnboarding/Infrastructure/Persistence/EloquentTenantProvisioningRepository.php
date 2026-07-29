@@ -7,8 +7,8 @@ use App\Models\Tenant;
 use App\Modules\TenantOnboarding\Application\Data\ProvisionedTenant;
 use App\Modules\TenantOnboarding\Application\Data\RegisterTenantCommand;
 use App\Modules\TenantOnboarding\Contracts\TenantProvisioningRepository;
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 class EloquentTenantProvisioningRepository implements TenantProvisioningRepository
 {
@@ -20,8 +20,8 @@ class EloquentTenantProvisioningRepository implements TenantProvisioningReposito
             'business_type' => $command->businessType,
             'email' => $command->ownerEmail,
             'phone' => $command->ownerPhone,
-            'timezone' => $command->timezone,
-            'currency' => $command->currency,
+            'timezone' => config('tenancy.registration_defaults.timezone'),
+            'currency' => config('tenancy.registration_defaults.currency'),
             'status' => 'pending',
             'provisioning_status' => 'awaiting_payment',
         ]);

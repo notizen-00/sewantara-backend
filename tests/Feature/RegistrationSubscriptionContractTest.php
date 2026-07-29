@@ -5,7 +5,7 @@ use App\Http\Requests\Auth\RegisterTenantRequest;
 use Database\Seeders\PlanSeeder;
 use Laravelcm\Subscriptions\Interval;
 
-test('registration accepts all documented onboarding fields', function () {
+test('registration only accepts essential onboarding fields', function () {
     $rules = (new RegisterTenantRequest)->rules();
 
     expect($rules)->toHaveKeys([
@@ -16,10 +16,19 @@ test('registration accepts all documented onboarding fields', function () {
         'owner.password',
         'plan_id',
         'billing_interval',
+        'terms_accepted',
+    ])->not->toHaveKeys([
+        'slug',
         'timezone',
         'currency',
-        'terms_accepted',
+        'status',
     ]);
+});
+
+test('registration defaults are controlled by the backend', function () {
+    expect(config('tenancy.registration_defaults'))
+        ->timezone->toBe('Asia/Jakarta')
+        ->currency->toBe('IDR');
 });
 
 test('the public registration route is rate limited', function () {
