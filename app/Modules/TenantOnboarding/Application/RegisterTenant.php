@@ -6,6 +6,7 @@ use App\Modules\TenantOnboarding\Application\Data\RegisterTenantCommand;
 use App\Modules\TenantOnboarding\Application\Data\TenantRegistrationResult;
 use App\Modules\TenantOnboarding\Application\Exceptions\BillingIntervalUnavailable;
 use App\Modules\TenantOnboarding\Contracts\ActivePlanCatalog;
+use App\Modules\TenantOnboarding\Contracts\TenantEnvironmentProvisioner;
 use App\Modules\TenantOnboarding\Contracts\TenantProvisioningRepository;
 use App\Modules\TenantOnboarding\Contracts\TransactionManager;
 use App\Modules\TenantOnboarding\Contracts\TrialSubscriptionStarter;
@@ -17,6 +18,7 @@ class RegisterTenant
         private readonly TenantProvisioningRepository $tenants,
         private readonly TrialSubscriptionStarter $subscriptions,
         private readonly TransactionManager $transactions,
+        private readonly TenantEnvironmentProvisioner $environment,
     ) {}
 
     public function execute(RegisterTenantCommand $command): TenantRegistrationResult
@@ -27,7 +29,7 @@ class RegisterTenant
             throw new BillingIntervalUnavailable;
         }
 
-        return $this->transactions->run(function () use ($command, $plan): TenantRegistrationResult {
+        $registration = $this->transactions->run(function () use ($command, $plan): TenantRegistrationResult {
             $tenant = $this->tenants->provision($command);
             $subscription = $this->subscriptions->start($tenant->tenantId, $plan);
 
@@ -47,5 +49,23 @@ class RegisterTenant
                 trialEndsAt: $subscription->trialEndsAt,
             );
         });
+
+        $this->environment->provision($registration->tenantId);
+
+        return new TenantRegistrationResult(
+            tenantId: $registration->tenantId,
+            tenantName: $registration->tenantName,
+            tenantSlug: $registration->tenantSlug,
+            tenantStatus: 'active',
+            timezone: $registration->timezone,
+            currency: $registration->currency,
+            domain: $registration->domain,
+            ownerId: $registration->ownerId,
+            ownerName: $registration->ownerName,
+            ownerEmail: $registration->ownerEmail,
+            planSlug: $registration->planSlug,
+            subscriptionStatus: $registration->subscriptionStatus,
+            trialEndsAt: $registration->trialEndsAt,
+        );
     }
 }

@@ -1,17 +1,17 @@
 <?php
 
-namespace App\Modules\SubscriptionBilling\Infrastructure\Tenancy;
+namespace App\Modules\TenantOnboarding\Infrastructure\Tenancy;
 
 use App\Models\Tenant;
 use App\Models\User;
-use App\Modules\SubscriptionBilling\Contracts\PaidTenantProvisioner;
+use App\Modules\TenantOnboarding\Contracts\TenantEnvironmentProvisioner;
 use Illuminate\Support\Facades\Artisan;
 use LogicException;
 use Stancl\Tenancy\Database\DatabaseManager;
 use Stancl\Tenancy\Jobs\CreateDatabase;
 use Throwable;
 
-class StanclPaidTenantProvisioner implements PaidTenantProvisioner
+class StanclTenantEnvironmentProvisioner implements TenantEnvironmentProvisioner
 {
     public function __construct(
         private readonly DatabaseManager $databaseManager,

@@ -37,7 +37,7 @@ class MidtransSubscriptionWebhookController extends Controller
         return response()->json([
             'success' => true,
             'message' => $isPaid
-                ? 'Pembayaran dikonfirmasi dan provisioning dijadwalkan.'
+                ? 'Pembayaran subscription berhasil dikonfirmasi.'
                 : 'Notifikasi pembayaran diterima.',
         ]);
     }

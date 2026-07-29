@@ -10,10 +10,10 @@ Sewantara adalah backend SaaS multi-tenant untuk pengelolaan berbagai jenis bisn
 | Tenant isolation | Selesai | Model operasional memakai global scope `BelongsToTenant` dari Stancl |
 | Tenant middleware | Selesai | Validasi context, user tenant, status tenant, dan subscription aktif |
 | Plan dan feature | Selesai | Seeder Starter, Growth, dan Scale menggunakan LaravelCM Subscriptions |
-| Registrasi tenant | Selesai | Tenant/domain dibuat central; owner disimpan aman sampai pembayaran terverifikasi |
+| Registrasi tenant | Selesai | Tenant, database, migration, dan owner langsung disiapkan untuk masa trial |
 | Trial subscription | Selesai | Subscription `main` memperoleh trial 14 hari dari konfigurasi plan |
 | Midtrans Snap adapter | Fondasi selesai | Sudah memakai SDK resmi `midtrans/midtrans-php` |
-| Billing subscription | Sebagian selesai | Webhook terverifikasi dan provisioning tenant selesai; checkout, reconciliation, dan renewal belum dibuat |
+| Billing subscription | Sebagian selesai | Webhook pembayaran terverifikasi; checkout, reconciliation, dan renewal belum dibuat |
 | Authentication token | Belum selesai | Laravel Sanctum dan penerbitan access token belum dipasang |
 | Role dan permission | Belum selesai | Authorization berbasis permission masih dalam roadmap |
 | Migration modul rental | Selesai | Central dan tenant database migrations dipisahkan |
@@ -66,7 +66,7 @@ Sewantara menggunakan central database dan database terpisah untuk setiap tenant
 - `tenants`, `domains`, plan, dan subscription merupakan data central.
 - User dan data operasional berada pada database tenant.
 - `DatabaseTenancyBootstrapper` mengalihkan koneksi setelah tenant diidentifikasi.
-- Database tenant dibuat dan dimigrasikan otomatis hanya setelah pembayaran subscription terverifikasi.
+- Database tenant dibuat dan dimigrasikan otomatis saat registrasi agar trial dapat langsung digunakan.
 - Tenant merupakan subscriber subscription, bukan User.
 - Subscription utama selalu menggunakan nama `main`.
 
@@ -203,11 +203,11 @@ Proses registrasi:
 1. Memastikan plan aktif dan subdomain tersedia.
 2. Membuat Tenant dengan UUID dan slug unik dari nama bisnis.
 3. Membuat domain utama.
-4. Menyimpan data owner terenkripsi/hash sebagai data provisioning tertunda.
+4. Menyimpan data owner terenkripsi/hash untuk proses provisioning.
 5. Membuat subscription package bernama `main`.
 6. Mengaktifkan trial sesuai plan.
-7. Setelah webhook pembayaran valid, membuat database tenant, menjalankan tenant migration, lalu membuat owner.
-8. Tenant baru berstatus aktif setelah seluruh provisioning berhasil.
+7. Langsung membuat database tenant, menjalankan tenant migration, lalu membuat owner tanpa menunggu pembayaran.
+8. Tenant berstatus aktif selama trial setelah seluruh provisioning berhasil.
 
 Frontend tidak mengirim `slug`, `timezone`, `currency`, atau `status`. Backend membuat
 slug secara otomatis, menggunakan timezone `Asia/Jakarta` dan currency `IDR`, serta
@@ -234,8 +234,8 @@ Adapter saat ini:
 - Memastikan total item sama dengan `gross_amount`.
 - Menyediakan verifikasi signature webhook.
 - Memastikan nominal webhook sama dengan tagihan.
-- Memicu provisioning database tenant hanya untuk `settlement` atau `capture` yang diterima.
-- Provisioning bersifat idempotent dan dapat diulang setelah kegagalan.
+- Mengonfirmasi pembayaran hanya untuk `settlement` atau `capture` yang diterima.
+- Provisioning tenant terpisah dari webhook pembayaran dan tetap idempotent.
 - Tidak memanggil Midtrans nyata selama automated test.
 
 ## Testing

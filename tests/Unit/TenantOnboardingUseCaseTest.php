@@ -7,13 +7,14 @@ use App\Modules\TenantOnboarding\Application\Data\StartedSubscription;
 use App\Modules\TenantOnboarding\Application\Exceptions\BillingIntervalUnavailable;
 use App\Modules\TenantOnboarding\Application\RegisterTenant;
 use App\Modules\TenantOnboarding\Contracts\ActivePlanCatalog;
+use App\Modules\TenantOnboarding\Contracts\TenantEnvironmentProvisioner;
 use App\Modules\TenantOnboarding\Contracts\TenantProvisioningRepository;
 use App\Modules\TenantOnboarding\Contracts\TransactionManager;
 use App\Modules\TenantOnboarding\Contracts\TrialSubscriptionStarter;
 
 afterEach(fn () => Mockery::close());
 
-test('tenant onboarding provisions the selected plan inside a transaction', function () {
+test('tenant onboarding activates the tenant immediately for its trial', function () {
     $command = onboardingCommand();
     $plan = new AvailablePlan(1, 'starter', 'month');
     $tenant = provisionedTenant();
@@ -42,14 +43,21 @@ test('tenant onboarding provisions the selected plan inside a transaction', func
         ->once()
         ->andReturnUsing(fn (Closure $operation) => $operation());
 
+    $environment = Mockery::mock(TenantEnvironmentProvisioner::class);
+    $environment->shouldReceive('provision')
+        ->once()
+        ->with('tenant-id');
+
     $registered = (new RegisterTenant(
         $plans,
         $repository,
         $subscriptions,
         $transactions,
+        $environment,
     ))->execute($command);
 
     expect($registered->tenantId)->toBe('tenant-id')
+        ->and($registered->tenantStatus)->toBe('active')
         ->and($registered->subscriptionStatus)->toBe('trial')
         ->and($registered->planSlug)->toBe('starter');
 });
@@ -70,11 +78,15 @@ test('tenant onboarding rejects a billing interval unavailable on the plan', fun
     $transactions = Mockery::mock(TransactionManager::class);
     $transactions->shouldNotReceive('run');
 
+    $environment = Mockery::mock(TenantEnvironmentProvisioner::class);
+    $environment->shouldNotReceive('provision');
+
     expect(fn () => (new RegisterTenant(
         $plans,
         $repository,
         $subscriptions,
         $transactions,
+        $environment,
     ))->execute($command))->toThrow(BillingIntervalUnavailable::class);
 });
 
@@ -99,7 +111,7 @@ function provisionedTenant(): ProvisionedTenant
         tenantId: 'tenant-id',
         tenantName: 'Rental Kamera',
         tenantSlug: 'rental-kamera',
-        tenantStatus: 'active',
+        tenantStatus: 'pending',
         timezone: 'Asia/Jakarta',
         currency: 'IDR',
         domain: 'rental-kamera',

@@ -23,7 +23,7 @@ class EloquentTenantProvisioningRepository implements TenantProvisioningReposito
             'timezone' => config('tenancy.registration_defaults.timezone'),
             'currency' => config('tenancy.registration_defaults.currency'),
             'status' => 'pending',
-            'provisioning_status' => 'awaiting_payment',
+            'provisioning_status' => 'pending',
         ]);
 
         /** @var Domain $domain */

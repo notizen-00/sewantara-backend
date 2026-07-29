@@ -1,7 +1,6 @@
 <?php
 
 use App\Models\SubscriptionPayment;
-use App\Modules\SubscriptionBilling\Contracts\PaidTenantProvisioner;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
@@ -43,7 +42,7 @@ afterEach(function () {
     Mockery::close();
 });
 
-test('a verified paid notification automatically provisions the tenant', function () {
+test('a verified paid notification confirms the subscription payment', function () {
     SubscriptionPayment::query()->create([
         'tenant_id' => 'tenant-paid',
         'plan_subscription_id' => 1,
@@ -53,12 +52,6 @@ test('a verified paid notification automatically provisions the tenant', functio
         'currency' => 'IDR',
         'status' => 'pending',
     ]);
-
-    $provisioner = Mockery::mock(PaidTenantProvisioner::class);
-    $provisioner->shouldReceive('provision')
-        ->once()
-        ->with('tenant-paid');
-    app()->instance(PaidTenantProvisioner::class, $provisioner);
 
     $payload = paidMidtransPayload('SUB-INV-PAID-1');
 
@@ -75,7 +68,7 @@ test('a verified paid notification automatically provisions the tenant', functio
         ->and($payment->gateway_reference)->toBe('midtrans-transaction-1');
 });
 
-test('an invalid payment signature never provisions a tenant', function () {
+test('an invalid payment signature does not confirm the payment', function () {
     SubscriptionPayment::query()->create([
         'tenant_id' => 'tenant-unpaid',
         'plan_subscription_id' => 1,
@@ -85,10 +78,6 @@ test('an invalid payment signature never provisions a tenant', function () {
         'currency' => 'IDR',
         'status' => 'pending',
     ]);
-
-    $provisioner = Mockery::mock(PaidTenantProvisioner::class);
-    $provisioner->shouldNotReceive('provision');
-    app()->instance(PaidTenantProvisioner::class, $provisioner);
 
     $payload = paidMidtransPayload('SUB-INV-UNPAID-1');
     $payload['signature_key'] = 'invalid';
@@ -103,11 +92,7 @@ test('an invalid payment signature never provisions a tenant', function () {
     )->toBe('pending');
 });
 
-test('a non-final Midtrans status does not provision a tenant', function () {
-    $provisioner = Mockery::mock(PaidTenantProvisioner::class);
-    $provisioner->shouldNotReceive('provision');
-    app()->instance(PaidTenantProvisioner::class, $provisioner);
-
+test('a non-final Midtrans status does not confirm a payment', function () {
     $payload = paidMidtransPayload('SUB-INV-PENDING-1');
     $payload['transaction_status'] = 'pending';
     $payload['signature_key'] = midtransSignature($payload);
