@@ -2,7 +2,7 @@ Database Design
 
 Sewantara — Universal Rental Management SaaS
 
-Versi: 1.2Status: Draft MVPDatabase utama: PostgreSQLModel: Central Database + Database per TenantPrimary key: UUIDTimezone default: Asia/JakartaCurrency default: IDR
+Versi: 1.2Status: Draft MVPDatabase utama: PostgreSQLModel: Central Database + Schema per TenantPrimary key: Mixed UUID dan BIGINTTimezone default: Asia/JakartaCurrency default: IDR
 
 Package tenancy: stancl/tenancy (multi-database tenancy)Package subscription: laravelcm/laravel-subscriptions
 
@@ -122,27 +122,27 @@ maintenance_records
 
 Single-database tenancy memiliki kompleksitas scoping lebih tinggi. Karena itu, Eloquent scope, raw query, validation, queue, policy, dan automated test isolasi tenant wajib menjadi bagian arsitektur.
 
-2.3 UUID
+2.3 Strategi Primary Key
 
-Semua tabel domain Sewantara menggunakan UUID sebagai primary key.
+Sewantara menggunakan strategi primary key campuran.
 
-Pengecualian package: tabel bawaan laravelcm/laravel-subscriptions sebaiknya tetap memakai primary key bigint agar upgrade package lebih aman. Karena Tenant memakai UUID/string ID, published migration plan_subscriptions wajib mengubah subscriber_id menjadi UUID-compatible.
+Master data tenant menggunakan BIGINT auto-increment:
 
-Contoh:
+roles
+permissions
+branches
+customers
+categories
+products
+product_units
+inventory_stocks
 
-4e7fc37b-4207-44e6-87be-fd8015c897e1
+Identitas central, user tenant, dan data transaksi tetap menggunakan UUID,
+termasuk tenants, users, bookings, booking_items, payments, invoices, dan tabel
+histori transaksi. Foreign key wajib mengikuti tipe primary key tabel tujuan.
 
-Keuntungan:
-
-Sulit ditebak
-
-Aman untuk API publik
-
-Cocok untuk distributed system
-
-Tidak membuka jumlah record
-
-Mengurangi konflik ketika data dibuat dari beberapa service
+Kolom referensi polymorphic yang dapat menunjuk master maupun transaksi disimpan
+sebagai varchar agar dapat menampung BIGINT dan UUID.
 
 2.4 Soft Delete
 
@@ -1100,7 +1100,7 @@ Keterangan
 
 id
 
-uuid
+bigint auto-increment
 
 Primary key
 
@@ -1161,7 +1161,7 @@ Keterangan
 
 id
 
-uuid
+bigint auto-increment
 
 Primary key
 
@@ -1216,13 +1216,13 @@ Keterangan
 
 role_id
 
-uuid
+bigint
 
 Role
 
 permission_id
 
-uuid
+bigint
 
 Permission
 
@@ -1248,13 +1248,13 @@ User
 
 role_id
 
-uuid
+bigint
 
 Role
 
 branch_id
 
-uuid nullable
+bigint nullable
 
 Scope cabang
 
@@ -1274,7 +1274,7 @@ Keterangan
 
 id
 
-uuid
+bigint auto-increment
 
 Primary key
 
@@ -1366,7 +1366,7 @@ Keterangan
 
 id
 
-uuid
+bigint auto-increment
 
 Primary key
 
@@ -1472,7 +1472,7 @@ Tenant
 
 customer_id
 
-uuid
+bigint
 
 Customer
 
@@ -1568,7 +1568,7 @@ Tenant
 
 customer_id
 
-uuid
+bigint
 
 Customer
 
@@ -1656,7 +1656,7 @@ Keterangan
 
 id
 
-uuid
+bigint auto-increment
 
 Primary key
 
@@ -1668,7 +1668,7 @@ Tenant
 
 parent_id
 
-uuid nullable
+bigint nullable
 
 Parent category
 
@@ -1747,7 +1747,7 @@ Keterangan
 
 id
 
-uuid
+bigint auto-increment
 
 Primary key
 
@@ -1759,7 +1759,7 @@ Tenant
 
 category_id
 
-uuid nullable
+bigint nullable
 
 Kategori
 
@@ -1902,7 +1902,7 @@ Tenant
 
 product_id
 
-uuid
+bigint
 
 Produk
 
@@ -1970,13 +1970,13 @@ Tenant
 
 product_id
 
-uuid
+bigint
 
 Produk
 
 branch_id
 
-uuid nullable
+bigint nullable
 
 Cabang
 
@@ -2046,7 +2046,7 @@ Keterangan
 
 id
 
-uuid
+bigint auto-increment
 
 Primary key
 
@@ -2058,13 +2058,13 @@ Tenant
 
 product_id
 
-uuid
+bigint
 
 Produk
 
 branch_id
 
-uuid nullable
+bigint nullable
 
 Cabang
 
@@ -2194,7 +2194,7 @@ Keterangan
 
 id
 
-uuid
+bigint auto-increment
 
 Primary key
 
@@ -2206,13 +2206,13 @@ Tenant
 
 product_id
 
-uuid
+bigint
 
 Produk
 
 branch_id
 
-uuid
+bigint
 
 Cabang
 
@@ -2308,13 +2308,13 @@ Tenant
 
 product_id
 
-uuid
+bigint
 
 Produk
 
 branch_id
 
-uuid
+bigint
 
 Cabang
 
@@ -2424,13 +2424,13 @@ Tenant
 
 branch_id
 
-uuid nullable
+bigint nullable
 
 Cabang
 
 customer_id
 
-uuid
+bigint
 
 Customer
 
@@ -2646,7 +2646,7 @@ Booking
 
 product_id
 
-uuid
+bigint
 
 Produk
 
@@ -2777,7 +2777,7 @@ Booking item
 
 product_unit_id
 
-uuid
+bigint
 
 Unit
 
@@ -3717,7 +3717,7 @@ Checklist
 
 product_unit_id
 
-uuid nullable
+bigint nullable
 
 Unit
 
@@ -3799,7 +3799,7 @@ Booking
 
 product_unit_id
 
-uuid
+bigint
 
 Unit
 
@@ -3881,7 +3881,7 @@ Tenant
 
 product_unit_id
 
-uuid
+bigint
 
 Unit
 
@@ -3997,7 +3997,7 @@ Tenant
 
 product_unit_id
 
-uuid
+bigint
 
 Unit
 
@@ -4027,13 +4027,13 @@ Status baru
 
 from_branch_id
 
-uuid nullable
+bigint nullable
 
 Cabang asal
 
 to_branch_id
 
-uuid nullable
+bigint nullable
 
 Cabang tujuan
 
@@ -4979,7 +4979,7 @@ notifications
 Database Sewantara menggunakan pendekatan:
 
 PostgreSQL
-UUID Primary Key
+Mixed UUID dan BIGINT Primary Key
 Shared Database
 Shared Schema
 stancl/tenancy Single-Database Isolation

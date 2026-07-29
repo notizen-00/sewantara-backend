@@ -69,6 +69,7 @@ Sewantara menggunakan satu database PostgreSQL dengan schema terpisah untuk seti
 - User dan data operasional berada pada schema PostgreSQL milik tenant.
 - `DatabaseTenancyBootstrapper` mengalihkan koneksi setelah tenant diidentifikasi.
 - Schema tenant dibuat dan dimigrasikan otomatis saat registrasi agar trial dapat langsung digunakan.
+- Master data memakai `BIGINT` auto-increment; user, tenant, dan transaksi memakai UUID.
 - Tenant merupakan subscriber subscription, bukan User.
 - Subscription utama selalu menggunakan nama `main`.
 
@@ -317,8 +318,8 @@ composer test
 Status test saat README ini diperbarui:
 
 ```text
-44 tests passed
-427 assertions
+51 tests passed
+522 assertions
 ```
 
 Test mencakup Sanctum login/logout, hierarchy kategori, CRUD dan isolation

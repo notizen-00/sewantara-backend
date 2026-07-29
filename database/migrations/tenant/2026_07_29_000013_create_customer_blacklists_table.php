@@ -10,7 +10,7 @@ return new class extends Migration {
         Schema::create('customer_blacklists', function (Blueprint $table): void {
             $table->uuid('id')->primary();
             $table->string('tenant_id')->index();
-            $table->foreignUuid('customer_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('customer_id')->constrained()->cascadeOnDelete();
             $table->text('reason');
             $table->foreignUuid('blacklisted_by')->nullable()->constrained('users')->nullOnDelete();
             $table->timestampTz('blacklisted_at');

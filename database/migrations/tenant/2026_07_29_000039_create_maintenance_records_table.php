@@ -11,7 +11,7 @@ return new class extends Migration {
         Schema::create('maintenance_records', function (Blueprint $table): void {
             $table->uuid('id')->primary();
             $table->string('tenant_id')->index();
-            $table->foreignUuid('product_unit_id')->constrained()->restrictOnDelete();
+            $table->foreignId('product_unit_id')->constrained()->restrictOnDelete();
             $table->string('type', 30);
             $table->string('title', 200);
             $table->text('description')->nullable();

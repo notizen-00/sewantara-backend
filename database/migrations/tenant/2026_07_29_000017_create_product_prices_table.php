@@ -11,8 +11,8 @@ return new class extends Migration {
         Schema::create('product_prices', function (Blueprint $table): void {
             $table->uuid('id')->primary();
             $table->string('tenant_id')->index();
-            $table->foreignUuid('product_id')->constrained()->cascadeOnDelete();
-            $table->foreignUuid('branch_id')->nullable()->constrained()->nullOnDelete();
+            $table->foreignId('product_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('branch_id')->nullable()->constrained()->nullOnDelete();
             $table->string('pricing_type', 30);
             $table->integer('duration');
             $table->decimal('price', 18, 2);

@@ -9,10 +9,10 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::create('inventory_stocks', function (Blueprint $table): void {
-            $table->uuid('id')->primary();
+            $table->id();
             $table->string('tenant_id')->index();
-            $table->foreignUuid('product_id')->constrained()->restrictOnDelete();
-            $table->foreignUuid('branch_id')->constrained()->restrictOnDelete();
+            $table->foreignId('product_id')->constrained()->restrictOnDelete();
+            $table->foreignId('branch_id')->constrained()->restrictOnDelete();
             $table->unsignedInteger('quantity_total')->default(0);
             $table->unsignedInteger('quantity_reserved')->default(0);
             $table->unsignedInteger('quantity_rented')->default(0);

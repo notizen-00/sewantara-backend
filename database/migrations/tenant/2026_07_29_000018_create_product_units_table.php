@@ -8,10 +8,10 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::create('product_units', function (Blueprint $table): void {
-            $table->uuid('id')->primary();
+            $table->id();
             $table->string('tenant_id')->index();
-            $table->foreignUuid('product_id')->constrained()->restrictOnDelete();
-            $table->foreignUuid('branch_id')->nullable()->constrained()->nullOnDelete();
+            $table->foreignId('product_id')->constrained()->restrictOnDelete();
+            $table->foreignId('branch_id')->nullable()->constrained()->nullOnDelete();
             $table->string('unit_code', 100);
             $table->string('barcode', 150)->nullable();
             $table->string('qr_code', 150)->nullable();

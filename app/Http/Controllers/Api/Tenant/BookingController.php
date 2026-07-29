@@ -22,16 +22,16 @@ class BookingController extends Controller
     public function store(Request $request, ManageBookings $bookings)
     {
         $validated = $request->validate([
-            'customer_id' => ['required', 'uuid'],
-            'branch_id' => ['nullable', 'uuid'],
+            'customer_id' => ['required', 'integer', 'min:1'],
+            'branch_id' => ['nullable', 'integer', 'min:1'],
             'start_at' => ['required', 'date'],
             'end_at' => ['required', 'date', 'after:start_at'],
             'notes' => ['nullable', 'string'],
             'items' => ['required', 'array', 'min:1'],
-            'items.*.product_id' => ['required', 'uuid'],
+            'items.*.product_id' => ['required', 'integer', 'min:1'],
             'items.*.quantity' => ['required', 'integer', 'min:1'],
             'items.*.unit_ids' => ['nullable', 'array'],
-            'items.*.unit_ids.*' => ['uuid'],
+            'items.*.unit_ids.*' => ['integer', 'min:1'],
         ]);
 
         $booking = $bookings->create(

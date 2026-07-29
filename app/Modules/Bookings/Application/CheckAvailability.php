@@ -12,7 +12,7 @@ class CheckAvailability
         return ProductUnit::query()
             ->where('product_id', $criteria['product_id'])
             ->where('status', 'available')
-            ->when($criteria['branch_id'] ?? null, fn ($query, string $branchId) => $query->where('branch_id', $branchId))
+            ->when($criteria['branch_id'] ?? null, fn ($query, int $branchId) => $query->where('branch_id', $branchId))
             ->whereNotIn('id', function ($query) use ($criteria, $tenantId): void {
                 $query->select('product_unit_id')
                     ->from('booking_unit_allocations')

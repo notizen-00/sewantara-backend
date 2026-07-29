@@ -568,7 +568,7 @@
                                 },
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\n    \"parent_id\": \"sample_text\",\n    \"name\": \"sample_text\",\n    \"slug\": \"sample_text\",\n    \"description\": \"sample_text\",\n    \"image_path\": \"sample_text\",\n    \"sort_order\": 6,\n    \"is_active\": 1\n}",
+                                    "raw": "{\n    \"parent_id\": 8,\n    \"name\": \"sample_text\",\n    \"slug\": \"sample_text\",\n    \"description\": \"sample_text\",\n    \"image_path\": \"sample_text\",\n    \"sort_order\": 10,\n    \"is_active\": 1\n}",
                                     "options": []
                                 },
                                 "auth": {
@@ -655,7 +655,7 @@
                                 },
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\n    \"parent_id\": \"sample_text\",\n    \"name\": \"sample_text\",\n    \"slug\": \"sample_text\",\n    \"description\": \"sample_text\",\n    \"image_path\": \"sample_text\",\n    \"sort_order\": 10,\n    \"is_active\": 1\n}",
+                                    "raw": "{\n    \"parent_id\": 9,\n    \"name\": \"sample_text\",\n    \"slug\": \"sample_text\",\n    \"description\": \"sample_text\",\n    \"image_path\": \"sample_text\",\n    \"sort_order\": 9,\n    \"is_active\": 1\n}",
                                     "options": []
                                 },
                                 "auth": {
@@ -786,7 +786,7 @@
                                 },
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\n    \"category_id\": \"sample_text\",\n    \"name\": \"sample_text\",\n    \"slug\": \"sample_text\",\n    \"sku\": \"sample_text\",\n    \"brand\": \"sample_text\",\n    \"model\": \"sample_text\",\n    \"description\": \"sample_text\",\n    \"inventory_type\": \"serialized\",\n    \"default_pricing_type\": \"daily\",\n    \"minimum_rental_duration\": 1,\n    \"deposit_amount\": 65,\n    \"late_fee_amount\": 100,\n    \"is_featured\": 0,\n    \"is_active\": 1\n}",
+                                    "raw": "{\n    \"category_id\": 2,\n    \"name\": \"sample_text\",\n    \"slug\": \"sample_text\",\n    \"sku\": \"sample_text\",\n    \"brand\": \"sample_text\",\n    \"model\": \"sample_text\",\n    \"description\": \"sample_text\",\n    \"inventory_type\": \"serialized\",\n    \"default_pricing_type\": \"daily\",\n    \"minimum_rental_duration\": 9,\n    \"deposit_amount\": 11,\n    \"late_fee_amount\": 49,\n    \"is_featured\": 1,\n    \"is_active\": 1\n}",
                                     "options": []
                                 },
                                 "auth": {
@@ -873,7 +873,7 @@
                                 },
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\n    \"category_id\": \"sample_text\",\n    \"name\": \"sample_text\",\n    \"slug\": \"sample_text\",\n    \"sku\": \"sample_text\",\n    \"brand\": \"sample_text\",\n    \"model\": \"sample_text\",\n    \"description\": \"sample_text\",\n    \"inventory_type\": \"serialized\",\n    \"default_pricing_type\": \"daily\",\n    \"minimum_rental_duration\": 3,\n    \"deposit_amount\": 46,\n    \"late_fee_amount\": 84,\n    \"is_featured\": 1,\n    \"is_active\": 1\n}",
+                                    "raw": "{\n    \"category_id\": 9,\n    \"name\": \"sample_text\",\n    \"slug\": \"sample_text\",\n    \"sku\": \"sample_text\",\n    \"brand\": \"sample_text\",\n    \"model\": \"sample_text\",\n    \"description\": \"sample_text\",\n    \"inventory_type\": \"serialized\",\n    \"default_pricing_type\": \"daily\",\n    \"minimum_rental_duration\": 8,\n    \"deposit_amount\": 59,\n    \"late_fee_amount\": 54,\n    \"is_featured\": 1,\n    \"is_active\": 1\n}",
                                     "options": []
                                 },
                                 "auth": {

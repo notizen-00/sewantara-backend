@@ -8,7 +8,7 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::create('branches', function (Blueprint $table): void {
-            $table->uuid('id')->primary();
+            $table->id();
             $table->string('tenant_id')->index();
             $table->string('name', 150);
             $table->string('code', 50);

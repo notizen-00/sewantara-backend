@@ -25,7 +25,8 @@ class UpdateCategoryRequest extends FormRequest
             'parent_id' => [
                 'sometimes',
                 'nullable',
-                'uuid',
+                'integer',
+                'min:1',
                 Rule::notIn(array_filter([$categoryId])),
                 Rule::exists('categories', 'id')
                     ->where('tenant_id', $tenantId)

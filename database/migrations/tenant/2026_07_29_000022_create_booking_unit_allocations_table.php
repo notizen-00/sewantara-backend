@@ -13,7 +13,7 @@ return new class extends Migration {
             $table->string('tenant_id')->index();
             $table->foreignUuid('booking_id')->constrained()->cascadeOnDelete();
             $table->foreignUuid('booking_item_id')->constrained()->cascadeOnDelete();
-            $table->foreignUuid('product_unit_id')->constrained()->restrictOnDelete();
+            $table->foreignId('product_unit_id')->constrained()->restrictOnDelete();
             $table->timestampTz('start_at');
             $table->timestampTz('end_at');
             $table->string('status', 30)->default('reserved');

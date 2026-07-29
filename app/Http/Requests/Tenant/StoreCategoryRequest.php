@@ -19,7 +19,8 @@ class StoreCategoryRequest extends FormRequest
         return [
             'parent_id' => [
                 'nullable',
-                'uuid',
+                'integer',
+                'min:1',
                 Rule::exists('categories', 'id')
                     ->where('tenant_id', $tenantId)
                     ->whereNull('deleted_at'),

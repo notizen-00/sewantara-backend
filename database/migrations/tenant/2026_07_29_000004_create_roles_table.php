@@ -8,7 +8,7 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::create('roles', function (Blueprint $table): void {
-            $table->uuid('id')->primary();
+            $table->id();
             $table->string('tenant_id')->nullable()->index();
             $table->string('name', 100);
             $table->string('code', 100);

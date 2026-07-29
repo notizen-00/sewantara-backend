@@ -12,7 +12,7 @@ return new class extends Migration {
             $table->uuid('id')->primary();
             $table->string('tenant_id')->index();
             $table->foreignUuid('booking_id')->constrained()->cascadeOnDelete();
-            $table->foreignUuid('product_id')->constrained()->restrictOnDelete();
+            $table->foreignId('product_id')->constrained()->restrictOnDelete();
             $table->string('product_name', 200);
             $table->string('sku', 100)->nullable();
             $table->string('inventory_type', 30);

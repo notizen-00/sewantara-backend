@@ -10,15 +10,15 @@ return new class extends Migration {
         Schema::create('inventory_stock_movements', function (Blueprint $table): void {
             $table->uuid('id')->primary();
             $table->string('tenant_id')->index();
-            $table->foreignUuid('product_id')->constrained()->restrictOnDelete();
-            $table->foreignUuid('branch_id')->constrained()->restrictOnDelete();
+            $table->foreignId('product_id')->constrained()->restrictOnDelete();
+            $table->foreignId('branch_id')->constrained()->restrictOnDelete();
             $table->foreignUuid('booking_id')->nullable()->constrained()->nullOnDelete();
             $table->string('type', 50);
             $table->integer('quantity');
             $table->integer('balance_before');
             $table->integer('balance_after');
             $table->string('reference_type', 100)->nullable();
-            $table->uuid('reference_id')->nullable();
+            $table->string('reference_id', 64)->nullable();
             $table->text('notes')->nullable();
             $table->foreignUuid('created_by')->nullable()->constrained('users')->nullOnDelete();
             $table->timestampTz('occurred_at');

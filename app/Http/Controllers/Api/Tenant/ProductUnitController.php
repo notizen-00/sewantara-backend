@@ -12,7 +12,7 @@ class ProductUnitController extends Controller
     public function index(Request $request, ManageProductUnits $productUnits)
     {
         $units = $productUnits->paginate(
-            $request->string('product_id')->toString() ?: null,
+            $request->integer('product_id') ?: null,
             $request->string('status')->toString() ?: null,
         );
 
@@ -23,8 +23,8 @@ class ProductUnitController extends Controller
     {
         $tenantId = app('currentTenant')->id;
         $validated = $request->validate([
-            'product_id' => ['required', 'uuid'],
-            'branch_id' => ['nullable', 'uuid'],
+            'product_id' => ['required', 'integer', 'min:1'],
+            'branch_id' => ['nullable', 'integer', 'min:1'],
             'unit_code' => ['required', 'string', 'max:100', Rule::unique('product_units', 'unit_code')->where('tenant_id', $tenantId)],
             'barcode' => ['nullable', 'string', 'max:150', Rule::unique('product_units', 'barcode')->where('tenant_id', $tenantId)],
             'qr_code' => ['nullable', 'string', 'max:150'],

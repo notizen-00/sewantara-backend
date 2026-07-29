@@ -10,7 +10,7 @@ class ManageProducts
 {
     public function paginate(
         ?string $search,
-        ?string $categoryId,
+        ?int $categoryId,
         ?string $inventoryType,
         ?bool $isActive,
         int $perPage = 20,
@@ -25,7 +25,7 @@ class ManageProducts
                     ->orWhere('brand', 'ilike', "%{$value}%")
                     ->orWhere('model', 'ilike', "%{$value}%"),
             ))
-            ->when($categoryId, fn ($query, string $value) => $query->where('category_id', $value))
+            ->when($categoryId, fn ($query, int $value) => $query->where('category_id', $value))
             ->when($inventoryType, fn ($query, string $value) => $query->where('inventory_type', $value))
             ->when($isActive !== null, fn ($query) => $query->where('is_active', $isActive))
             ->latest()

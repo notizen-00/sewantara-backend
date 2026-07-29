@@ -170,7 +170,7 @@ class TenantInventorySeeder extends Seeder
 
     private function seedProduct(
         string $tenantId,
-        string $categoryId,
+        int $categoryId,
         string $sku,
         string $name,
         string $slug,
@@ -179,7 +179,7 @@ class TenantInventorySeeder extends Seeder
         string $inventoryType,
         int $price,
         int $deposit,
-    ): string {
+    ): int {
         $productId = $this->upsertTenantRow(
             table: 'products',
             tenantId: $tenantId,
@@ -243,8 +243,8 @@ class TenantInventorySeeder extends Seeder
 
     private function seedSerializedUnit(
         string $tenantId,
-        string $productId,
-        string $branchId,
+        int $productId,
+        int $branchId,
         string $unitCode,
         string $serialNumber,
     ): void {

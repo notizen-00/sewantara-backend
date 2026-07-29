@@ -14,9 +14,10 @@ use App\Models\Product;
 use App\Models\ProductUnit;
 use App\Models\Tenant;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Laravelcm\Subscriptions\Traits\HasPlanSubscriptions;
-use Stancl\Tenancy\Database\Concerns\BelongsToTenant;
 use Stancl\Tenancy\Contracts\TenantWithDatabase;
+use Stancl\Tenancy\Database\Concerns\BelongsToTenant;
 use Stancl\Tenancy\Database\Models\Domain as BaseDomain;
 use Stancl\Tenancy\Database\Models\Tenant as BaseTenant;
 
@@ -30,7 +31,6 @@ test('central models integrate with tenancy and subscriptions', function () {
         ->and(Domain::class)
         ->toExtend(BaseDomain::class);
 });
-
 
 test('operational models are scoped to the active tenant', function () {
     $models = [
@@ -51,5 +51,25 @@ test('operational models are scoped to the active tenant', function () {
     foreach ($models as $model) {
         expect(class_uses_recursive($model))
             ->toContain(BelongsToTenant::class);
+    }
+});
+
+test('master data models use incrementing integer identifiers', function () {
+    $masterModels = [
+        Branch::class,
+        Customer::class,
+        Category::class,
+        Product::class,
+        ProductUnit::class,
+        InventoryStock::class,
+    ];
+
+    foreach ($masterModels as $modelClass) {
+        $model = new $modelClass;
+
+        expect(class_uses_recursive($modelClass))
+            ->not->toContain(HasUuids::class)
+            ->and($model->getKeyType())->toBe('int')
+            ->and($model->getIncrementing())->toBeTrue();
     }
 });

@@ -13,7 +13,7 @@ return new class extends Migration {
             $table->foreignUuid('user_id')->nullable()->constrained()->nullOnDelete();
             $table->string('event', 100);
             $table->string('subject_type', 150)->nullable();
-            $table->uuid('subject_id')->nullable();
+            $table->string('subject_id', 64)->nullable();
             $table->text('description')->nullable();
             $table->jsonb('properties')->nullable();
             $table->timestampTz('created_at')->useCurrent();

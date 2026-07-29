@@ -9,9 +9,9 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::create('products', function (Blueprint $table): void {
-            $table->uuid('id')->primary();
+            $table->id();
             $table->string('tenant_id')->index();
-            $table->foreignUuid('category_id')->nullable()->constrained()->nullOnDelete();
+            $table->foreignId('category_id')->nullable()->constrained()->nullOnDelete();
             $table->string('name', 200);
             $table->string('slug', 200);
             $table->string('sku', 100)->nullable();

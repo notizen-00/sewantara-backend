@@ -11,7 +11,7 @@ return new class extends Migration {
             $table->uuid('id')->primary();
             $table->string('tenant_id')->index();
             $table->foreignUuid('booking_checklist_id')->constrained()->cascadeOnDelete();
-            $table->foreignUuid('product_unit_id')->nullable()->constrained()->nullOnDelete();
+            $table->foreignId('product_unit_id')->nullable()->constrained()->nullOnDelete();
             $table->string('name', 200);
             $table->string('type', 30);
             $table->text('expected_value')->nullable();

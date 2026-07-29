@@ -92,7 +92,7 @@ test('product category master supports hierarchy CRUD and tenant isolation', fun
         ->assertJsonPath('data.parent.id', $rootId);
 
     $childId = $child->json('data.id');
-    $tenantBCategoryId = '019c0000-0000-7000-8000-000000000099';
+    $tenantBCategoryId = 999;
 
     DB::table('categories')->insert([
         'id' => $tenantBCategoryId,
@@ -186,9 +186,9 @@ function createProductCategoryCrudTestTables(): void
     });
 
     Schema::create('categories', function (Blueprint $table): void {
-        $table->uuid('id')->primary();
+        $table->id();
         $table->string('tenant_id')->index();
-        $table->uuid('parent_id')->nullable();
+        $table->unsignedBigInteger('parent_id')->nullable();
         $table->string('name', 150);
         $table->string('slug', 150);
         $table->text('description')->nullable();
@@ -201,9 +201,9 @@ function createProductCategoryCrudTestTables(): void
     });
 
     Schema::create('products', function (Blueprint $table): void {
-        $table->uuid('id')->primary();
+        $table->id();
         $table->string('tenant_id')->index();
-        $table->uuid('category_id')->nullable();
+        $table->unsignedBigInteger('category_id')->nullable();
         $table->timestamps();
         $table->softDeletes();
     });

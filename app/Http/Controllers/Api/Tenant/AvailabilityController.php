@@ -11,10 +11,10 @@ class AvailabilityController extends Controller
     public function __invoke(Request $request, CheckAvailability $checkAvailability)
     {
         $validated = $request->validate([
-            'product_id' => ['required', 'uuid'],
+            'product_id' => ['required', 'integer', 'min:1'],
             'start_at' => ['required', 'date'],
             'end_at' => ['required', 'date', 'after:start_at'],
-            'branch_id' => ['nullable', 'uuid'],
+            'branch_id' => ['nullable', 'integer', 'min:1'],
         ]);
 
         $availableUnits = $checkAvailability->execute(

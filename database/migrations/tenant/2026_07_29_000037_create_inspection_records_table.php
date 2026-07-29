@@ -12,7 +12,7 @@ return new class extends Migration {
             $table->uuid('id')->primary();
             $table->string('tenant_id')->index();
             $table->foreignUuid('booking_id')->nullable()->constrained()->nullOnDelete();
-            $table->foreignUuid('product_unit_id')->constrained()->restrictOnDelete();
+            $table->foreignId('product_unit_id')->constrained()->restrictOnDelete();
             $table->string('type', 30);
             $table->string('previous_condition', 30)->nullable();
             $table->string('current_condition', 30);

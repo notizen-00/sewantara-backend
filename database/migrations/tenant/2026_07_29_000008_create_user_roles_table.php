@@ -9,8 +9,8 @@ return new class extends Migration {
     {
         Schema::create('user_roles', function (Blueprint $table): void {
             $table->foreignUuid('user_id')->constrained()->cascadeOnDelete();
-            $table->foreignUuid('role_id')->constrained()->cascadeOnDelete();
-            $table->foreignUuid('branch_id')->nullable()->constrained()->cascadeOnDelete();
+            $table->foreignId('role_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('branch_id')->nullable()->constrained()->cascadeOnDelete();
             $table->unique(['user_id', 'role_id', 'branch_id']);
             $table->index(['user_id', 'role_id']);
         });

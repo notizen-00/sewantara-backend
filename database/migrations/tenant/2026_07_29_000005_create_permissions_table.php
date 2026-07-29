@@ -8,7 +8,7 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::create('permissions', function (Blueprint $table): void {
-            $table->uuid('id')->primary();
+            $table->id();
             $table->string('name', 150);
             $table->string('code', 150)->unique();
             $table->string('module', 100)->index();

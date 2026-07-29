@@ -15,10 +15,11 @@ class ProductController extends Controller
     public function index(
         Request $request,
         ManageProducts $products,
+        string $tenant,
     ): JsonResponse {
         $result = $products->paginate(
             search: $request->string('search')->toString() ?: null,
-            categoryId: $request->string('category_id')->toString() ?: null,
+            categoryId: $request->integer('category_id') ?: null,
             inventoryType: $request->string('inventory_type')->toString() ?: null,
             isActive: $request->has('is_active')
                 ? $request->boolean('is_active')
@@ -32,7 +33,7 @@ class ProductController extends Controller
     public function store(
         StoreProductRequest $request,
         ManageProducts $products,
-
+        string $tenant,
     ): JsonResponse {
         $product = $products->create($request->validated());
 
@@ -44,7 +45,7 @@ class ProductController extends Controller
     }
 
     public function show(
-
+        string $tenant,
         ManageProducts $products,
         Product $product,
     ): JsonResponse {
@@ -56,6 +57,7 @@ class ProductController extends Controller
 
     public function update(
         UpdateProductRequest $request,
+        string $tenant,
         ManageProducts $products,
         Product $product,
     ): JsonResponse {
@@ -69,6 +71,7 @@ class ProductController extends Controller
     }
 
     public function destroy(
+        string $tenant,
         ManageProducts $products,
         Product $product,
     ): JsonResponse {

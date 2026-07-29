@@ -10,7 +10,7 @@ return new class extends Migration {
         Schema::create('customer_documents', function (Blueprint $table): void {
             $table->uuid('id')->primary();
             $table->string('tenant_id')->index();
-            $table->foreignUuid('customer_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('customer_id')->constrained()->cascadeOnDelete();
             $table->string('document_type', 30);
             $table->string('document_number', 100)->nullable();
             $table->string('front_path')->nullable();

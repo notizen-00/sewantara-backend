@@ -23,7 +23,8 @@ class UpdateProductRequest extends FormRequest
             'category_id' => [
                 'sometimes',
                 'nullable',
-                'uuid',
+                'integer',
+                'min:1',
                 Rule::exists('categories', 'id')->where('tenant_id', $tenantId),
             ],
             'name' => ['sometimes', 'string', 'max:200'],

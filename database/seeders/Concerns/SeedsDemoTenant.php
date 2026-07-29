@@ -10,6 +10,18 @@ use Illuminate\Support\Str;
 
 trait SeedsDemoTenant
 {
+    /** @var array<int, string> */
+    private array $incrementingTables = [
+        'roles',
+        'permissions',
+        'branches',
+        'customers',
+        'categories',
+        'products',
+        'product_units',
+        'inventory_stocks',
+    ];
+
     protected function withinDemoTenant(Closure $callback): void
     {
         $tenant = Tenant::query()
@@ -32,10 +44,47 @@ trait SeedsDemoTenant
         string $tenantId,
         array $identity,
         array $attributes,
-    ): string {
+    ): int|string {
         $identity = ['tenant_id' => $tenantId, ...$identity];
 
+        if (in_array($table, $this->incrementingTables, true)) {
+            return $this->upsertIncrementingRow(
+                $table,
+                $identity,
+                $attributes,
+            );
+        }
+
         return $this->upsertUuidRow($table, $identity, $attributes);
+    }
+
+    /**
+     * @param  array<string, mixed>  $identity
+     * @param  array<string, mixed>  $attributes
+     */
+    protected function upsertIncrementingRow(
+        string $table,
+        array $identity,
+        array $attributes,
+    ): int {
+        $existing = DB::table($table)->where($identity)->first(['id']);
+        $now = now();
+
+        if ($existing !== null) {
+            DB::table($table)->where('id', $existing->id)->update([
+                ...$attributes,
+                'updated_at' => $now,
+            ]);
+
+            return (int) $existing->id;
+        }
+
+        return (int) DB::table($table)->insertGetId([
+            ...$identity,
+            ...$attributes,
+            'created_at' => $now,
+            'updated_at' => $now,
+        ]);
     }
 
     /**
@@ -77,10 +126,14 @@ trait SeedsDemoTenant
         string $tenantId,
         string $column,
         mixed $value,
-    ): string {
-        return (string) DB::table($table)
+    ): int|string {
+        $id = DB::table($table)
             ->where('tenant_id', $tenantId)
             ->where($column, $value)
             ->value('id');
+
+        return in_array($table, $this->incrementingTables, true)
+            ? (int) $id
+            : (string) $id;
     }
 }

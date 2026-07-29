@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -11,7 +10,7 @@ use Stancl\Tenancy\Database\Concerns\BelongsToTenant;
 
 class Category extends Model
 {
-    use BelongsToTenant, HasUuids, SoftDeletes;
+    use BelongsToTenant, SoftDeletes;
 
     protected $fillable = [
         'tenant_id',

@@ -20,7 +20,8 @@ class StoreProductRequest extends FormRequest
         return [
             'category_id' => [
                 'nullable',
-                'uuid',
+                'integer',
+                'min:1',
                 Rule::exists('categories', 'id')->where('tenant_id', $tenantId),
             ],
             'name' => ['required', 'string', 'max:200'],

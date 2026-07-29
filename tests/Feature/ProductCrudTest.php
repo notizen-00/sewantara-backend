@@ -81,7 +81,7 @@ test('product master supports complete CRUD and tenant isolation', function () {
     $productId = $created->json('data.id');
 
     DB::table('products')->insert([
-        'id' => '019c0000-0000-7000-8000-000000000099',
+        'id' => 999,
         'tenant_id' => 'tenant-b',
         'name' => 'Tenant B Product',
         'slug' => 'tenant-b-product',
@@ -152,7 +152,7 @@ function createProductCrudTestTables(): void
     });
 
     Schema::create('categories', function (Blueprint $table): void {
-        $table->uuid('id')->primary();
+        $table->id();
         $table->string('tenant_id')->index();
         $table->string('name');
         $table->string('slug');
@@ -161,9 +161,9 @@ function createProductCrudTestTables(): void
     });
 
     Schema::create('products', function (Blueprint $table): void {
-        $table->uuid('id')->primary();
+        $table->id();
         $table->string('tenant_id')->index();
-        $table->uuid('category_id')->nullable();
+        $table->unsignedBigInteger('category_id')->nullable();
         $table->string('name');
         $table->string('slug');
         $table->string('sku')->nullable();
@@ -182,9 +182,9 @@ function createProductCrudTestTables(): void
     });
 
     Schema::create('product_units', function (Blueprint $table): void {
-        $table->uuid('id')->primary();
+        $table->id();
         $table->string('tenant_id')->index();
-        $table->uuid('product_id');
+        $table->unsignedBigInteger('product_id');
         $table->timestamps();
         $table->softDeletes();
     });

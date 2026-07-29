@@ -13,7 +13,7 @@ return new class extends Migration {
             $table->foreignUuid('user_id')->nullable()->constrained()->nullOnDelete();
             $table->string('action', 100);
             $table->string('auditable_type', 150)->nullable();
-            $table->uuid('auditable_id')->nullable();
+            $table->string('auditable_id', 64)->nullable();
             $table->jsonb('old_values')->nullable();
             $table->jsonb('new_values')->nullable();
             $table->string('ip_address', 45)->nullable();

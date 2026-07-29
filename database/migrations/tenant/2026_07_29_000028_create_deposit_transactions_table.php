@@ -16,7 +16,7 @@ return new class extends Migration {
             $table->decimal('amount', 18, 2);
             $table->text('reason')->nullable();
             $table->string('reference_type', 100)->nullable();
-            $table->uuid('reference_id')->nullable();
+            $table->string('reference_id', 64)->nullable();
             $table->foreignUuid('processed_by')->nullable()->constrained('users')->nullOnDelete();
             $table->timestampTz('created_at')->useCurrent();
             $table->index(['reference_type', 'reference_id']);

@@ -24,7 +24,7 @@ class TenantAccessControlSeeder extends Seeder
             );
 
             foreach ($this->permissions() as $permission) {
-                $permissionId = $this->upsertUuidRow(
+                $permissionId = $this->upsertIncrementingRow(
                     table: 'permissions',
                     identity: ['code' => $permission['code']],
                     attributes: [

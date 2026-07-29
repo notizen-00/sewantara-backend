@@ -10,7 +10,7 @@ class ManageCategories
 {
     public function paginate(
         ?string $search,
-        ?string $parentId,
+        ?int $parentId,
         ?bool $isActive,
         bool $rootsOnly,
         int $perPage = 20,
@@ -20,7 +20,7 @@ class ManageCategories
             ->withCount(['children', 'products'])
             ->when(
                 $search,
-                fn ($query, string $value) => $query
+                fn ($query, int $value) => $query
                     ->where('name', 'ilike', "%{$value}%"),
             )
             ->when(

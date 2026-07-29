@@ -56,6 +56,9 @@ POST /api/tenant/{tenant}/auth/logout
 
 ## Product Category Master
 
+ID category, parent, product, branch, customer, dan product unit menggunakan
+integer auto-increment, bukan UUID.
+
 ```text
 GET    /api/tenant/{tenant}/categories
 POST   /api/tenant/{tenant}/categories

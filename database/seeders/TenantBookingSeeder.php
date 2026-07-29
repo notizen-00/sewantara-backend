@@ -152,7 +152,7 @@ class TenantBookingSeeder extends Seeder
     private function seedBookingItem(
         string $tenantId,
         string $bookingId,
-        string $productId,
+        int $productId,
         string $productName,
         string $sku,
         string $inventoryType,

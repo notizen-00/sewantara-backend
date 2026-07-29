@@ -11,8 +11,8 @@ return new class extends Migration {
         Schema::create('bookings', function (Blueprint $table): void {
             $table->uuid('id')->primary();
             $table->string('tenant_id')->index();
-            $table->foreignUuid('branch_id')->nullable()->constrained()->nullOnDelete();
-            $table->foreignUuid('customer_id')->constrained()->restrictOnDelete();
+            $table->foreignId('branch_id')->nullable()->constrained()->nullOnDelete();
+            $table->foreignId('customer_id')->constrained()->restrictOnDelete();
             $table->foreignUuid('created_by')->nullable()->constrained('users')->nullOnDelete();
             $table->string('booking_number', 100);
             $table->timestampTz('start_at');

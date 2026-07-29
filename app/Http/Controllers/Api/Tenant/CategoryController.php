@@ -19,7 +19,7 @@ class CategoryController extends Controller
     ): JsonResponse {
         $result = $categories->paginate(
             search: $request->string('search')->toString() ?: null,
-            parentId: $request->string('parent_id')->toString() ?: null,
+            parentId: $request->integer('parent_id') ?: null,
             isActive: $request->has('is_active')
                 ? $request->boolean('is_active')
                 : null,
