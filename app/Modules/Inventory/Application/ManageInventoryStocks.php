@@ -104,10 +104,15 @@ class ManageInventoryStocks
 
     public function unitMovements(
         ?int $productUnitId,
+        int $branchId,
         int $perPage = 20,
     ): LengthAwarePaginator {
         return ProductMovement::query()
             ->when($productUnitId, fn ($query, int $value) => $query->where('product_unit_id', $value))
+            ->where(function ($query) use ($branchId): void {
+                $query->where('from_branch_id', $branchId)
+                    ->orWhere('to_branch_id', $branchId);
+            })
             ->latest('occurred_at')
             ->paginate(min(max($perPage, 1), 100));
     }

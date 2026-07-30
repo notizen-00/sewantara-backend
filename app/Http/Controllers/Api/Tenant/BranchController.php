@@ -3,7 +3,10 @@
 namespace App\Http\Controllers\Api\Tenant;
 
 use App\Http\Controllers\Controller;
+use App\Models\Branch;
 use App\Modules\Organization\Application\ManageBranches;
+use App\Modules\Organization\Application\SyncBranchMasterData;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 
@@ -31,7 +34,40 @@ class BranchController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Cabang berhasil dibuat.',
-            'data' => $branches->create($validated),
+            'data' => $branches->create($validated, $request->user()?->id),
         ], 201);
+    }
+
+    public function syncMasterData(
+        Request $request,
+        Branch $branch,
+        SyncBranchMasterData $sync,
+    ): JsonResponse {
+        abort_unless(
+            $request->user()
+                ->branches()
+                ->where('branches.id', $branch->getKey())
+                ->exists(),
+            403,
+            'Anda tidak memiliki akses ke cabang tujuan.',
+        );
+
+        $validated = $request->validate([
+            'sync_prices' => ['nullable', 'boolean'],
+            'prepare_stocks' => ['nullable', 'boolean'],
+            'overwrite_prices' => ['nullable', 'boolean'],
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Master data antar cabang berhasil disinkronkan.',
+            'data' => $sync->execute(
+                app('currentBranch'),
+                $branch,
+                $validated['sync_prices'] ?? true,
+                $validated['prepare_stocks'] ?? true,
+                $validated['overwrite_prices'] ?? false,
+            ),
+        ]);
     }
 }

@@ -19,7 +19,7 @@ class ProductPriceController extends Controller
             'success' => true,
             'data' => $prices->paginate(
                 $request->integer('product_id') ?: null,
-                $request->integer('branch_id') ?: null,
+                app('currentBranch')->getKey(),
                 $request->integer('per_page', 20),
             ),
         ]);
@@ -32,7 +32,10 @@ class ProductPriceController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Harga produk berhasil dibuat.',
-            'data' => $prices->create($this->validated($request)),
+            'data' => $prices->create([
+                ...$this->validated($request),
+                'branch_id' => app('currentBranch')->getKey(),
+            ]),
         ], 201);
     }
 
@@ -41,6 +44,8 @@ class ProductPriceController extends Controller
         ProductPrice $productPrice,
         ManageProductPrices $prices,
     ): JsonResponse {
+        $this->ensureCurrentBranch($productPrice);
+
         return response()->json([
             'success' => true,
             'message' => 'Harga produk berhasil diperbarui.',
@@ -55,6 +60,8 @@ class ProductPriceController extends Controller
         ProductPrice $productPrice,
         ManageProductPrices $prices,
     ): JsonResponse {
+        $this->ensureCurrentBranch($productPrice);
+
         $prices->delete($productPrice);
 
         return response()->json([
@@ -70,7 +77,7 @@ class ProductPriceController extends Controller
 
         return $request->validate([
             'product_id' => [$presence, 'integer', 'min:1'],
-            'branch_id' => ['nullable', 'integer', 'min:1'],
+            'branch_id' => ['prohibited'],
             'pricing_type' => [
                 $presence,
                 Rule::in(['hourly', 'daily', 'weekly', 'monthly', 'event', 'custom']),
@@ -81,5 +88,13 @@ class ProductPriceController extends Controller
             'end_at' => ['nullable', 'date', 'after:start_at'],
             'is_active' => ['nullable', 'boolean'],
         ]);
+    }
+
+    private function ensureCurrentBranch(ProductPrice $productPrice): void
+    {
+        abort_unless(
+            (int) $productPrice->branch_id === (int) app('currentBranch')->getKey(),
+            404,
+        );
     }
 }

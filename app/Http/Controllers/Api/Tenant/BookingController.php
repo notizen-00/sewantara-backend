@@ -16,6 +16,8 @@ class BookingController extends Controller
             'success' => true,
             'data' => $bookings->paginate(
                 $request->string('status')->toString() ?: null,
+                app('currentBranch')->getKey(),
+                $request->integer('per_page', 20),
             ),
         ]);
     }
@@ -24,7 +26,7 @@ class BookingController extends Controller
     {
         $validated = $request->validate([
             'customer_id' => ['required', 'integer', 'min:1'],
-            'branch_id' => ['nullable', 'integer', 'min:1'],
+            'branch_id' => ['prohibited'],
             'start_at' => ['required', 'date'],
             'end_at' => ['nullable', 'date', 'after:start_at'],
             'booking_channel' => ['nullable', 'in:walk_in,online'],
@@ -42,7 +44,10 @@ class BookingController extends Controller
         $booking = $bookings->create(
             app('currentTenant')->id,
             $request->user()?->id,
-            $validated,
+            [
+                ...$validated,
+                'branch_id' => app('currentBranch')->getKey(),
+            ],
         );
 
         return response()->json([
@@ -54,6 +59,8 @@ class BookingController extends Controller
 
     public function show(Booking $booking, ManageBookings $bookings)
     {
+        $this->ensureCurrentBranch($booking);
+
         return response()->json([
             'success' => true,
             'data' => $bookings->detail($booking),
@@ -65,6 +72,8 @@ class BookingController extends Controller
         Request $request,
         ManageBookingStatus $statuses,
     ) {
+        $this->ensureCurrentBranch($booking);
+
         return response()->json([
             'success' => true,
             'message' => 'Barang pesanan berhasil diserahkan kepada pelanggan.',
@@ -77,6 +86,8 @@ class BookingController extends Controller
         Request $request,
         ManageBookingStatus $statuses,
     ) {
+        $this->ensureCurrentBranch($booking);
+
         return response()->json([
             'success' => true,
             'message' => 'Barang pesanan berhasil dikembalikan.',
@@ -89,6 +100,8 @@ class BookingController extends Controller
         Request $request,
         ManageBookingStatus $statuses,
     ) {
+        $this->ensureCurrentBranch($booking);
+
         $validated = $request->validate([
             'notes' => ['nullable', 'string'],
         ]);
@@ -102,5 +115,13 @@ class BookingController extends Controller
                 $validated['notes'] ?? null,
             ),
         ]);
+    }
+
+    private function ensureCurrentBranch(Booking $booking): void
+    {
+        abort_unless(
+            (int) $booking->branch_id === (int) app('currentBranch')->getKey(),
+            404,
+        );
     }
 }

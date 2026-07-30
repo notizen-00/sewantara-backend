@@ -18,9 +18,17 @@ class ManageMaintenance
         ?string $status,
         ?int $productUnitId,
         int $perPage = 20,
+        ?int $branchId = null,
     ): LengthAwarePaginator {
         return MaintenanceRecord::query()
             ->with('productUnit.product')
+            ->when(
+                $branchId,
+                fn ($query, int $value) => $query->whereHas(
+                    'productUnit',
+                    fn ($unitQuery) => $unitQuery->where('branch_id', $value),
+                ),
+            )
             ->when($status, fn ($query, string $value) => $query->where('status', $value))
             ->when($productUnitId, fn ($query, int $value) => $query->where('product_unit_id', $value))
             ->latest()
@@ -31,8 +39,15 @@ class ManageMaintenance
         string $tenantId,
         ?string $actorId,
         array $attributes,
+        ?int $branchId = null,
     ): MaintenanceRecord {
         $unit = ProductUnit::query()->findOrFail($attributes['product_unit_id']);
+
+        if ($branchId !== null && (int) $unit->branch_id !== $branchId) {
+            throw ValidationException::withMessages([
+                'product_unit_id' => ['Unit produk tidak berada di cabang yang sedang dipilih.'],
+            ]);
+        }
 
         if (in_array($unit->status, ['reserved', 'rented', 'maintenance', 'lost', 'inactive'], true)) {
             throw ValidationException::withMessages([

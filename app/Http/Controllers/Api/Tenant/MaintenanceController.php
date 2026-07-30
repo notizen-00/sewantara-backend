@@ -18,6 +18,7 @@ class MaintenanceController extends Controller
                 $request->string('status')->toString() ?: null,
                 $request->integer('product_unit_id') ?: null,
                 $request->integer('per_page', 20),
+                app('currentBranch')->getKey(),
             ),
         ]);
     }
@@ -41,6 +42,7 @@ class MaintenanceController extends Controller
                 app('currentTenant')->id,
                 $request->user()?->id,
                 $validated,
+                app('currentBranch')->getKey(),
             ),
         ], 201);
     }
@@ -49,6 +51,8 @@ class MaintenanceController extends Controller
         MaintenanceRecord $maintenance,
         ManageMaintenance $manager,
     ) {
+        $this->ensureCurrentBranch($maintenance);
+
         return response()->json([
             'success' => true,
             'data' => $manager->detail($maintenance),
@@ -60,6 +64,8 @@ class MaintenanceController extends Controller
         Request $request,
         ManageMaintenance $manager,
     ) {
+        $this->ensureCurrentBranch($maintenance);
+
         return response()->json([
             'success' => true,
             'message' => 'Pemeliharaan dimulai dan unit tidak dapat dipesan untuk sementara.',
@@ -72,6 +78,8 @@ class MaintenanceController extends Controller
         Request $request,
         ManageMaintenance $manager,
     ) {
+        $this->ensureCurrentBranch($maintenance);
+
         $validated = $request->validate([
             'unit_status' => ['nullable', Rule::in(['available', 'damaged', 'inactive'])],
             'condition' => ['nullable', 'string', 'max:30'],
@@ -96,6 +104,8 @@ class MaintenanceController extends Controller
         Request $request,
         ManageMaintenance $manager,
     ) {
+        $this->ensureCurrentBranch($maintenance);
+
         $validated = $request->validate([
             'notes' => ['nullable', 'string'],
         ]);
@@ -109,5 +119,14 @@ class MaintenanceController extends Controller
                 $validated['notes'] ?? null,
             ),
         ]);
+    }
+
+    private function ensureCurrentBranch(MaintenanceRecord $maintenance): void
+    {
+        abort_unless(
+            (int) $maintenance->productUnit()->value('branch_id')
+                === (int) app('currentBranch')->getKey(),
+            404,
+        );
     }
 }

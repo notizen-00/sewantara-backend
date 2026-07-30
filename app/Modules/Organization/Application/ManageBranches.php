@@ -12,10 +12,18 @@ class ManageBranches
         return Branch::query()->latest()->paginate($perPage);
     }
 
-    public function create(array $attributes): Branch
+    public function create(array $attributes, ?string $userId = null): Branch
     {
         $attributes['is_active'] ??= true;
 
-        return Branch::create($attributes);
+        $branch = Branch::create($attributes);
+
+        if ($userId !== null) {
+            $branch->users()->syncWithoutDetaching([
+                $userId => ['is_primary' => false],
+            ]);
+        }
+
+        return $branch;
     }
 }

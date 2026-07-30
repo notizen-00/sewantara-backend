@@ -201,6 +201,7 @@ return [
         'plan_id' => 'paket langganan',
         'price' => 'harga',
         'pricing_type' => 'jenis harga',
+        'prepare_stocks' => 'penyiapan struktur stok',
         'product_id' => 'produk',
         'product_unit_id' => 'unit produk',
         'purchase_date' => 'tanggal pembelian',
@@ -218,6 +219,8 @@ return [
         'start_at' => 'waktu mulai',
         'status' => 'status',
         'subdomain' => 'subdomain',
+        'sync_prices' => 'sinkronisasi harga',
+        'target_branch' => 'cabang tujuan',
         'terms_accepted' => 'persetujuan syarat dan ketentuan',
         'timezone' => 'zona waktu',
         'title' => 'judul',
@@ -225,5 +228,6 @@ return [
         'unit_code' => 'kode unit',
         'unit_status' => 'status unit',
         'vendor' => 'penyedia layanan',
+        'overwrite_prices' => 'penimpaan harga',
     ],
 ];

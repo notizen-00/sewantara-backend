@@ -23,10 +23,14 @@ class ManageBookings
         private readonly RentalEngine $engine,
     ) {}
 
-    public function paginate(?string $status, int $perPage = 20): LengthAwarePaginator
-    {
+    public function paginate(
+        ?string $status,
+        int $branchId,
+        int $perPage = 20,
+    ): LengthAwarePaginator {
         return Booking::query()
             ->with('items')
+            ->where('branch_id', $branchId)
             ->when($status, fn ($query, string $value) => $query->where('status', $value))
             ->latest()
             ->paginate($perPage);

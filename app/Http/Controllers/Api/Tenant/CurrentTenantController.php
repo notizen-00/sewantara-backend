@@ -14,6 +14,7 @@ class CurrentTenantController extends Controller
             'success' => true,
             'data' => [
                 'tenant' => $request->attributes->get('tenant'),
+                'branch' => $request->attributes->get('branch'),
                 'user' => $request->user(),
             ],
         ]);

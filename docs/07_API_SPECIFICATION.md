@@ -61,6 +61,16 @@ Authorization: Bearer {access_token}
 Accept: application/json
 ```
 
+Endpoint operasional yang bergantung pada cabang menerima header:
+
+```http
+X-Branch-Id: 2
+```
+
+Jika header tidak dikirim, sistem memakai cabang utama pengguna. Header hanya
+dapat menunjuk cabang aktif yang terhubung dengan pengguna. ID cabang aktif
+selalu dikembalikan melalui response header `X-Branch-Id`.
+
 Logout dan revoke token aktif:
 
 ```http
@@ -98,6 +108,31 @@ configuration, inventory, harga yang kompatibel dengan rental model, booking
 configuration, minimal satu payment method, branch aktif, dan subscription.
 
 Konfigurasi payment method disimpan terenkripsi pada database tenant.
+
+## Branch Context dan Sinkronisasi
+
+Kategori dan produk merupakan master data tingkat tenant sehingga langsung
+tersedia di seluruh cabang tanpa duplikasi. Harga, stok, unit berserial,
+pemesanan, dan pemeliharaan mengikuti cabang pada header `X-Branch-Id`.
+
+Sinkronisasi dari cabang aktif menuju cabang tujuan:
+
+```http
+POST /api/tenant/{tenant}/branches/{branch}/sync-master-data
+X-Branch-Id: 1
+```
+
+```json
+{
+  "sync_prices": true,
+  "prepare_stocks": true,
+  "overwrite_prices": false
+}
+```
+
+Sinkronisasi menyalin harga khusus cabang dan menyiapkan struktur stok kosong
+secara idempoten. Jumlah stok fisik dan unit berserial tidak disalin karena
+keduanya harus mengikuti kondisi barang nyata di masing-masing cabang.
 
 Rental engine mendukung:
 
@@ -159,7 +194,6 @@ Contoh penyesuaian stok:
 ```json
 {
   "product_id": 10,
-  "branch_id": 1,
   "quantity": 5,
   "notes": "Stok awal gudang"
 }

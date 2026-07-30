@@ -1,8 +1,10 @@
 <?php
 
+use App\Models\Branch;
 use App\Modules\Bookings\Application\ManageBookings;
 use App\Modules\Bookings\Application\ManageBookingStatus;
 use App\Modules\Inventory\Application\ManageMaintenance;
+use App\Modules\Organization\Application\SyncBranchMasterData;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
@@ -164,6 +166,47 @@ test('rental engine automatically assigns serialized units when configured', fun
         ->toBe('reserved');
 });
 
+test('branch master sync copies prices and prepares empty stock without copying physical inventory', function () {
+    $source = Branch::query()->create([
+        'tenant_id' => 'tenant-a',
+        'name' => 'Cabang Utama',
+        'code' => 'MAIN',
+        'is_active' => true,
+    ]);
+    $target = Branch::query()->create([
+        'tenant_id' => 'tenant-a',
+        'name' => 'Cabang Kedua',
+        'code' => 'SECOND',
+        'is_active' => true,
+    ]);
+
+    DB::table('product_prices')
+        ->where('branch_id', 1)
+        ->update(['branch_id' => $source->getKey()]);
+    DB::table('inventory_stocks')
+        ->where('branch_id', 1)
+        ->update(['branch_id' => $source->getKey()]);
+    DB::table('product_units')
+        ->where('branch_id', 1)
+        ->update(['branch_id' => $source->getKey()]);
+
+    $first = app(SyncBranchMasterData::class)->execute($source, $target);
+    $second = app(SyncBranchMasterData::class)->execute($source, $target);
+
+    expect($first['branch_specific_data']['prices']['created'])->toBe(2)
+        ->and($first['branch_specific_data']['stock_structures_created'])->toBe(1)
+        ->and($first['branch_specific_data']['stock_quantities_copied'])->toBeFalse()
+        ->and($first['branch_specific_data']['serialized_units_copied'])->toBeFalse()
+        ->and($second['branch_specific_data']['prices']['skipped'])->toBe(2)
+        ->and($second['branch_specific_data']['stock_structures_created'])->toBe(0)
+        ->and(DB::table('inventory_stocks')
+            ->where('branch_id', $target->getKey())
+            ->value('quantity_total'))->toBe(0)
+        ->and(DB::table('product_units')
+            ->where('branch_id', $target->getKey())
+            ->count())->toBe(0);
+});
+
 function seedInventoryManagementData(): void
 {
     $now = now();
@@ -268,6 +311,16 @@ function seedInventoryManagementData(): void
 
 function createInventoryManagementTables(): void
 {
+    Schema::create('branches', function (Blueprint $table): void {
+        $table->id();
+        $table->string('tenant_id');
+        $table->string('name');
+        $table->string('code');
+        $table->boolean('is_active')->default(true);
+        $table->timestamps();
+        $table->softDeletes();
+    });
+
     Schema::create('rental_configurations', function (Blueprint $table): void {
         $table->uuid('id')->primary();
         $table->string('tenant_id');
@@ -299,6 +352,7 @@ function createInventoryManagementTables(): void
         $table->string('inventory_type');
         $table->string('default_pricing_type');
         $table->decimal('deposit_amount')->default(0);
+        $table->boolean('is_active')->default(true);
         $table->timestamps();
         $table->softDeletes();
     });
@@ -311,7 +365,10 @@ function createInventoryManagementTables(): void
         $table->string('pricing_type');
         $table->integer('duration')->default(1);
         $table->decimal('price');
+        $table->dateTime('start_at')->nullable();
+        $table->dateTime('end_at')->nullable();
         $table->boolean('is_active');
+        $table->timestamps();
     });
 
     Schema::create('product_units', function (Blueprint $table): void {

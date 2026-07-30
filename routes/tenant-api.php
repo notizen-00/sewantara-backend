@@ -30,9 +30,13 @@ Route::prefix('tenant/{tenant}')
             'auth:sanctum',
             'tenant.user',
         ])->group(function () {
-            Route::middleware('tenant.accessible')->group(function () {
-                Route::post('/auth/logout', [TenantAuthController::class, 'logout'])
-                    ->name('auth.logout');
+            Route::post('/auth/logout', [TenantAuthController::class, 'logout'])
+                ->name('auth.logout');
+
+            Route::middleware([
+                'tenant.accessible',
+                'tenant.branch',
+            ])->group(function () {
                 Route::get('/me', CurrentTenantController::class)->name('me');
 
                 Route::middleware('tenant.subscription')->group(function () {
@@ -54,8 +58,12 @@ Route::prefix('tenant/{tenant}')
                         ->name('onboarding.go-live');
 
                     Route::apiResource('branches', BranchController::class)->only(['index', 'store']);
-                    Route::apiResource('categories', CategoryController::class);
-                    Route::apiResource('products', ProductController::class);
+                    Route::post('/branches/{branch}/sync-master-data', [BranchController::class, 'syncMasterData'])
+                        ->name('branches.sync-master-data');
+                    Route::apiResource('categories', CategoryController::class)
+                        ->withoutMiddleware('tenant.branch');
+                    Route::apiResource('products', ProductController::class)
+                        ->withoutMiddleware('tenant.branch');
                     Route::apiResource('product-units', ProductUnitController::class)->only(['index', 'store']);
                     Route::apiResource('product-prices', ProductPriceController::class)
                         ->only(['index', 'store', 'update', 'destroy']);
@@ -69,6 +77,7 @@ Route::prefix('tenant/{tenant}')
             Route::middleware([
                 'tenant.active',
                 'tenant.subscription',
+                'tenant.branch',
             ])->group(function () {
                 Route::apiResource('customers', CustomerController::class)->only(['index', 'store', 'show', 'update']);
                 Route::apiResource('bookings', BookingController::class)->only(['index', 'store', 'show']);

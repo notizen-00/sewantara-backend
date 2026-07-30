@@ -14,7 +14,7 @@ class InventoryStockController extends Controller
             'success' => true,
             'data' => $stocks->paginate(
                 $request->integer('product_id') ?: null,
-                $request->integer('branch_id') ?: null,
+                app('currentBranch')->getKey(),
                 $request->integer('per_page', 20),
             ),
         ]);
@@ -24,7 +24,7 @@ class InventoryStockController extends Controller
     {
         $validated = $request->validate([
             'product_id' => ['required', 'integer', 'min:1'],
-            'branch_id' => ['required', 'integer', 'min:1'],
+            'branch_id' => ['prohibited'],
             'quantity' => ['required', 'integer', 'not_in:0'],
             'notes' => ['nullable', 'string'],
         ]);
@@ -35,7 +35,10 @@ class InventoryStockController extends Controller
             'data' => $stocks->adjust(
                 app('currentTenant')->id,
                 $request->user()?->id,
-                $validated,
+                [
+                    ...$validated,
+                    'branch_id' => app('currentBranch')->getKey(),
+                ],
             ),
         ]);
     }

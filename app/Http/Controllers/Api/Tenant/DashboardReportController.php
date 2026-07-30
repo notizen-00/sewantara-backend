@@ -11,7 +11,10 @@ class DashboardReportController extends Controller
     {
         return response()->json([
             'success' => true,
-            'data' => $dashboardReport->execute(app('currentTenant')),
+            'data' => $dashboardReport->execute(
+                app('currentTenant'),
+                app('currentBranch')->getKey(),
+            ),
         ]);
     }
 }

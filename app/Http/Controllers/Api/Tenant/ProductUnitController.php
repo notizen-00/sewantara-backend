@@ -14,6 +14,8 @@ class ProductUnitController extends Controller
         $units = $productUnits->paginate(
             $request->integer('product_id') ?: null,
             $request->string('status')->toString() ?: null,
+            app('currentBranch')->getKey(),
+            $request->integer('per_page', 20),
         );
 
         return response()->json(['success' => true, 'data' => $units]);
@@ -24,7 +26,7 @@ class ProductUnitController extends Controller
         $tenantId = app('currentTenant')->id;
         $validated = $request->validate([
             'product_id' => ['required', 'integer', 'min:1'],
-            'branch_id' => ['nullable', 'integer', 'min:1'],
+            'branch_id' => ['prohibited'],
             'unit_code' => ['required', 'string', 'max:100', Rule::unique('product_units', 'unit_code')->where('tenant_id', $tenantId)],
             'barcode' => ['nullable', 'string', 'max:150', Rule::unique('product_units', 'barcode')->where('tenant_id', $tenantId)],
             'qr_code' => ['nullable', 'string', 'max:150'],
@@ -42,7 +44,10 @@ class ProductUnitController extends Controller
             'success' => true,
             'message' => 'Unit produk berhasil dibuat.',
             'data' => $productUnits->create(
-                $validated,
+                [
+                    ...$validated,
+                    'branch_id' => app('currentBranch')->getKey(),
+                ],
                 $request->user()?->id,
             ),
         ], 201);

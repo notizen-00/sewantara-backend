@@ -15,8 +15,9 @@ class AvailabilityController extends Controller
             'start_at' => ['required', 'date'],
             'end_at' => ['nullable', 'date', 'after:start_at'],
             'booking_channel' => ['nullable', 'in:walk_in,online'],
-            'branch_id' => ['nullable', 'integer', 'min:1'],
+            'branch_id' => ['prohibited'],
         ]);
+        $validated['branch_id'] = app('currentBranch')->getKey();
 
         $availableUnits = $checkAvailability->execute(
             app('currentTenant')->id,

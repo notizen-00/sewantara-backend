@@ -5,6 +5,7 @@ use App\Http\Middleware\EnsureTenantIsActive;
 use App\Http\Middleware\EnsureTenantSubscriptionActive;
 use App\Http\Middleware\EnsureUserBelongsToTenant;
 use App\Http\Middleware\InitializeTenantByPath;
+use App\Http\Middleware\ResolveBranchContext;
 use App\Modules\TenantOnboarding\Application\Exceptions\BillingIntervalUnavailable;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Application;
@@ -23,6 +24,7 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->alias([
             'tenant.path' => InitializeTenantByPath::class,
+            'tenant.branch' => ResolveBranchContext::class,
             'tenant.user' => EnsureUserBelongsToTenant::class,
             'tenant.active' => EnsureTenantIsActive::class,
             'tenant.accessible' => EnsureTenantIsAccessible::class,

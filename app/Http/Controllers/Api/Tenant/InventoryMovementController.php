@@ -14,7 +14,7 @@ class InventoryMovementController extends Controller
             'success' => true,
             'data' => $inventory->stockMovements(
                 $request->integer('product_id') ?: null,
-                $request->integer('branch_id') ?: null,
+                app('currentBranch')->getKey(),
                 $request->integer('per_page', 20),
             ),
         ]);
@@ -26,6 +26,7 @@ class InventoryMovementController extends Controller
             'success' => true,
             'data' => $inventory->unitMovements(
                 $request->integer('product_unit_id') ?: null,
+                app('currentBranch')->getKey(),
                 $request->integer('per_page', 20),
             ),
         ]);

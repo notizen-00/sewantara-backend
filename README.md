@@ -242,6 +242,18 @@ Authorization: Bearer {access_token}
 Accept: application/json
 ```
 
+Endpoint operasional per cabang juga menerima:
+
+```http
+X-Branch-Id: 2
+```
+
+Tanpa header tersebut, sistem otomatis memakai cabang utama pengguna. Produk
+dan kategori merupakan master tingkat tenant. Harga dapat disinkronkan serta
+struktur stok kosong dapat disiapkan dari cabang aktif melalui
+`POST /branches/{branch}/sync-master-data`; jumlah stok fisik dan unit
+berserial tidak ikut disalin.
+
 Contoh login:
 
 ```json

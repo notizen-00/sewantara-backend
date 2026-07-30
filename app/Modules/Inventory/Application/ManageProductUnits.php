@@ -12,9 +12,14 @@ class ManageProductUnits
         private readonly RecordInventoryMovement $movements,
     ) {}
 
-    public function paginate(?int $productId, ?string $status, int $perPage = 20): LengthAwarePaginator
-    {
+    public function paginate(
+        ?int $productId,
+        ?string $status,
+        int $branchId,
+        int $perPage = 20,
+    ): LengthAwarePaginator {
         return ProductUnit::query()
+            ->where('branch_id', $branchId)
             ->when($productId, fn ($query, int $value) => $query->where('product_id', $value))
             ->when($status, fn ($query, string $value) => $query->where('status', $value))
             ->latest()
