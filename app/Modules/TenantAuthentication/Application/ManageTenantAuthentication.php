@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Hash;
 class ManageTenantAuthentication
 {
     /**
-     * @return array{access_token: string, user: User}
+     * @return array{access_token: string, user: array<string, mixed>}
      */
     public function login(
         string $email,
@@ -33,9 +33,11 @@ class ManageTenantAuthentication
         $user->forceFill(['last_login_at' => now()])->save();
         $token = $user->createToken($deviceName, ['tenant:access']);
 
+        $serializedUser = $user->fresh()->toArray();
+
         return [
             'access_token' => $token->plainTextToken,
-            'user' => $user->fresh(),
+            'user' => $serializedUser,
         ];
     }
 

@@ -2,6 +2,7 @@
 
 use App\Models\Tenant;
 use App\Models\User;
+use App\Modules\TenantAuthentication\Application\ManageTenantAuthentication;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Routing\Route;
 use Illuminate\Support\Facades\DB;
@@ -90,6 +91,17 @@ test('tenant user can login with credentials and receive a Sanctum bearer token'
         ->and($token)->toContain('|')
         ->and(DB::table('personal_access_tokens')->count())->toBe(1)
         ->and(User::query()->firstOrFail()->last_login_at)->not->toBeNull();
+});
+
+test('authentication returns a serializable user snapshot', function () {
+    $result = app(ManageTenantAuthentication::class)->login(
+        'owner@example.com',
+        'StrongPassword123!',
+        'pest',
+    );
+
+    expect($result['user'])->toBeArray()
+        ->and($result['user']['email'])->toBe('owner@example.com');
 });
 
 test('central tenant detection treats email addresses case insensitively', function () {
