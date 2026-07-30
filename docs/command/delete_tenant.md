@@ -29,3 +29,13 @@ $subscriptionIds = DB::table('subscriptions')
     $tenant->forceDelete();
 
 });
+
+//delete tenant database
+
+->check all schema
+SELECT schema_name
+FROM information_schema.schemata
+ORDER BY SCHEMA_NAME;
+
+->delete schema
+DROP SCHEMA schema_name CASCADE;
