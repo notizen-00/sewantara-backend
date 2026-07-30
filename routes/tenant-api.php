@@ -16,6 +16,7 @@ use App\Http\Controllers\Api\Tenant\ProductPriceController;
 use App\Http\Controllers\Api\Tenant\ProductUnitController;
 use App\Http\Controllers\Api\Tenant\TenantAuthController;
 use App\Http\Controllers\Api\Tenant\TenantOnboardingController;
+use App\Http\Controllers\Api\Tenant\TenantSettingController;
 use Illuminate\Support\Facades\Route;
 
 Route::post('tenant/auth/login', [TenantAuthController::class, 'login'])
@@ -56,6 +57,11 @@ Route::prefix('tenant/{tenant}')
                         ->name('onboarding.payments');
                     Route::post('/onboarding/go-live', [TenantOnboardingController::class, 'goLive'])
                         ->name('onboarding.go-live');
+
+                    Route::get('/settings', [TenantSettingController::class, 'show'])
+                        ->name('settings.show');
+                    Route::patch('/settings', [TenantSettingController::class, 'update'])
+                        ->name('settings.update');
 
                     Route::apiResource('branches', BranchController::class)->only(['index', 'store']);
                     Route::post('/branches/{branch}/sync-master-data', [BranchController::class, 'syncMasterData'])
