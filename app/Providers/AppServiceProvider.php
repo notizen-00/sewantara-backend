@@ -2,7 +2,9 @@
 
 namespace App\Providers;
 
+use App\Support\PostmanCollectionBuilder;
 use Illuminate\Support\ServiceProvider;
+use YasinTgh\LaravelPostman\Collections\Builder;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -11,7 +13,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app->extend(
+            Builder::class,
+            fn (Builder $builder): PostmanCollectionBuilder => new PostmanCollectionBuilder($builder),
+        );
     }
 
     /**

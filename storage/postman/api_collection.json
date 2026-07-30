@@ -284,7 +284,7 @@
                                     }
                                 ],
                                 "url": {
-                                    "raw": "{{base_url}}/api/central/tenants/:tenant",
+                                    "raw": "{{base_url}}/api/central/tenants/{{tenant}}",
                                     "host": [
                                         "{{base_url}}"
                                     ],
@@ -292,7 +292,7 @@
                                         "api",
                                         "central",
                                         "tenants",
-                                        ":tenant"
+                                        "{{tenant}}"
                                     ],
                                     "variable": []
                                 }
@@ -368,14 +368,14 @@
                                             }
                                         ],
                                         "url": {
-                                            "raw": "{{base_url}}/api/tenant/:tenant/auth/logout",
+                                            "raw": "{{base_url}}/api/tenant/{{tenant}}/auth/logout",
                                             "host": [
                                                 "{{base_url}}"
                                             ],
                                             "path": [
                                                 "api",
                                                 "tenant",
-                                                ":tenant",
+                                                "{{tenant}}",
                                                 "auth",
                                                 "logout"
                                             ],
@@ -416,14 +416,14 @@
                                     }
                                 ],
                                 "url": {
-                                    "raw": "{{base_url}}/api/tenant/:tenant/me",
+                                    "raw": "{{base_url}}/api/tenant/{{tenant}}/me",
                                     "host": [
                                         "{{base_url}}"
                                     ],
                                     "path": [
                                         "api",
                                         "tenant",
-                                        ":tenant",
+                                        "{{tenant}}",
                                         "me"
                                     ],
                                     "variable": []
@@ -461,14 +461,14 @@
                                     }
                                 ],
                                 "url": {
-                                    "raw": "{{base_url}}/api/tenant/:tenant/onboarding",
+                                    "raw": "{{base_url}}/api/tenant/{{tenant}}/onboarding",
                                     "host": [
                                         "{{base_url}}"
                                     ],
                                     "path": [
                                         "api",
                                         "tenant",
-                                        ":tenant",
+                                        "{{tenant}}",
                                         "onboarding"
                                     ],
                                     "variable": []
@@ -504,14 +504,14 @@
                                             }
                                         ],
                                         "url": {
-                                            "raw": "{{base_url}}/api/tenant/:tenant/onboarding/business",
+                                            "raw": "{{base_url}}/api/tenant/{{tenant}}/onboarding/business",
                                             "host": [
                                                 "{{base_url}}"
                                             ],
                                             "path": [
                                                 "api",
                                                 "tenant",
-                                                ":tenant",
+                                                "{{tenant}}",
                                                 "onboarding",
                                                 "business"
                                             ],
@@ -550,14 +550,14 @@
                                             }
                                         ],
                                         "url": {
-                                            "raw": "{{base_url}}/api/tenant/:tenant/onboarding/rental",
+                                            "raw": "{{base_url}}/api/tenant/{{tenant}}/onboarding/rental",
                                             "host": [
                                                 "{{base_url}}"
                                             ],
                                             "path": [
                                                 "api",
                                                 "tenant",
-                                                ":tenant",
+                                                "{{tenant}}",
                                                 "onboarding",
                                                 "rental"
                                             ],
@@ -599,14 +599,14 @@
                                                     }
                                                 ],
                                                 "url": {
-                                                    "raw": "{{base_url}}/api/tenant/:tenant/onboarding/inventory/complete",
+                                                    "raw": "{{base_url}}/api/tenant/{{tenant}}/onboarding/inventory/complete",
                                                     "host": [
                                                         "{{base_url}}"
                                                     ],
                                                     "path": [
                                                         "api",
                                                         "tenant",
-                                                        ":tenant",
+                                                        "{{tenant}}",
                                                         "onboarding",
                                                         "inventory",
                                                         "complete"
@@ -651,14 +651,14 @@
                                                     }
                                                 ],
                                                 "url": {
-                                                    "raw": "{{base_url}}/api/tenant/:tenant/onboarding/pricing/complete",
+                                                    "raw": "{{base_url}}/api/tenant/{{tenant}}/onboarding/pricing/complete",
                                                     "host": [
                                                         "{{base_url}}"
                                                     ],
                                                     "path": [
                                                         "api",
                                                         "tenant",
-                                                        ":tenant",
+                                                        "{{tenant}}",
                                                         "onboarding",
                                                         "pricing",
                                                         "complete"
@@ -700,14 +700,14 @@
                                             }
                                         ],
                                         "url": {
-                                            "raw": "{{base_url}}/api/tenant/:tenant/onboarding/booking",
+                                            "raw": "{{base_url}}/api/tenant/{{tenant}}/onboarding/booking",
                                             "host": [
                                                 "{{base_url}}"
                                             ],
                                             "path": [
                                                 "api",
                                                 "tenant",
-                                                ":tenant",
+                                                "{{tenant}}",
                                                 "onboarding",
                                                 "booking"
                                             ],
@@ -746,14 +746,14 @@
                                             }
                                         ],
                                         "url": {
-                                            "raw": "{{base_url}}/api/tenant/:tenant/onboarding/payments",
+                                            "raw": "{{base_url}}/api/tenant/{{tenant}}/onboarding/payments",
                                             "host": [
                                                 "{{base_url}}"
                                             ],
                                             "path": [
                                                 "api",
                                                 "tenant",
-                                                ":tenant",
+                                                "{{tenant}}",
                                                 "onboarding",
                                                 "payments"
                                             ],
@@ -792,14 +792,14 @@
                                             }
                                         ],
                                         "url": {
-                                            "raw": "{{base_url}}/api/tenant/:tenant/onboarding/go-live",
+                                            "raw": "{{base_url}}/api/tenant/{{tenant}}/onboarding/go-live",
                                             "host": [
                                                 "{{base_url}}"
                                             ],
                                             "path": [
                                                 "api",
                                                 "tenant",
-                                                ":tenant",
+                                                "{{tenant}}",
                                                 "onboarding",
                                                 "go-live"
                                             ],
@@ -840,14 +840,14 @@
                                     }
                                 ],
                                 "url": {
-                                    "raw": "{{base_url}}/api/tenant/:tenant/branches",
+                                    "raw": "{{base_url}}/api/tenant/{{tenant}}/branches",
                                     "host": [
                                         "{{base_url}}"
                                     ],
                                     "path": [
                                         "api",
                                         "tenant",
-                                        ":tenant",
+                                        "{{tenant}}",
                                         "branches"
                                     ],
                                     "variable": []
@@ -880,14 +880,14 @@
                                     }
                                 ],
                                 "url": {
-                                    "raw": "{{base_url}}/api/tenant/:tenant/branches",
+                                    "raw": "{{base_url}}/api/tenant/{{tenant}}/branches",
                                     "host": [
                                         "{{base_url}}"
                                     ],
                                     "path": [
                                         "api",
                                         "tenant",
-                                        ":tenant",
+                                        "{{tenant}}",
                                         "branches"
                                     ],
                                     "variable": []
@@ -902,6 +902,53 @@
                                     ]
                                 }
                             }
+                        },
+                        {
+                            "name": "sync-master-data",
+                            "item": [
+                                {
+                                    "name": "[POST] api/tenant/{tenant}/branches/{branch}/sync-master-data",
+                                    "request": {
+                                        "method": "POST",
+                                        "header": [
+                                            {
+                                                "key": "Accept",
+                                                "value": "application/json",
+                                                "type": "text"
+                                            },
+                                            {
+                                                "key": "Content-Type",
+                                                "value": "application/json",
+                                                "type": "text"
+                                            }
+                                        ],
+                                        "url": {
+                                            "raw": "{{base_url}}/api/tenant/{{tenant}}/branches/:branch/sync-master-data",
+                                            "host": [
+                                                "{{base_url}}"
+                                            ],
+                                            "path": [
+                                                "api",
+                                                "tenant",
+                                                "{{tenant}}",
+                                                "branches",
+                                                ":branch",
+                                                "sync-master-data"
+                                            ],
+                                            "variable": []
+                                        },
+                                        "auth": {
+                                            "type": "bearer",
+                                            "bearer": [
+                                                {
+                                                    "key": "token",
+                                                    "value": "{{auth_token}}"
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            ]
                         }
                     ]
                 },
@@ -925,14 +972,14 @@
                                     }
                                 ],
                                 "url": {
-                                    "raw": "{{base_url}}/api/tenant/:tenant/categories",
+                                    "raw": "{{base_url}}/api/tenant/{{tenant}}/categories",
                                     "host": [
                                         "{{base_url}}"
                                     ],
                                     "path": [
                                         "api",
                                         "tenant",
-                                        ":tenant",
+                                        "{{tenant}}",
                                         "categories"
                                     ],
                                     "variable": []
@@ -965,21 +1012,21 @@
                                     }
                                 ],
                                 "url": {
-                                    "raw": "{{base_url}}/api/tenant/:tenant/categories",
+                                    "raw": "{{base_url}}/api/tenant/{{tenant}}/categories",
                                     "host": [
                                         "{{base_url}}"
                                     ],
                                     "path": [
                                         "api",
                                         "tenant",
-                                        ":tenant",
+                                        "{{tenant}}",
                                         "categories"
                                     ],
                                     "variable": []
                                 },
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\n    \"parent_id\": 1,\n    \"name\": \"sample_text\",\n    \"slug\": \"sample_text\",\n    \"description\": \"sample_text\",\n    \"image_path\": \"sample_text\",\n    \"sort_order\": 0,\n    \"is_active\": 0\n}",
+                                    "raw": "{\n    \"parent_id\": 1,\n    \"name\": \"sample_text\",\n    \"slug\": \"sample_text\",\n    \"description\": \"sample_text\",\n    \"image_path\": \"sample_text\",\n    \"sort_order\": 0,\n    \"is_active\": 1\n}",
                                     "options": []
                                 },
                                 "auth": {
@@ -1010,14 +1057,14 @@
                                     }
                                 ],
                                 "url": {
-                                    "raw": "{{base_url}}/api/tenant/:tenant/categories/:category",
+                                    "raw": "{{base_url}}/api/tenant/{{tenant}}/categories/:category",
                                     "host": [
                                         "{{base_url}}"
                                     ],
                                     "path": [
                                         "api",
                                         "tenant",
-                                        ":tenant",
+                                        "{{tenant}}",
                                         "categories",
                                         ":category"
                                     ],
@@ -1051,14 +1098,14 @@
                                     }
                                 ],
                                 "url": {
-                                    "raw": "{{base_url}}/api/tenant/:tenant/categories/:category",
+                                    "raw": "{{base_url}}/api/tenant/{{tenant}}/categories/:category",
                                     "host": [
                                         "{{base_url}}"
                                     ],
                                     "path": [
                                         "api",
                                         "tenant",
-                                        ":tenant",
+                                        "{{tenant}}",
                                         "categories",
                                         ":category"
                                     ],
@@ -1097,14 +1144,14 @@
                                     }
                                 ],
                                 "url": {
-                                    "raw": "{{base_url}}/api/tenant/:tenant/categories/:category",
+                                    "raw": "{{base_url}}/api/tenant/{{tenant}}/categories/:category",
                                     "host": [
                                         "{{base_url}}"
                                     ],
                                     "path": [
                                         "api",
                                         "tenant",
-                                        ":tenant",
+                                        "{{tenant}}",
                                         "categories",
                                         ":category"
                                     ],
@@ -1143,14 +1190,14 @@
                                     }
                                 ],
                                 "url": {
-                                    "raw": "{{base_url}}/api/tenant/:tenant/products",
+                                    "raw": "{{base_url}}/api/tenant/{{tenant}}/products",
                                     "host": [
                                         "{{base_url}}"
                                     ],
                                     "path": [
                                         "api",
                                         "tenant",
-                                        ":tenant",
+                                        "{{tenant}}",
                                         "products"
                                     ],
                                     "variable": []
@@ -1183,21 +1230,21 @@
                                     }
                                 ],
                                 "url": {
-                                    "raw": "{{base_url}}/api/tenant/:tenant/products",
+                                    "raw": "{{base_url}}/api/tenant/{{tenant}}/products",
                                     "host": [
                                         "{{base_url}}"
                                     ],
                                     "path": [
                                         "api",
                                         "tenant",
-                                        ":tenant",
+                                        "{{tenant}}",
                                         "products"
                                     ],
                                     "variable": []
                                 },
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\n    \"category_id\": 1,\n    \"name\": \"sample_text\",\n    \"slug\": \"sample_text\",\n    \"sku\": \"sample_text\",\n    \"brand\": \"sample_text\",\n    \"model\": \"sample_text\",\n    \"description\": \"sample_text\",\n    \"inventory_type\": \"serialized\",\n    \"default_pricing_type\": \"daily\",\n    \"minimum_rental_duration\": 4,\n    \"deposit_amount\": 47,\n    \"late_fee_amount\": 43,\n    \"is_featured\": 1,\n    \"is_active\": 0\n}",
+                                    "raw": "{\n    \"category_id\": 1,\n    \"name\": \"sample_text\",\n    \"slug\": \"sample_text\",\n    \"sku\": \"sample_text\",\n    \"brand\": \"sample_text\",\n    \"model\": \"sample_text\",\n    \"description\": \"sample_text\",\n    \"inventory_type\": \"serialized\",\n    \"default_pricing_type\": \"daily\",\n    \"minimum_rental_duration\": 10,\n    \"deposit_amount\": 24,\n    \"late_fee_amount\": 72,\n    \"is_featured\": 0,\n    \"is_active\": 1\n}",
                                     "options": []
                                 },
                                 "auth": {
@@ -1228,14 +1275,14 @@
                                     }
                                 ],
                                 "url": {
-                                    "raw": "{{base_url}}/api/tenant/:tenant/products/:product",
+                                    "raw": "{{base_url}}/api/tenant/{{tenant}}/products/:product",
                                     "host": [
                                         "{{base_url}}"
                                     ],
                                     "path": [
                                         "api",
                                         "tenant",
-                                        ":tenant",
+                                        "{{tenant}}",
                                         "products",
                                         ":product"
                                     ],
@@ -1269,14 +1316,14 @@
                                     }
                                 ],
                                 "url": {
-                                    "raw": "{{base_url}}/api/tenant/:tenant/products/:product",
+                                    "raw": "{{base_url}}/api/tenant/{{tenant}}/products/:product",
                                     "host": [
                                         "{{base_url}}"
                                     ],
                                     "path": [
                                         "api",
                                         "tenant",
-                                        ":tenant",
+                                        "{{tenant}}",
                                         "products",
                                         ":product"
                                     ],
@@ -1284,7 +1331,7 @@
                                 },
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\n    \"category_id\": 1,\n    \"name\": \"sample_text\",\n    \"slug\": \"sample_text\",\n    \"sku\": \"sample_text\",\n    \"brand\": \"sample_text\",\n    \"model\": \"sample_text\",\n    \"description\": \"sample_text\",\n    \"inventory_type\": \"serialized\",\n    \"default_pricing_type\": \"daily\",\n    \"minimum_rental_duration\": 2,\n    \"deposit_amount\": 65,\n    \"late_fee_amount\": 92,\n    \"is_featured\": 1,\n    \"is_active\": 0\n}",
+                                    "raw": "{\n    \"category_id\": 1,\n    \"name\": \"sample_text\",\n    \"slug\": \"sample_text\",\n    \"sku\": \"sample_text\",\n    \"brand\": \"sample_text\",\n    \"model\": \"sample_text\",\n    \"description\": \"sample_text\",\n    \"inventory_type\": \"serialized\",\n    \"default_pricing_type\": \"daily\",\n    \"minimum_rental_duration\": 5,\n    \"deposit_amount\": 72,\n    \"late_fee_amount\": 80,\n    \"is_featured\": 1,\n    \"is_active\": 0\n}",
                                     "options": []
                                 },
                                 "auth": {
@@ -1315,14 +1362,14 @@
                                     }
                                 ],
                                 "url": {
-                                    "raw": "{{base_url}}/api/tenant/:tenant/products/:product",
+                                    "raw": "{{base_url}}/api/tenant/{{tenant}}/products/:product",
                                     "host": [
                                         "{{base_url}}"
                                     ],
                                     "path": [
                                         "api",
                                         "tenant",
-                                        ":tenant",
+                                        "{{tenant}}",
                                         "products",
                                         ":product"
                                     ],
@@ -1361,14 +1408,14 @@
                                     }
                                 ],
                                 "url": {
-                                    "raw": "{{base_url}}/api/tenant/:tenant/product-units",
+                                    "raw": "{{base_url}}/api/tenant/{{tenant}}/product-units",
                                     "host": [
                                         "{{base_url}}"
                                     ],
                                     "path": [
                                         "api",
                                         "tenant",
-                                        ":tenant",
+                                        "{{tenant}}",
                                         "product-units"
                                     ],
                                     "variable": []
@@ -1401,14 +1448,14 @@
                                     }
                                 ],
                                 "url": {
-                                    "raw": "{{base_url}}/api/tenant/:tenant/product-units",
+                                    "raw": "{{base_url}}/api/tenant/{{tenant}}/product-units",
                                     "host": [
                                         "{{base_url}}"
                                     ],
                                     "path": [
                                         "api",
                                         "tenant",
-                                        ":tenant",
+                                        "{{tenant}}",
                                         "product-units"
                                     ],
                                     "variable": []
@@ -1446,14 +1493,14 @@
                                     }
                                 ],
                                 "url": {
-                                    "raw": "{{base_url}}/api/tenant/:tenant/product-prices",
+                                    "raw": "{{base_url}}/api/tenant/{{tenant}}/product-prices",
                                     "host": [
                                         "{{base_url}}"
                                     ],
                                     "path": [
                                         "api",
                                         "tenant",
-                                        ":tenant",
+                                        "{{tenant}}",
                                         "product-prices"
                                     ],
                                     "variable": []
@@ -1486,14 +1533,14 @@
                                     }
                                 ],
                                 "url": {
-                                    "raw": "{{base_url}}/api/tenant/:tenant/product-prices",
+                                    "raw": "{{base_url}}/api/tenant/{{tenant}}/product-prices",
                                     "host": [
                                         "{{base_url}}"
                                     ],
                                     "path": [
                                         "api",
                                         "tenant",
-                                        ":tenant",
+                                        "{{tenant}}",
                                         "product-prices"
                                     ],
                                     "variable": []
@@ -1526,14 +1573,14 @@
                                     }
                                 ],
                                 "url": {
-                                    "raw": "{{base_url}}/api/tenant/:tenant/product-prices/:product_price",
+                                    "raw": "{{base_url}}/api/tenant/{{tenant}}/product-prices/:product_price",
                                     "host": [
                                         "{{base_url}}"
                                     ],
                                     "path": [
                                         "api",
                                         "tenant",
-                                        ":tenant",
+                                        "{{tenant}}",
                                         "product-prices",
                                         ":product_price"
                                     ],
@@ -1567,14 +1614,14 @@
                                     }
                                 ],
                                 "url": {
-                                    "raw": "{{base_url}}/api/tenant/:tenant/product-prices/:product_price",
+                                    "raw": "{{base_url}}/api/tenant/{{tenant}}/product-prices/:product_price",
                                     "host": [
                                         "{{base_url}}"
                                     ],
                                     "path": [
                                         "api",
                                         "tenant",
-                                        ":tenant",
+                                        "{{tenant}}",
                                         "product-prices",
                                         ":product_price"
                                     ],
@@ -1616,14 +1663,14 @@
                                             }
                                         ],
                                         "url": {
-                                            "raw": "{{base_url}}/api/tenant/:tenant/inventory/stocks",
+                                            "raw": "{{base_url}}/api/tenant/{{tenant}}/inventory/stocks",
                                             "host": [
                                                 "{{base_url}}"
                                             ],
                                             "path": [
                                                 "api",
                                                 "tenant",
-                                                ":tenant",
+                                                "{{tenant}}",
                                                 "inventory",
                                                 "stocks"
                                             ],
@@ -1660,14 +1707,14 @@
                                                     }
                                                 ],
                                                 "url": {
-                                                    "raw": "{{base_url}}/api/tenant/:tenant/inventory/stocks/adjust",
+                                                    "raw": "{{base_url}}/api/tenant/{{tenant}}/inventory/stocks/adjust",
                                                     "host": [
                                                         "{{base_url}}"
                                                     ],
                                                     "path": [
                                                         "api",
                                                         "tenant",
-                                                        ":tenant",
+                                                        "{{tenant}}",
                                                         "inventory",
                                                         "stocks",
                                                         "adjust"
@@ -1712,14 +1759,14 @@
                                                     }
                                                 ],
                                                 "url": {
-                                                    "raw": "{{base_url}}/api/tenant/:tenant/inventory/movements/stocks",
+                                                    "raw": "{{base_url}}/api/tenant/{{tenant}}/inventory/movements/stocks",
                                                     "host": [
                                                         "{{base_url}}"
                                                     ],
                                                     "path": [
                                                         "api",
                                                         "tenant",
-                                                        ":tenant",
+                                                        "{{tenant}}",
                                                         "inventory",
                                                         "movements",
                                                         "stocks"
@@ -1759,14 +1806,14 @@
                                                     }
                                                 ],
                                                 "url": {
-                                                    "raw": "{{base_url}}/api/tenant/:tenant/inventory/movements/units",
+                                                    "raw": "{{base_url}}/api/tenant/{{tenant}}/inventory/movements/units",
                                                     "host": [
                                                         "{{base_url}}"
                                                     ],
                                                     "path": [
                                                         "api",
                                                         "tenant",
-                                                        ":tenant",
+                                                        "{{tenant}}",
                                                         "inventory",
                                                         "movements",
                                                         "units"
@@ -1810,14 +1857,14 @@
                                     }
                                 ],
                                 "url": {
-                                    "raw": "{{base_url}}/api/tenant/:tenant/customers",
+                                    "raw": "{{base_url}}/api/tenant/{{tenant}}/customers",
                                     "host": [
                                         "{{base_url}}"
                                     ],
                                     "path": [
                                         "api",
                                         "tenant",
-                                        ":tenant",
+                                        "{{tenant}}",
                                         "customers"
                                     ],
                                     "variable": []
@@ -1850,14 +1897,14 @@
                                     }
                                 ],
                                 "url": {
-                                    "raw": "{{base_url}}/api/tenant/:tenant/customers",
+                                    "raw": "{{base_url}}/api/tenant/{{tenant}}/customers",
                                     "host": [
                                         "{{base_url}}"
                                     ],
                                     "path": [
                                         "api",
                                         "tenant",
-                                        ":tenant",
+                                        "{{tenant}}",
                                         "customers"
                                     ],
                                     "variable": []
@@ -1890,14 +1937,14 @@
                                     }
                                 ],
                                 "url": {
-                                    "raw": "{{base_url}}/api/tenant/:tenant/customers/:customer",
+                                    "raw": "{{base_url}}/api/tenant/{{tenant}}/customers/:customer",
                                     "host": [
                                         "{{base_url}}"
                                     ],
                                     "path": [
                                         "api",
                                         "tenant",
-                                        ":tenant",
+                                        "{{tenant}}",
                                         "customers",
                                         ":customer"
                                     ],
@@ -1931,14 +1978,14 @@
                                     }
                                 ],
                                 "url": {
-                                    "raw": "{{base_url}}/api/tenant/:tenant/customers/:customer",
+                                    "raw": "{{base_url}}/api/tenant/{{tenant}}/customers/:customer",
                                     "host": [
                                         "{{base_url}}"
                                     ],
                                     "path": [
                                         "api",
                                         "tenant",
-                                        ":tenant",
+                                        "{{tenant}}",
                                         "customers",
                                         ":customer"
                                     ],
@@ -1977,14 +2024,14 @@
                                     }
                                 ],
                                 "url": {
-                                    "raw": "{{base_url}}/api/tenant/:tenant/bookings",
+                                    "raw": "{{base_url}}/api/tenant/{{tenant}}/bookings",
                                     "host": [
                                         "{{base_url}}"
                                     ],
                                     "path": [
                                         "api",
                                         "tenant",
-                                        ":tenant",
+                                        "{{tenant}}",
                                         "bookings"
                                     ],
                                     "variable": []
@@ -2017,14 +2064,14 @@
                                     }
                                 ],
                                 "url": {
-                                    "raw": "{{base_url}}/api/tenant/:tenant/bookings",
+                                    "raw": "{{base_url}}/api/tenant/{{tenant}}/bookings",
                                     "host": [
                                         "{{base_url}}"
                                     ],
                                     "path": [
                                         "api",
                                         "tenant",
-                                        ":tenant",
+                                        "{{tenant}}",
                                         "bookings"
                                     ],
                                     "variable": []
@@ -2057,14 +2104,14 @@
                                     }
                                 ],
                                 "url": {
-                                    "raw": "{{base_url}}/api/tenant/:tenant/bookings/:booking",
+                                    "raw": "{{base_url}}/api/tenant/{{tenant}}/bookings/:booking",
                                     "host": [
                                         "{{base_url}}"
                                     ],
                                     "path": [
                                         "api",
                                         "tenant",
-                                        ":tenant",
+                                        "{{tenant}}",
                                         "bookings",
                                         ":booking"
                                     ],
@@ -2101,14 +2148,14 @@
                                             }
                                         ],
                                         "url": {
-                                            "raw": "{{base_url}}/api/tenant/:tenant/bookings/:booking/check-out",
+                                            "raw": "{{base_url}}/api/tenant/{{tenant}}/bookings/:booking/check-out",
                                             "host": [
                                                 "{{base_url}}"
                                             ],
                                             "path": [
                                                 "api",
                                                 "tenant",
-                                                ":tenant",
+                                                "{{tenant}}",
                                                 "bookings",
                                                 ":booking",
                                                 "check-out"
@@ -2148,14 +2195,14 @@
                                             }
                                         ],
                                         "url": {
-                                            "raw": "{{base_url}}/api/tenant/:tenant/bookings/:booking/return",
+                                            "raw": "{{base_url}}/api/tenant/{{tenant}}/bookings/:booking/return",
                                             "host": [
                                                 "{{base_url}}"
                                             ],
                                             "path": [
                                                 "api",
                                                 "tenant",
-                                                ":tenant",
+                                                "{{tenant}}",
                                                 "bookings",
                                                 ":booking",
                                                 "return"
@@ -2195,14 +2242,14 @@
                                             }
                                         ],
                                         "url": {
-                                            "raw": "{{base_url}}/api/tenant/:tenant/bookings/:booking/cancel",
+                                            "raw": "{{base_url}}/api/tenant/{{tenant}}/bookings/:booking/cancel",
                                             "host": [
                                                 "{{base_url}}"
                                             ],
                                             "path": [
                                                 "api",
                                                 "tenant",
-                                                ":tenant",
+                                                "{{tenant}}",
                                                 "bookings",
                                                 ":booking",
                                                 "cancel"
@@ -2242,14 +2289,14 @@
                                             }
                                         ],
                                         "url": {
-                                            "raw": "{{base_url}}/api/tenant/:tenant/bookings/:booking/payments",
+                                            "raw": "{{base_url}}/api/tenant/{{tenant}}/bookings/:booking/payments",
                                             "host": [
                                                 "{{base_url}}"
                                             ],
                                             "path": [
                                                 "api",
                                                 "tenant",
-                                                ":tenant",
+                                                "{{tenant}}",
                                                 "bookings",
                                                 ":booking",
                                                 "payments"
@@ -2291,14 +2338,14 @@
                                     }
                                 ],
                                 "url": {
-                                    "raw": "{{base_url}}/api/tenant/:tenant/maintenance",
+                                    "raw": "{{base_url}}/api/tenant/{{tenant}}/maintenance",
                                     "host": [
                                         "{{base_url}}"
                                     ],
                                     "path": [
                                         "api",
                                         "tenant",
-                                        ":tenant",
+                                        "{{tenant}}",
                                         "maintenance"
                                     ],
                                     "variable": []
@@ -2331,14 +2378,14 @@
                                     }
                                 ],
                                 "url": {
-                                    "raw": "{{base_url}}/api/tenant/:tenant/maintenance",
+                                    "raw": "{{base_url}}/api/tenant/{{tenant}}/maintenance",
                                     "host": [
                                         "{{base_url}}"
                                     ],
                                     "path": [
                                         "api",
                                         "tenant",
-                                        ":tenant",
+                                        "{{tenant}}",
                                         "maintenance"
                                     ],
                                     "variable": []
@@ -2371,14 +2418,14 @@
                                     }
                                 ],
                                 "url": {
-                                    "raw": "{{base_url}}/api/tenant/:tenant/maintenance/:maintenance",
+                                    "raw": "{{base_url}}/api/tenant/{{tenant}}/maintenance/:maintenance",
                                     "host": [
                                         "{{base_url}}"
                                     ],
                                     "path": [
                                         "api",
                                         "tenant",
-                                        ":tenant",
+                                        "{{tenant}}",
                                         "maintenance",
                                         ":maintenance"
                                     ],
@@ -2415,14 +2462,14 @@
                                             }
                                         ],
                                         "url": {
-                                            "raw": "{{base_url}}/api/tenant/:tenant/maintenance/:maintenance/start",
+                                            "raw": "{{base_url}}/api/tenant/{{tenant}}/maintenance/:maintenance/start",
                                             "host": [
                                                 "{{base_url}}"
                                             ],
                                             "path": [
                                                 "api",
                                                 "tenant",
-                                                ":tenant",
+                                                "{{tenant}}",
                                                 "maintenance",
                                                 ":maintenance",
                                                 "start"
@@ -2462,14 +2509,14 @@
                                             }
                                         ],
                                         "url": {
-                                            "raw": "{{base_url}}/api/tenant/:tenant/maintenance/:maintenance/complete",
+                                            "raw": "{{base_url}}/api/tenant/{{tenant}}/maintenance/:maintenance/complete",
                                             "host": [
                                                 "{{base_url}}"
                                             ],
                                             "path": [
                                                 "api",
                                                 "tenant",
-                                                ":tenant",
+                                                "{{tenant}}",
                                                 "maintenance",
                                                 ":maintenance",
                                                 "complete"
@@ -2509,14 +2556,14 @@
                                             }
                                         ],
                                         "url": {
-                                            "raw": "{{base_url}}/api/tenant/:tenant/maintenance/:maintenance/cancel",
+                                            "raw": "{{base_url}}/api/tenant/{{tenant}}/maintenance/:maintenance/cancel",
                                             "host": [
                                                 "{{base_url}}"
                                             ],
                                             "path": [
                                                 "api",
                                                 "tenant",
-                                                ":tenant",
+                                                "{{tenant}}",
                                                 "maintenance",
                                                 ":maintenance",
                                                 "cancel"
@@ -2561,14 +2608,14 @@
                                             }
                                         ],
                                         "url": {
-                                            "raw": "{{base_url}}/api/tenant/:tenant/availability/check",
+                                            "raw": "{{base_url}}/api/tenant/{{tenant}}/availability/check",
                                             "host": [
                                                 "{{base_url}}"
                                             ],
                                             "path": [
                                                 "api",
                                                 "tenant",
-                                                ":tenant",
+                                                "{{tenant}}",
                                                 "availability",
                                                 "check"
                                             ],
@@ -2612,14 +2659,14 @@
                                             }
                                         ],
                                         "url": {
-                                            "raw": "{{base_url}}/api/tenant/:tenant/reports/dashboard",
+                                            "raw": "{{base_url}}/api/tenant/{{tenant}}/reports/dashboard",
                                             "host": [
                                                 "{{base_url}}"
                                             ],
                                             "path": [
                                                 "api",
                                                 "tenant",
-                                                ":tenant",
+                                                "{{tenant}}",
                                                 "reports",
                                                 "dashboard"
                                             ],
@@ -2653,6 +2700,18 @@
             "value": "your-access-token",
             "type": "string",
             "description": "Bearer token for API authentication"
+        },
+        {
+            "key": "tenant",
+            "value": "your-tenant-id",
+            "type": "string",
+            "description": "ID tenant aktif. Otomatis diperbarui setelah login tenant berhasil."
+        },
+        {
+            "key": "x_branch_id",
+            "value": "1",
+            "type": "string",
+            "description": "ID cabang aktif yang otomatis dikirim sebagai header X-Branch-Id."
         }
     ],
     "auth": {
@@ -2664,5 +2723,41 @@
                 "type": "string"
             }
         ]
-    }
+    },
+    "event": [
+        {
+            "listen": "prerequest",
+            "script": {
+                "type": "text/javascript",
+                "exec": [
+                    "const requestUrl = pm.variables.replaceIn(pm.request.url.toString());",
+                    "const isTenantRequest = requestUrl.includes('/api/tenant/');",
+                    "const isTenantLogin = requestUrl.includes('/api/tenant/auth/login');",
+                    "",
+                    "if (isTenantRequest && !isTenantLogin) {",
+                    "    pm.request.headers.upsert({",
+                    "        key: 'X-Branch-Id',",
+                    "        value: pm.variables.replaceIn('{{x_branch_id}}'),",
+                    "    });",
+                    "}"
+                ]
+            }
+        },
+        {
+            "listen": "test",
+            "script": {
+                "type": "text/javascript",
+                "exec": [
+                    "const requestUrl = pm.variables.replaceIn(pm.request.url.toString());",
+                    "",
+                    "if (requestUrl.includes('/api/tenant/auth/login') && pm.response.code === 200) {",
+                    "    const response = pm.response.json();",
+                    "",
+                    "    pm.collectionVariables.set('auth_token', response.data.access_token);",
+                    "    pm.collectionVariables.set('tenant', response.data.user.tenant_id);",
+                    "}"
+                ]
+            }
+        }
+    ]
 }

@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Routing\Route;
+use Illuminate\Support\Facades\Artisan;
 
 test('all documented API routes use reflectable controllers', function () {
     $routes = collect(app('router')->getRoutes()->getRoutes())
@@ -11,7 +12,7 @@ test('all documented API routes use reflectable controllers', function () {
 
     foreach ($routes as $route) {
         expect($route->getAction('uses'))
-            ->not->toBeInstanceOf(\Closure::class)
+            ->not->toBeInstanceOf(Closure::class)
             ->and($route->getControllerClass())
             ->not->toBeNull()
             ->and(class_exists($route->getControllerClass()))
@@ -29,4 +30,27 @@ test('API endpoints are grouped without URL versioning', function () {
             ->toMatch('#^api/(central|tenant|shared)(?:/|$)#')
             ->not->toMatch('#/(?:v|version)\d+(?:/|$)#i');
     }
+});
+
+test('generated collection provides reusable tenant and branch variables', function () {
+    Artisan::call('postman:generate');
+
+    $collection = json_decode(
+        file_get_contents(storage_path('postman/api_collection.json')),
+        true,
+        flags: JSON_THROW_ON_ERROR,
+    );
+
+    $variables = collect($collection['variable'])->keyBy('key');
+    $serialized = json_encode($collection, JSON_THROW_ON_ERROR);
+
+    expect($variables)
+        ->toHaveKeys(['base_url', 'auth_token', 'tenant', 'x_branch_id'])
+        ->and($variables['x_branch_id']['value'])->toBe('1')
+        ->and($serialized)
+        ->toContain('{{tenant}}')
+        ->toContain('{{x_branch_id}}')
+        ->toContain('pm.request.headers.upsert')
+        ->toContain("pm.collectionVariables.set('tenant'")
+        ->not->toContain(':tenant');
 });
