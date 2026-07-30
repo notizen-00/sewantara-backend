@@ -312,7 +312,7 @@
                             "name": "login",
                             "item": [
                                 {
-                                    "name": "[POST] api/tenant/{tenant}/auth/login",
+                                    "name": "[POST] api/tenant/auth/login",
                                     "request": {
                                         "method": "POST",
                                         "header": [
@@ -328,18 +328,16 @@
                                             }
                                         ],
                                         "url": {
-                                            "raw": "{{base_url}}/api/tenant/:tenant/auth/login",
+                                            "raw": "{{base_url}}/api/tenant/auth/login",
                                             "host": [
                                                 "{{base_url}}"
                                             ],
                                             "path": [
                                                 "api",
                                                 "tenant",
-                                                ":tenant",
                                                 "auth",
                                                 "login"
-                                            ],
-                                            "variable": []
+                                            ]
                                         },
                                         "body": {
                                             "mode": "raw",
@@ -981,7 +979,7 @@
                                 },
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\n    \"parent_id\": 1,\n    \"name\": \"sample_text\",\n    \"slug\": \"sample_text\",\n    \"description\": \"sample_text\",\n    \"image_path\": \"sample_text\",\n    \"sort_order\": 0,\n    \"is_active\": 1\n}",
+                                    "raw": "{\n    \"parent_id\": 1,\n    \"name\": \"sample_text\",\n    \"slug\": \"sample_text\",\n    \"description\": \"sample_text\",\n    \"image_path\": \"sample_text\",\n    \"sort_order\": 0,\n    \"is_active\": 0\n}",
                                     "options": []
                                 },
                                 "auth": {
@@ -1068,7 +1066,7 @@
                                 },
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\n    \"parent_id\": 1,\n    \"name\": \"sample_text\",\n    \"slug\": \"sample_text\",\n    \"description\": \"sample_text\",\n    \"image_path\": \"sample_text\",\n    \"sort_order\": 0,\n    \"is_active\": 0\n}",
+                                    "raw": "{\n    \"parent_id\": 1,\n    \"name\": \"sample_text\",\n    \"slug\": \"sample_text\",\n    \"description\": \"sample_text\",\n    \"image_path\": \"sample_text\",\n    \"sort_order\": 0,\n    \"is_active\": 1\n}",
                                     "options": []
                                 },
                                 "auth": {
@@ -1199,7 +1197,7 @@
                                 },
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\n    \"category_id\": 1,\n    \"name\": \"sample_text\",\n    \"slug\": \"sample_text\",\n    \"sku\": \"sample_text\",\n    \"brand\": \"sample_text\",\n    \"model\": \"sample_text\",\n    \"description\": \"sample_text\",\n    \"inventory_type\": \"serialized\",\n    \"default_pricing_type\": \"daily\",\n    \"minimum_rental_duration\": 2,\n    \"deposit_amount\": 57,\n    \"late_fee_amount\": 83,\n    \"is_featured\": 1,\n    \"is_active\": 0\n}",
+                                    "raw": "{\n    \"category_id\": 1,\n    \"name\": \"sample_text\",\n    \"slug\": \"sample_text\",\n    \"sku\": \"sample_text\",\n    \"brand\": \"sample_text\",\n    \"model\": \"sample_text\",\n    \"description\": \"sample_text\",\n    \"inventory_type\": \"serialized\",\n    \"default_pricing_type\": \"daily\",\n    \"minimum_rental_duration\": 4,\n    \"deposit_amount\": 47,\n    \"late_fee_amount\": 43,\n    \"is_featured\": 1,\n    \"is_active\": 0\n}",
                                     "options": []
                                 },
                                 "auth": {
@@ -1286,7 +1284,7 @@
                                 },
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\n    \"category_id\": 1,\n    \"name\": \"sample_text\",\n    \"slug\": \"sample_text\",\n    \"sku\": \"sample_text\",\n    \"brand\": \"sample_text\",\n    \"model\": \"sample_text\",\n    \"description\": \"sample_text\",\n    \"inventory_type\": \"serialized\",\n    \"default_pricing_type\": \"daily\",\n    \"minimum_rental_duration\": 2,\n    \"deposit_amount\": 76,\n    \"late_fee_amount\": 58,\n    \"is_featured\": 1,\n    \"is_active\": 1\n}",
+                                    "raw": "{\n    \"category_id\": 1,\n    \"name\": \"sample_text\",\n    \"slug\": \"sample_text\",\n    \"sku\": \"sample_text\",\n    \"brand\": \"sample_text\",\n    \"model\": \"sample_text\",\n    \"description\": \"sample_text\",\n    \"inventory_type\": \"serialized\",\n    \"default_pricing_type\": \"daily\",\n    \"minimum_rental_duration\": 2,\n    \"deposit_amount\": 65,\n    \"late_fee_amount\": 92,\n    \"is_featured\": 1,\n    \"is_active\": 0\n}",
                                     "options": []
                                 },
                                 "auth": {
