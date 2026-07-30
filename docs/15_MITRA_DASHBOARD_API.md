@@ -758,6 +758,8 @@ Untuk produk `inventory_type=quantity`:
 ```http
 GET  /api/tenant/{tenant}/inventory/stocks
 POST /api/tenant/{tenant}/inventory/stocks/adjust
+POST /api/tenant/{tenant}/inventory/stocks/transfer
+POST /api/tenant/{tenant}/product-units/{productUnit}/transfer
 ```
 
 Request adjust:
@@ -766,13 +768,19 @@ Request adjust:
 {
   "product_id": 2,
   "quantity": 5,
+  "reason_type": "initial_stock",
   "notes": "Stok awal"
 }
 ```
 
-Nilai `quantity` positif menambah stok, nilai negatif mengurangi stok.
-Pengurangan tidak boleh melewati jumlah barang yang sedang reserved, rented,
-maintenance, damaged, atau lost.
+`quantity` selalu positif dan arah perubahan ditentukan `reason_type`.
+Transfer memakai cabang pada `X-Branch-Id` sebagai sumber dan
+`target_branch_id` sebagai tujuan. Detail produk mengembalikan
+`stock_summary` dan `stock_by_branch`.
+
+Panduan lengkap:
+
+[`17_INVENTORY_STOCK_TRANSFER_API.md`](17_INVENTORY_STOCK_TRANSFER_API.md)
 
 ### Harga Produk
 

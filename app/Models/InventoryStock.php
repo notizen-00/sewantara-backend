@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Stancl\Tenancy\Database\Concerns\BelongsToTenant;
 
 class InventoryStock extends Model
@@ -21,6 +22,10 @@ class InventoryStock extends Model
         'quantity_lost',
     ];
 
+    protected $appends = [
+        'quantity_available',
+    ];
+
     protected function casts(): array
     {
         return [
@@ -31,5 +36,25 @@ class InventoryStock extends Model
             'quantity_damaged' => 'integer',
             'quantity_lost' => 'integer',
         ];
+    }
+
+    public function product(): BelongsTo
+    {
+        return $this->belongsTo(Product::class);
+    }
+
+    public function branch(): BelongsTo
+    {
+        return $this->belongsTo(Branch::class);
+    }
+
+    public function getQuantityAvailableAttribute(): int
+    {
+        return $this->quantity_total
+            - $this->quantity_reserved
+            - $this->quantity_rented
+            - $this->quantity_maintenance
+            - $this->quantity_damaged
+            - $this->quantity_lost;
     }
 }

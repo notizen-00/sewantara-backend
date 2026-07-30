@@ -221,6 +221,8 @@ sehingga ID tenant tidak perlu dikirim melalui URL:
 - `/product-prices`
 - `GET /inventory/stocks`
 - `POST /inventory/stocks/adjust`
+- `POST /inventory/stocks/transfer`
+- `POST /product-units/{productUnit}/transfer`
 - `GET /inventory/movements/stocks`
 - `GET /inventory/movements/units`
 - `/customers`
@@ -390,6 +392,7 @@ Dokumentasi lengkap berada di folder [`docs`](docs), termasuk:
 - Architecture
 - API Specification
 - Tenant Settings and Private Media API
+- Inventory Stock Adjustment and Transfer API
 - Mitra Dashboard API Guide
 - Security Guide
 - Testing Guide

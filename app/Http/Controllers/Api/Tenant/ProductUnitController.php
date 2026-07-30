@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Api\Tenant;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Tenant\TransferProductUnitRequest;
+use App\Models\ProductUnit;
 use App\Modules\Inventory\Application\ManageProductUnits;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -51,5 +53,25 @@ class ProductUnitController extends Controller
                 $request->user()?->id,
             ),
         ], 201);
+    }
+
+    public function transfer(
+        TransferProductUnitRequest $request,
+        ManageProductUnits $productUnits,
+        ProductUnit $productUnit,
+    ) {
+        $validated = $request->validated();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Unit produk berhasil dipindahkan antar cabang.',
+            'data' => $productUnits->transfer(
+                $productUnit,
+                app('currentBranch')->getKey(),
+                (int) $validated['target_branch_id'],
+                $request->user()?->id,
+                $validated['notes'] ?? null,
+            ),
+        ]);
     }
 }

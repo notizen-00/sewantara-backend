@@ -88,6 +88,8 @@ Route::prefix('tenant/{tenant}')
                     Route::delete('/products/{product}/images/{productImage}', [ProductImageController::class, 'destroy'])
                         ->name('products.images.destroy');
                     Route::apiResource('products', ProductController::class);
+                    Route::post('/product-units/{productUnit}/transfer', [ProductUnitController::class, 'transfer'])
+                        ->name('product-units.transfer');
                     Route::apiResource('product-units', ProductUnitController::class)->only(['index', 'store']);
                     Route::apiResource('product-prices', ProductPriceController::class)
                         ->only(['index', 'store', 'update', 'destroy']);
@@ -95,6 +97,8 @@ Route::prefix('tenant/{tenant}')
                         ->name('inventory.stocks.index');
                     Route::post('/inventory/stocks/adjust', [InventoryStockController::class, 'adjust'])
                         ->name('inventory.stocks.adjust');
+                    Route::post('/inventory/stocks/transfer', [InventoryStockController::class, 'transfer'])
+                        ->name('inventory.stocks.transfer');
                 });
             });
 

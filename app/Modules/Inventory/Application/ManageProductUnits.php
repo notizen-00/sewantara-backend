@@ -2,9 +2,11 @@
 
 namespace App\Modules\Inventory\Application;
 
+use App\Models\Branch;
 use App\Models\ProductUnit;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\ValidationException;
 
 class ManageProductUnits
 {
@@ -45,6 +47,59 @@ class ManageProductUnits
             );
 
             return $unit;
+        });
+    }
+
+    public function transfer(
+        ProductUnit $productUnit,
+        int $sourceBranchId,
+        int $targetBranchId,
+        ?int $actorId,
+        ?string $notes,
+    ): ProductUnit {
+        if ((int) $productUnit->branch_id !== $sourceBranchId) {
+            throw ValidationException::withMessages([
+                'product_unit' => ['Unit tidak berada pada cabang sumber yang sedang aktif.'],
+            ]);
+        }
+
+        Branch::query()
+            ->whereKey($targetBranchId)
+            ->where('is_active', true)
+            ->firstOrFail();
+
+        return DB::transaction(function () use (
+            $productUnit,
+            $sourceBranchId,
+            $targetBranchId,
+            $actorId,
+            $notes,
+        ): ProductUnit {
+            $unit = ProductUnit::query()
+                ->lockForUpdate()
+                ->findOrFail($productUnit->getKey());
+
+            if ($unit->status !== 'available') {
+                throw ValidationException::withMessages([
+                    'product_unit' => ['Hanya unit berstatus available yang dapat dipindahkan antar cabang.'],
+                ]);
+            }
+
+            $unit->update(['branch_id' => $targetBranchId]);
+            $this->movements->unit(
+                $unit->tenant_id,
+                $unit,
+                'branch_transfer',
+                'available',
+                'available',
+                null,
+                $actorId,
+                $notes,
+                $sourceBranchId,
+                $targetBranchId,
+            );
+
+            return $unit->refresh()->load('product');
         });
     }
 }

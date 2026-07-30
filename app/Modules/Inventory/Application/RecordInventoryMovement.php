@@ -17,6 +17,8 @@ class RecordInventoryMovement
         ?int $bookingId,
         ?int $createdBy,
         ?string $notes = null,
+        ?int $fromBranchId = null,
+        ?int $toBranchId = null,
     ): ProductMovement {
         return ProductMovement::query()->create([
             'tenant_id' => $tenantId,
@@ -25,8 +27,8 @@ class RecordInventoryMovement
             'type' => $type,
             'from_status' => $fromStatus,
             'to_status' => $toStatus,
-            'from_branch_id' => $unit->branch_id,
-            'to_branch_id' => $unit->branch_id,
+            'from_branch_id' => $fromBranchId ?? $unit->branch_id,
+            'to_branch_id' => $toBranchId ?? $unit->branch_id,
             'notes' => $notes,
             'occurred_at' => now(),
             'created_by' => $createdBy,

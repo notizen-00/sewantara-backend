@@ -1,9 +1,13 @@
 <?php
 
 use App\Models\Branch;
+use App\Models\InventoryTransfer;
+use App\Models\ProductUnit;
 use App\Modules\Bookings\Application\ManageBookings;
 use App\Modules\Bookings\Application\ManageBookingStatus;
+use App\Modules\Inventory\Application\ManageInventoryStocks;
 use App\Modules\Inventory\Application\ManageMaintenance;
+use App\Modules\Inventory\Application\ManageProductUnits;
 use App\Modules\Organization\Application\SyncBranchMasterData;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
@@ -166,6 +170,134 @@ test('rental engine automatically assigns serialized units when configured', fun
         ->toBe('reserved');
 });
 
+test('stock adjustment reason moves quantity through damaged and lost buckets', function () {
+    $stocks = app(ManageInventoryStocks::class);
+
+    $damaged = $stocks->adjust('tenant-a', null, [
+        'product_id' => 2,
+        'branch_id' => 1,
+        'quantity' => 3,
+        'reason_type' => 'damaged',
+        'notes' => 'Tripod patah.',
+    ]);
+
+    expect($damaged->quantity_total)->toBe(10)
+        ->and($damaged->quantity_damaged)->toBe(3)
+        ->and($damaged->quantity_available)->toBe(7);
+
+    $lost = $stocks->adjust('tenant-a', null, [
+        'product_id' => 2,
+        'branch_id' => 1,
+        'quantity' => 2,
+        'reason_type' => 'lost',
+    ]);
+
+    expect($lost->quantity_total)->toBe(10)
+        ->and($lost->quantity_lost)->toBe(2)
+        ->and($lost->quantity_available)->toBe(5);
+
+    $recovered = $stocks->adjust('tenant-a', null, [
+        'product_id' => 2,
+        'branch_id' => 1,
+        'quantity' => 1,
+        'reason_type' => 'damaged_recovered',
+    ]);
+
+    $disposed = $stocks->adjust('tenant-a', null, [
+        'product_id' => 2,
+        'branch_id' => 1,
+        'quantity' => 2,
+        'reason_type' => 'damaged_disposed',
+    ]);
+
+    $writtenOff = $stocks->adjust('tenant-a', null, [
+        'product_id' => 2,
+        'branch_id' => 1,
+        'quantity' => 2,
+        'reason_type' => 'lost_write_off',
+    ]);
+
+    expect($recovered->quantity_damaged)->toBe(2)
+        ->and($recovered->quantity_available)->toBe(6)
+        ->and($disposed->quantity_total)->toBe(8)
+        ->and($disposed->quantity_damaged)->toBe(0)
+        ->and($writtenOff->quantity_total)->toBe(6)
+        ->and($writtenOff->quantity_lost)->toBe(0)
+        ->and(DB::table('inventory_stock_movements')
+            ->where('type', 'adjustment_damaged')
+            ->value('quantity'))->toBe(-3)
+        ->and(DB::table('inventory_stock_movements')
+            ->where('type', 'adjustment_lost')
+            ->value('quantity'))->toBe(-2)
+        ->and(DB::table('inventory_stock_movements')
+            ->where('type', 'adjustment_damaged_recovered')
+            ->value('quantity'))->toBe(1)
+        ->and(DB::table('inventory_stock_movements')
+            ->where('type', 'adjustment_damaged_disposed')
+            ->value('quantity'))->toBe(-2)
+        ->and(DB::table('inventory_stock_movements')
+            ->where('type', 'adjustment_lost_write_off')
+            ->value('quantity'))->toBe(-2);
+});
+
+test('quantity stock transfers atomically between branches and records paired movements', function () {
+    $target = Branch::query()->create([
+        'tenant_id' => 'tenant-a',
+        'name' => 'Cabang Kedua',
+        'code' => 'SECOND',
+        'is_active' => true,
+    ]);
+
+    $result = app(ManageInventoryStocks::class)->transfer(
+        'tenant-a',
+        1,
+        null,
+        [
+            'product_id' => 2,
+            'target_branch_id' => $target->getKey(),
+            'quantity' => 4,
+            'notes' => 'Pemerataan stok.',
+        ],
+    );
+
+    expect($result['source_stock']->quantity_total)->toBe(6)
+        ->and($result['target_stock']->quantity_total)->toBe(4)
+        ->and($result['transfer']->from_branch_id)->toBe(1)
+        ->and($result['transfer']->to_branch_id)->toBe($target->getKey())
+        ->and(DB::table('inventory_stock_movements')->where('type', 'transfer_out')->value('quantity'))
+        ->toBe(-4)
+        ->and(DB::table('inventory_stock_movements')->where('type', 'transfer_in')->value('quantity'))
+        ->toBe(4)
+        ->and(DB::table('inventory_stock_movements')
+            ->where('reference_type', InventoryTransfer::class)
+            ->distinct()
+            ->count('reference_id'))->toBe(1);
+});
+
+test('serialized unit can transfer only from its active source branch', function () {
+    $target = Branch::query()->create([
+        'tenant_id' => 'tenant-a',
+        'name' => 'Cabang Kedua',
+        'code' => 'SECOND',
+        'is_active' => true,
+    ]);
+    $unit = ProductUnit::query()->findOrFail(1);
+
+    $transferred = app(ManageProductUnits::class)->transfer(
+        $unit,
+        1,
+        (int) $target->getKey(),
+        null,
+        'Kebutuhan operasional cabang kedua.',
+    );
+
+    expect($transferred->branch_id)->toBe($target->getKey())
+        ->and(DB::table('product_movements')->where('type', 'branch_transfer')->value('from_branch_id'))
+        ->toBe(1)
+        ->and(DB::table('product_movements')->where('type', 'branch_transfer')->value('to_branch_id'))
+        ->toBe($target->getKey());
+});
+
 test('branch master sync copies prices and prepares empty stock without copying physical inventory', function () {
     $source = Branch::query()->create([
         'tenant_id' => 'tenant-a',
@@ -210,6 +342,16 @@ test('branch master sync copies prices and prepares empty stock without copying 
 function seedInventoryManagementData(): void
 {
     $now = now();
+
+    DB::table('branches')->insert([
+        'id' => 1,
+        'tenant_id' => 'tenant-a',
+        'name' => 'Cabang Utama',
+        'code' => 'MAIN',
+        'is_active' => true,
+        'created_at' => $now,
+        'updated_at' => $now,
+    ]);
 
     DB::table('customers')->insert([
         'id' => 1,
@@ -526,6 +668,19 @@ function createInventoryManagementTables(): void
         $table->unsignedBigInteger('created_by')->nullable();
         $table->dateTime('occurred_at');
         $table->dateTime('created_at');
+    });
+
+    Schema::create('inventory_transfers', function (Blueprint $table): void {
+        $table->id();
+        $table->string('tenant_id');
+        $table->unsignedBigInteger('product_id');
+        $table->unsignedBigInteger('from_branch_id');
+        $table->unsignedBigInteger('to_branch_id');
+        $table->unsignedInteger('quantity');
+        $table->text('notes')->nullable();
+        $table->unsignedBigInteger('created_by')->nullable();
+        $table->dateTime('occurred_at');
+        $table->timestamps();
     });
 
     Schema::create('maintenance_records', function (Blueprint $table): void {

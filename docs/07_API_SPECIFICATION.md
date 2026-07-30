@@ -208,8 +208,10 @@ Stok `quantity` dikelola per produk dan branch:
 ```text
 GET  /api/tenant/{tenant}/inventory/stocks
 POST /api/tenant/{tenant}/inventory/stocks/adjust
+POST /api/tenant/{tenant}/inventory/stocks/transfer
 GET  /api/tenant/{tenant}/inventory/movements/stocks
 GET  /api/tenant/{tenant}/inventory/movements/units
+POST /api/tenant/{tenant}/product-units/{productUnit}/transfer
 ```
 
 Contoh penyesuaian stok:
@@ -218,13 +220,16 @@ Contoh penyesuaian stok:
 {
   "product_id": 10,
   "quantity": 5,
+  "reason_type": "initial_stock",
   "notes": "Stok awal gudang"
 }
 ```
 
-Nilai `quantity` positif menambah stok dan nilai negatif mengurangi stok.
-Total tidak dapat dikurangi melewati jumlah yang sedang reserved, rented,
-maintenance, damaged, atau lost.
+`quantity` selalu positif. `reason_type` menentukan penambahan, pengurangan,
+rusak, hilang, recovery, disposal, atau write-off. Transfer quantity memakai
+cabang dari `X-Branch-Id` sebagai sumber dan `target_branch_id` sebagai tujuan.
+Detail lengkap tersedia di
+[`17_INVENTORY_STOCK_TRANSFER_API.md`](17_INVENTORY_STOCK_TRANSFER_API.md).
 
 Pembuatan booking otomatis:
 
