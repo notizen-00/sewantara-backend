@@ -382,6 +382,7 @@ Dokumentasi lengkap berada di folder [`docs`](docs), termasuk:
 - Database Design
 - Architecture
 - API Specification
+- Mitra Dashboard API Guide
 - Security Guide
 - Testing Guide
 - Deployment dan Roadmap
