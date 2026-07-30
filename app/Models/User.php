@@ -42,4 +42,10 @@ class User extends Authenticatable
             ->withPivot('is_primary')
             ->withTimestamps();
     }
+
+    public function roles(): BelongsToMany
+    {
+        return $this->belongsToMany(Role::class, 'user_roles')
+            ->withPivot('branch_id');
+    }
 }

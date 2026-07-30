@@ -97,6 +97,33 @@ beforeEach(function () {
             'updated_at' => now(),
         ],
     ]);
+
+    DB::table('roles')->insert([
+        'id' => 1,
+        'tenant_id' => 'tenant-a',
+        'name' => 'Owner',
+        'code' => 'owner',
+        'is_system' => true,
+        'created_at' => now(),
+        'updated_at' => now(),
+    ]);
+    DB::table('permissions')->insert([
+        'id' => 1,
+        'name' => 'Kelola cabang',
+        'code' => 'branches.manage',
+        'module' => 'organization',
+        'created_at' => now(),
+        'updated_at' => now(),
+    ]);
+    DB::table('role_permissions')->insert([
+        'role_id' => 1,
+        'permission_id' => 1,
+    ]);
+    DB::table('user_roles')->insert([
+        'user_id' => $this->user->getKey(),
+        'role_id' => 1,
+        'branch_id' => null,
+    ]);
 });
 
 afterEach(function () {
@@ -189,6 +216,63 @@ test('branch context requires a header and can switch through it', function () {
         ->assertJsonPath('data.branch.id', 2);
 });
 
+test('current tenant session includes user roles and permissions', function () {
+    $token = loginTenantUser($this)->json('data.access_token');
+
+    $this->getJson('/api/tenant/tenant-a/me', [
+        'Authorization' => 'Bearer '.$token,
+        'X-Branch-Id' => '1',
+    ])->assertOk()
+        ->assertJsonPath('data.user.roles.0.code', 'owner')
+        ->assertJsonPath('data.user.roles.0.permissions.0.code', 'branches.manage');
+});
+
+test('current tenant session only includes global and active branch roles', function () {
+    DB::table('roles')->insert([
+        [
+            'id' => 2,
+            'tenant_id' => 'tenant-a',
+            'name' => 'Branch Manager',
+            'code' => 'branch-manager',
+            'is_system' => false,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ],
+        [
+            'id' => 3,
+            'tenant_id' => 'tenant-a',
+            'name' => 'Other Branch Staff',
+            'code' => 'other-branch-staff',
+            'is_system' => false,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ],
+    ]);
+    DB::table('user_roles')->insert([
+        [
+            'user_id' => $this->user->getKey(),
+            'role_id' => 2,
+            'branch_id' => 1,
+        ],
+        [
+            'user_id' => $this->user->getKey(),
+            'role_id' => 3,
+            'branch_id' => 2,
+        ],
+    ]);
+
+    $token = loginTenantUser($this)->json('data.access_token');
+
+    $roles = $this->getJson('/api/tenant/tenant-a/me', [
+        'Authorization' => 'Bearer '.$token,
+        'X-Branch-Id' => '1',
+    ])->assertOk()
+        ->json('data.user.roles');
+
+    expect(collect($roles)->pluck('code')->all())
+        ->toBe(['owner', 'branch-manager']);
+});
+
 test('branch context rejects branches outside the user access list', function () {
     $token = loginTenantUser($this)->json('data.access_token');
 
@@ -278,5 +362,37 @@ function createTenantAuthenticationTestTables(): void
         $table->boolean('is_primary')->default(false);
         $table->timestamps();
         $table->primary(['branch_id', 'user_id']);
+    });
+
+    Schema::create('roles', function (Blueprint $table): void {
+        $table->id();
+        $table->string('tenant_id')->nullable()->index();
+        $table->string('name', 100);
+        $table->string('code', 100);
+        $table->boolean('is_system')->default(false);
+        $table->timestamps();
+        $table->unique(['tenant_id', 'code']);
+    });
+
+    Schema::create('permissions', function (Blueprint $table): void {
+        $table->id();
+        $table->string('name', 150);
+        $table->string('code', 150)->unique();
+        $table->string('module', 100)->index();
+        $table->timestamps();
+    });
+
+    Schema::create('role_permissions', function (Blueprint $table): void {
+        $table->unsignedBigInteger('role_id');
+        $table->unsignedBigInteger('permission_id');
+        $table->primary(['role_id', 'permission_id']);
+    });
+
+    Schema::create('user_roles', function (Blueprint $table): void {
+        $table->unsignedBigInteger('user_id');
+        $table->unsignedBigInteger('role_id');
+        $table->unsignedBigInteger('branch_id')->nullable();
+        $table->unique(['user_id', 'role_id', 'branch_id']);
+        $table->index(['user_id', 'role_id']);
     });
 }

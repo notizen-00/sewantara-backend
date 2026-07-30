@@ -7,7 +7,8 @@ operasional tenant.
 ## Base URL
 
 ```text
-Local:      http://localhost
+Local:      http://sewantara-backend.test
+Fallback:   http://localhost/sewantara-backend/public
 API prefix: /api
 ```
 
@@ -17,6 +18,12 @@ Semua request sebaiknya mengirim header:
 Accept: application/json
 Content-Type: application/json
 ```
+
+Jika memakai Laragon, jangan arahkan dashboard ke `http://localhost/api`
+kecuali document root Apache sudah diarahkan langsung ke folder `public`.
+Pada setup default Laragon, gunakan virtual host project seperti
+`http://sewantara-backend.test/api` atau fallback path
+`http://localhost/sewantara-backend/public/api`.
 
 ## Format Response
 
@@ -333,13 +340,36 @@ Response:
     "user": {
       "id": 1,
       "name": "Owner Rental",
-      "email": "owner@example.test"
+      "email": "owner@example.test",
+      "roles": [
+        {
+          "id": 1,
+          "name": "Owner",
+          "code": "owner",
+          "is_system": true,
+          "pivot": {
+            "user_id": 1,
+            "role_id": 1,
+            "branch_id": null
+          },
+          "permissions": [
+            {
+              "id": 1,
+              "name": "Kelola cabang",
+              "code": "branches.manage",
+              "module": "organization"
+            }
+          ]
+        }
+      ]
     }
   }
 }
 ```
 
 Dashboard bisa memakai endpoint ini untuk hydrate session setelah refresh page.
+Role yang dikembalikan adalah role global (`branch_id=null`) dan role yang
+berlaku untuk branch aktif dari header `X-Branch-Id`.
 
 ## Logout
 
@@ -789,7 +819,7 @@ Error akses penting:
 ### Register
 
 ```ts
-const response = await fetch("http://localhost/api/central/auth/register", {
+const response = await fetch("http://sewantara-backend.test/api/central/auth/register", {
   method: "POST",
   headers: {
     Accept: "application/json",
@@ -808,7 +838,7 @@ if (result.success) {
 ### Login
 
 ```ts
-const response = await fetch("http://localhost/api/tenant/auth/login", {
+const response = await fetch("http://sewantara-backend.test/api/tenant/auth/login", {
   method: "POST",
   headers: {
     Accept: "application/json",
@@ -837,7 +867,7 @@ async function tenantFetch(path: string, options: RequestInit = {}) {
   const token = localStorage.getItem("access_token");
   const branchId = localStorage.getItem("branch_id") ?? "1";
 
-  return fetch(`http://localhost/api/tenant/${tenantId}${path}`, {
+  return fetch(`http://sewantara-backend.test/api/tenant/${tenantId}${path}`, {
     ...options,
     headers: {
       Accept: "application/json",
