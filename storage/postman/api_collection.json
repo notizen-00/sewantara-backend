@@ -48,6 +48,40 @@
             "name": "central",
             "item": [
                 {
+                    "name": "business-templates",
+                    "item": [
+                        {
+                            "name": "[GET] api/central/business-templates",
+                            "request": {
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Accept",
+                                        "value": "application/json",
+                                        "type": "text"
+                                    },
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json",
+                                        "type": "text"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{base_url}}/api/central/business-templates",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "central",
+                                        "business-templates"
+                                    ]
+                                }
+                            }
+                        }
+                    ]
+                },
+                {
                     "name": "plans",
                     "item": [
                         {
@@ -410,6 +444,385 @@
                     ]
                 },
                 {
+                    "name": "onboarding",
+                    "item": [
+                        {
+                            "name": "[GET] api/tenant/{tenant}/onboarding",
+                            "request": {
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Accept",
+                                        "value": "application/json",
+                                        "type": "text"
+                                    },
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json",
+                                        "type": "text"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{base_url}}/api/tenant/:tenant/onboarding",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "tenant",
+                                        ":tenant",
+                                        "onboarding"
+                                    ],
+                                    "variable": []
+                                },
+                                "auth": {
+                                    "type": "bearer",
+                                    "bearer": [
+                                        {
+                                            "key": "token",
+                                            "value": "{{auth_token}}"
+                                        }
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "name": "business",
+                            "item": [
+                                {
+                                    "name": "[PATCH] api/tenant/{tenant}/onboarding/business",
+                                    "request": {
+                                        "method": "PATCH",
+                                        "header": [
+                                            {
+                                                "key": "Accept",
+                                                "value": "application/json",
+                                                "type": "text"
+                                            },
+                                            {
+                                                "key": "Content-Type",
+                                                "value": "application/json",
+                                                "type": "text"
+                                            }
+                                        ],
+                                        "url": {
+                                            "raw": "{{base_url}}/api/tenant/:tenant/onboarding/business",
+                                            "host": [
+                                                "{{base_url}}"
+                                            ],
+                                            "path": [
+                                                "api",
+                                                "tenant",
+                                                ":tenant",
+                                                "onboarding",
+                                                "business"
+                                            ],
+                                            "variable": []
+                                        },
+                                        "auth": {
+                                            "type": "bearer",
+                                            "bearer": [
+                                                {
+                                                    "key": "token",
+                                                    "value": "{{auth_token}}"
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "name": "rental",
+                            "item": [
+                                {
+                                    "name": "[PATCH] api/tenant/{tenant}/onboarding/rental",
+                                    "request": {
+                                        "method": "PATCH",
+                                        "header": [
+                                            {
+                                                "key": "Accept",
+                                                "value": "application/json",
+                                                "type": "text"
+                                            },
+                                            {
+                                                "key": "Content-Type",
+                                                "value": "application/json",
+                                                "type": "text"
+                                            }
+                                        ],
+                                        "url": {
+                                            "raw": "{{base_url}}/api/tenant/:tenant/onboarding/rental",
+                                            "host": [
+                                                "{{base_url}}"
+                                            ],
+                                            "path": [
+                                                "api",
+                                                "tenant",
+                                                ":tenant",
+                                                "onboarding",
+                                                "rental"
+                                            ],
+                                            "variable": []
+                                        },
+                                        "auth": {
+                                            "type": "bearer",
+                                            "bearer": [
+                                                {
+                                                    "key": "token",
+                                                    "value": "{{auth_token}}"
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "name": "inventory",
+                            "item": [
+                                {
+                                    "name": "complete",
+                                    "item": [
+                                        {
+                                            "name": "[POST] api/tenant/{tenant}/onboarding/inventory/complete",
+                                            "request": {
+                                                "method": "POST",
+                                                "header": [
+                                                    {
+                                                        "key": "Accept",
+                                                        "value": "application/json",
+                                                        "type": "text"
+                                                    },
+                                                    {
+                                                        "key": "Content-Type",
+                                                        "value": "application/json",
+                                                        "type": "text"
+                                                    }
+                                                ],
+                                                "url": {
+                                                    "raw": "{{base_url}}/api/tenant/:tenant/onboarding/inventory/complete",
+                                                    "host": [
+                                                        "{{base_url}}"
+                                                    ],
+                                                    "path": [
+                                                        "api",
+                                                        "tenant",
+                                                        ":tenant",
+                                                        "onboarding",
+                                                        "inventory",
+                                                        "complete"
+                                                    ],
+                                                    "variable": []
+                                                },
+                                                "auth": {
+                                                    "type": "bearer",
+                                                    "bearer": [
+                                                        {
+                                                            "key": "token",
+                                                            "value": "{{auth_token}}"
+                                                        }
+                                                    ]
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "name": "pricing",
+                            "item": [
+                                {
+                                    "name": "complete",
+                                    "item": [
+                                        {
+                                            "name": "[POST] api/tenant/{tenant}/onboarding/pricing/complete",
+                                            "request": {
+                                                "method": "POST",
+                                                "header": [
+                                                    {
+                                                        "key": "Accept",
+                                                        "value": "application/json",
+                                                        "type": "text"
+                                                    },
+                                                    {
+                                                        "key": "Content-Type",
+                                                        "value": "application/json",
+                                                        "type": "text"
+                                                    }
+                                                ],
+                                                "url": {
+                                                    "raw": "{{base_url}}/api/tenant/:tenant/onboarding/pricing/complete",
+                                                    "host": [
+                                                        "{{base_url}}"
+                                                    ],
+                                                    "path": [
+                                                        "api",
+                                                        "tenant",
+                                                        ":tenant",
+                                                        "onboarding",
+                                                        "pricing",
+                                                        "complete"
+                                                    ],
+                                                    "variable": []
+                                                },
+                                                "auth": {
+                                                    "type": "bearer",
+                                                    "bearer": [
+                                                        {
+                                                            "key": "token",
+                                                            "value": "{{auth_token}}"
+                                                        }
+                                                    ]
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "name": "booking",
+                            "item": [
+                                {
+                                    "name": "[PATCH] api/tenant/{tenant}/onboarding/booking",
+                                    "request": {
+                                        "method": "PATCH",
+                                        "header": [
+                                            {
+                                                "key": "Accept",
+                                                "value": "application/json",
+                                                "type": "text"
+                                            },
+                                            {
+                                                "key": "Content-Type",
+                                                "value": "application/json",
+                                                "type": "text"
+                                            }
+                                        ],
+                                        "url": {
+                                            "raw": "{{base_url}}/api/tenant/:tenant/onboarding/booking",
+                                            "host": [
+                                                "{{base_url}}"
+                                            ],
+                                            "path": [
+                                                "api",
+                                                "tenant",
+                                                ":tenant",
+                                                "onboarding",
+                                                "booking"
+                                            ],
+                                            "variable": []
+                                        },
+                                        "auth": {
+                                            "type": "bearer",
+                                            "bearer": [
+                                                {
+                                                    "key": "token",
+                                                    "value": "{{auth_token}}"
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "name": "payments",
+                            "item": [
+                                {
+                                    "name": "[PATCH] api/tenant/{tenant}/onboarding/payments",
+                                    "request": {
+                                        "method": "PATCH",
+                                        "header": [
+                                            {
+                                                "key": "Accept",
+                                                "value": "application/json",
+                                                "type": "text"
+                                            },
+                                            {
+                                                "key": "Content-Type",
+                                                "value": "application/json",
+                                                "type": "text"
+                                            }
+                                        ],
+                                        "url": {
+                                            "raw": "{{base_url}}/api/tenant/:tenant/onboarding/payments",
+                                            "host": [
+                                                "{{base_url}}"
+                                            ],
+                                            "path": [
+                                                "api",
+                                                "tenant",
+                                                ":tenant",
+                                                "onboarding",
+                                                "payments"
+                                            ],
+                                            "variable": []
+                                        },
+                                        "auth": {
+                                            "type": "bearer",
+                                            "bearer": [
+                                                {
+                                                    "key": "token",
+                                                    "value": "{{auth_token}}"
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "name": "go-live",
+                            "item": [
+                                {
+                                    "name": "[POST] api/tenant/{tenant}/onboarding/go-live",
+                                    "request": {
+                                        "method": "POST",
+                                        "header": [
+                                            {
+                                                "key": "Accept",
+                                                "value": "application/json",
+                                                "type": "text"
+                                            },
+                                            {
+                                                "key": "Content-Type",
+                                                "value": "application/json",
+                                                "type": "text"
+                                            }
+                                        ],
+                                        "url": {
+                                            "raw": "{{base_url}}/api/tenant/:tenant/onboarding/go-live",
+                                            "host": [
+                                                "{{base_url}}"
+                                            ],
+                                            "path": [
+                                                "api",
+                                                "tenant",
+                                                ":tenant",
+                                                "onboarding",
+                                                "go-live"
+                                            ],
+                                            "variable": []
+                                        },
+                                        "auth": {
+                                            "type": "bearer",
+                                            "bearer": [
+                                                {
+                                                    "key": "token",
+                                                    "value": "{{auth_token}}"
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
                     "name": "branches",
                     "item": [
                         {
@@ -568,7 +981,7 @@
                                 },
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\n    \"parent_id\": 8,\n    \"name\": \"sample_text\",\n    \"slug\": \"sample_text\",\n    \"description\": \"sample_text\",\n    \"image_path\": \"sample_text\",\n    \"sort_order\": 10,\n    \"is_active\": 1\n}",
+                                    "raw": "{\n    \"parent_id\": 1,\n    \"name\": \"sample_text\",\n    \"slug\": \"sample_text\",\n    \"description\": \"sample_text\",\n    \"image_path\": \"sample_text\",\n    \"sort_order\": 0,\n    \"is_active\": 1\n}",
                                     "options": []
                                 },
                                 "auth": {
@@ -655,7 +1068,7 @@
                                 },
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\n    \"parent_id\": 9,\n    \"name\": \"sample_text\",\n    \"slug\": \"sample_text\",\n    \"description\": \"sample_text\",\n    \"image_path\": \"sample_text\",\n    \"sort_order\": 9,\n    \"is_active\": 1\n}",
+                                    "raw": "{\n    \"parent_id\": 1,\n    \"name\": \"sample_text\",\n    \"slug\": \"sample_text\",\n    \"description\": \"sample_text\",\n    \"image_path\": \"sample_text\",\n    \"sort_order\": 0,\n    \"is_active\": 0\n}",
                                     "options": []
                                 },
                                 "auth": {
@@ -786,7 +1199,7 @@
                                 },
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\n    \"category_id\": 2,\n    \"name\": \"sample_text\",\n    \"slug\": \"sample_text\",\n    \"sku\": \"sample_text\",\n    \"brand\": \"sample_text\",\n    \"model\": \"sample_text\",\n    \"description\": \"sample_text\",\n    \"inventory_type\": \"serialized\",\n    \"default_pricing_type\": \"daily\",\n    \"minimum_rental_duration\": 9,\n    \"deposit_amount\": 11,\n    \"late_fee_amount\": 49,\n    \"is_featured\": 1,\n    \"is_active\": 1\n}",
+                                    "raw": "{\n    \"category_id\": 1,\n    \"name\": \"sample_text\",\n    \"slug\": \"sample_text\",\n    \"sku\": \"sample_text\",\n    \"brand\": \"sample_text\",\n    \"model\": \"sample_text\",\n    \"description\": \"sample_text\",\n    \"inventory_type\": \"serialized\",\n    \"default_pricing_type\": \"daily\",\n    \"minimum_rental_duration\": 2,\n    \"deposit_amount\": 57,\n    \"late_fee_amount\": 83,\n    \"is_featured\": 1,\n    \"is_active\": 0\n}",
                                     "options": []
                                 },
                                 "auth": {
@@ -873,7 +1286,7 @@
                                 },
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\n    \"category_id\": 9,\n    \"name\": \"sample_text\",\n    \"slug\": \"sample_text\",\n    \"sku\": \"sample_text\",\n    \"brand\": \"sample_text\",\n    \"model\": \"sample_text\",\n    \"description\": \"sample_text\",\n    \"inventory_type\": \"serialized\",\n    \"default_pricing_type\": \"daily\",\n    \"minimum_rental_duration\": 8,\n    \"deposit_amount\": 59,\n    \"late_fee_amount\": 54,\n    \"is_featured\": 1,\n    \"is_active\": 1\n}",
+                                    "raw": "{\n    \"category_id\": 1,\n    \"name\": \"sample_text\",\n    \"slug\": \"sample_text\",\n    \"sku\": \"sample_text\",\n    \"brand\": \"sample_text\",\n    \"model\": \"sample_text\",\n    \"description\": \"sample_text\",\n    \"inventory_type\": \"serialized\",\n    \"default_pricing_type\": \"daily\",\n    \"minimum_rental_duration\": 2,\n    \"deposit_amount\": 76,\n    \"late_fee_amount\": 58,\n    \"is_featured\": 1,\n    \"is_active\": 1\n}",
                                     "options": []
                                 },
                                 "auth": {
@@ -1012,6 +1425,370 @@
                                     ]
                                 }
                             }
+                        }
+                    ]
+                },
+                {
+                    "name": "product-prices",
+                    "item": [
+                        {
+                            "name": "[GET] api/tenant/{tenant}/product-prices",
+                            "request": {
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Accept",
+                                        "value": "application/json",
+                                        "type": "text"
+                                    },
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json",
+                                        "type": "text"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{base_url}}/api/tenant/:tenant/product-prices",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "tenant",
+                                        ":tenant",
+                                        "product-prices"
+                                    ],
+                                    "variable": []
+                                },
+                                "auth": {
+                                    "type": "bearer",
+                                    "bearer": [
+                                        {
+                                            "key": "token",
+                                            "value": "{{auth_token}}"
+                                        }
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "name": "[POST] api/tenant/{tenant}/product-prices",
+                            "request": {
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Accept",
+                                        "value": "application/json",
+                                        "type": "text"
+                                    },
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json",
+                                        "type": "text"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{base_url}}/api/tenant/:tenant/product-prices",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "tenant",
+                                        ":tenant",
+                                        "product-prices"
+                                    ],
+                                    "variable": []
+                                },
+                                "auth": {
+                                    "type": "bearer",
+                                    "bearer": [
+                                        {
+                                            "key": "token",
+                                            "value": "{{auth_token}}"
+                                        }
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "name": "[PUT] api/tenant/{tenant}/product-prices/{product_price}",
+                            "request": {
+                                "method": "PUT",
+                                "header": [
+                                    {
+                                        "key": "Accept",
+                                        "value": "application/json",
+                                        "type": "text"
+                                    },
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json",
+                                        "type": "text"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{base_url}}/api/tenant/:tenant/product-prices/:product_price",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "tenant",
+                                        ":tenant",
+                                        "product-prices",
+                                        ":product_price"
+                                    ],
+                                    "variable": []
+                                },
+                                "auth": {
+                                    "type": "bearer",
+                                    "bearer": [
+                                        {
+                                            "key": "token",
+                                            "value": "{{auth_token}}"
+                                        }
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "name": "[DELETE] api/tenant/{tenant}/product-prices/{product_price}",
+                            "request": {
+                                "method": "DELETE",
+                                "header": [
+                                    {
+                                        "key": "Accept",
+                                        "value": "application/json",
+                                        "type": "text"
+                                    },
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json",
+                                        "type": "text"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{base_url}}/api/tenant/:tenant/product-prices/:product_price",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "tenant",
+                                        ":tenant",
+                                        "product-prices",
+                                        ":product_price"
+                                    ],
+                                    "variable": []
+                                },
+                                "auth": {
+                                    "type": "bearer",
+                                    "bearer": [
+                                        {
+                                            "key": "token",
+                                            "value": "{{auth_token}}"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "inventory",
+                    "item": [
+                        {
+                            "name": "stocks",
+                            "item": [
+                                {
+                                    "name": "[GET] api/tenant/{tenant}/inventory/stocks",
+                                    "request": {
+                                        "method": "GET",
+                                        "header": [
+                                            {
+                                                "key": "Accept",
+                                                "value": "application/json",
+                                                "type": "text"
+                                            },
+                                            {
+                                                "key": "Content-Type",
+                                                "value": "application/json",
+                                                "type": "text"
+                                            }
+                                        ],
+                                        "url": {
+                                            "raw": "{{base_url}}/api/tenant/:tenant/inventory/stocks",
+                                            "host": [
+                                                "{{base_url}}"
+                                            ],
+                                            "path": [
+                                                "api",
+                                                "tenant",
+                                                ":tenant",
+                                                "inventory",
+                                                "stocks"
+                                            ],
+                                            "variable": []
+                                        },
+                                        "auth": {
+                                            "type": "bearer",
+                                            "bearer": [
+                                                {
+                                                    "key": "token",
+                                                    "value": "{{auth_token}}"
+                                                }
+                                            ]
+                                        }
+                                    }
+                                },
+                                {
+                                    "name": "adjust",
+                                    "item": [
+                                        {
+                                            "name": "[POST] api/tenant/{tenant}/inventory/stocks/adjust",
+                                            "request": {
+                                                "method": "POST",
+                                                "header": [
+                                                    {
+                                                        "key": "Accept",
+                                                        "value": "application/json",
+                                                        "type": "text"
+                                                    },
+                                                    {
+                                                        "key": "Content-Type",
+                                                        "value": "application/json",
+                                                        "type": "text"
+                                                    }
+                                                ],
+                                                "url": {
+                                                    "raw": "{{base_url}}/api/tenant/:tenant/inventory/stocks/adjust",
+                                                    "host": [
+                                                        "{{base_url}}"
+                                                    ],
+                                                    "path": [
+                                                        "api",
+                                                        "tenant",
+                                                        ":tenant",
+                                                        "inventory",
+                                                        "stocks",
+                                                        "adjust"
+                                                    ],
+                                                    "variable": []
+                                                },
+                                                "auth": {
+                                                    "type": "bearer",
+                                                    "bearer": [
+                                                        {
+                                                            "key": "token",
+                                                            "value": "{{auth_token}}"
+                                                        }
+                                                    ]
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "name": "movements",
+                            "item": [
+                                {
+                                    "name": "stocks",
+                                    "item": [
+                                        {
+                                            "name": "[GET] api/tenant/{tenant}/inventory/movements/stocks",
+                                            "request": {
+                                                "method": "GET",
+                                                "header": [
+                                                    {
+                                                        "key": "Accept",
+                                                        "value": "application/json",
+                                                        "type": "text"
+                                                    },
+                                                    {
+                                                        "key": "Content-Type",
+                                                        "value": "application/json",
+                                                        "type": "text"
+                                                    }
+                                                ],
+                                                "url": {
+                                                    "raw": "{{base_url}}/api/tenant/:tenant/inventory/movements/stocks",
+                                                    "host": [
+                                                        "{{base_url}}"
+                                                    ],
+                                                    "path": [
+                                                        "api",
+                                                        "tenant",
+                                                        ":tenant",
+                                                        "inventory",
+                                                        "movements",
+                                                        "stocks"
+                                                    ],
+                                                    "variable": []
+                                                },
+                                                "auth": {
+                                                    "type": "bearer",
+                                                    "bearer": [
+                                                        {
+                                                            "key": "token",
+                                                            "value": "{{auth_token}}"
+                                                        }
+                                                    ]
+                                                }
+                                            }
+                                        }
+                                    ]
+                                },
+                                {
+                                    "name": "units",
+                                    "item": [
+                                        {
+                                            "name": "[GET] api/tenant/{tenant}/inventory/movements/units",
+                                            "request": {
+                                                "method": "GET",
+                                                "header": [
+                                                    {
+                                                        "key": "Accept",
+                                                        "value": "application/json",
+                                                        "type": "text"
+                                                    },
+                                                    {
+                                                        "key": "Content-Type",
+                                                        "value": "application/json",
+                                                        "type": "text"
+                                                    }
+                                                ],
+                                                "url": {
+                                                    "raw": "{{base_url}}/api/tenant/:tenant/inventory/movements/units",
+                                                    "host": [
+                                                        "{{base_url}}"
+                                                    ],
+                                                    "path": [
+                                                        "api",
+                                                        "tenant",
+                                                        ":tenant",
+                                                        "inventory",
+                                                        "movements",
+                                                        "units"
+                                                    ],
+                                                    "variable": []
+                                                },
+                                                "auth": {
+                                                    "type": "bearer",
+                                                    "bearer": [
+                                                        {
+                                                            "key": "token",
+                                                            "value": "{{auth_token}}"
+                                                        }
+                                                    ]
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                            ]
                         }
                     ]
                 },
@@ -1307,6 +2084,147 @@
                             }
                         },
                         {
+                            "name": "check-out",
+                            "item": [
+                                {
+                                    "name": "[POST] api/tenant/{tenant}/bookings/{booking}/check-out",
+                                    "request": {
+                                        "method": "POST",
+                                        "header": [
+                                            {
+                                                "key": "Accept",
+                                                "value": "application/json",
+                                                "type": "text"
+                                            },
+                                            {
+                                                "key": "Content-Type",
+                                                "value": "application/json",
+                                                "type": "text"
+                                            }
+                                        ],
+                                        "url": {
+                                            "raw": "{{base_url}}/api/tenant/:tenant/bookings/:booking/check-out",
+                                            "host": [
+                                                "{{base_url}}"
+                                            ],
+                                            "path": [
+                                                "api",
+                                                "tenant",
+                                                ":tenant",
+                                                "bookings",
+                                                ":booking",
+                                                "check-out"
+                                            ],
+                                            "variable": []
+                                        },
+                                        "auth": {
+                                            "type": "bearer",
+                                            "bearer": [
+                                                {
+                                                    "key": "token",
+                                                    "value": "{{auth_token}}"
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "name": "return",
+                            "item": [
+                                {
+                                    "name": "[POST] api/tenant/{tenant}/bookings/{booking}/return",
+                                    "request": {
+                                        "method": "POST",
+                                        "header": [
+                                            {
+                                                "key": "Accept",
+                                                "value": "application/json",
+                                                "type": "text"
+                                            },
+                                            {
+                                                "key": "Content-Type",
+                                                "value": "application/json",
+                                                "type": "text"
+                                            }
+                                        ],
+                                        "url": {
+                                            "raw": "{{base_url}}/api/tenant/:tenant/bookings/:booking/return",
+                                            "host": [
+                                                "{{base_url}}"
+                                            ],
+                                            "path": [
+                                                "api",
+                                                "tenant",
+                                                ":tenant",
+                                                "bookings",
+                                                ":booking",
+                                                "return"
+                                            ],
+                                            "variable": []
+                                        },
+                                        "auth": {
+                                            "type": "bearer",
+                                            "bearer": [
+                                                {
+                                                    "key": "token",
+                                                    "value": "{{auth_token}}"
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "name": "cancel",
+                            "item": [
+                                {
+                                    "name": "[POST] api/tenant/{tenant}/bookings/{booking}/cancel",
+                                    "request": {
+                                        "method": "POST",
+                                        "header": [
+                                            {
+                                                "key": "Accept",
+                                                "value": "application/json",
+                                                "type": "text"
+                                            },
+                                            {
+                                                "key": "Content-Type",
+                                                "value": "application/json",
+                                                "type": "text"
+                                            }
+                                        ],
+                                        "url": {
+                                            "raw": "{{base_url}}/api/tenant/:tenant/bookings/:booking/cancel",
+                                            "host": [
+                                                "{{base_url}}"
+                                            ],
+                                            "path": [
+                                                "api",
+                                                "tenant",
+                                                ":tenant",
+                                                "bookings",
+                                                ":booking",
+                                                "cancel"
+                                            ],
+                                            "variable": []
+                                        },
+                                        "auth": {
+                                            "type": "bearer",
+                                            "bearer": [
+                                                {
+                                                    "key": "token",
+                                                    "value": "{{auth_token}}"
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            ]
+                        },
+                        {
                             "name": "payments",
                             "item": [
                                 {
@@ -1337,6 +2255,273 @@
                                                 "bookings",
                                                 ":booking",
                                                 "payments"
+                                            ],
+                                            "variable": []
+                                        },
+                                        "auth": {
+                                            "type": "bearer",
+                                            "bearer": [
+                                                {
+                                                    "key": "token",
+                                                    "value": "{{auth_token}}"
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "maintenance",
+                    "item": [
+                        {
+                            "name": "[GET] api/tenant/{tenant}/maintenance",
+                            "request": {
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Accept",
+                                        "value": "application/json",
+                                        "type": "text"
+                                    },
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json",
+                                        "type": "text"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{base_url}}/api/tenant/:tenant/maintenance",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "tenant",
+                                        ":tenant",
+                                        "maintenance"
+                                    ],
+                                    "variable": []
+                                },
+                                "auth": {
+                                    "type": "bearer",
+                                    "bearer": [
+                                        {
+                                            "key": "token",
+                                            "value": "{{auth_token}}"
+                                        }
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "name": "[POST] api/tenant/{tenant}/maintenance",
+                            "request": {
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Accept",
+                                        "value": "application/json",
+                                        "type": "text"
+                                    },
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json",
+                                        "type": "text"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{base_url}}/api/tenant/:tenant/maintenance",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "tenant",
+                                        ":tenant",
+                                        "maintenance"
+                                    ],
+                                    "variable": []
+                                },
+                                "auth": {
+                                    "type": "bearer",
+                                    "bearer": [
+                                        {
+                                            "key": "token",
+                                            "value": "{{auth_token}}"
+                                        }
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "name": "[GET] api/tenant/{tenant}/maintenance/{maintenance}",
+                            "request": {
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Accept",
+                                        "value": "application/json",
+                                        "type": "text"
+                                    },
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json",
+                                        "type": "text"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{base_url}}/api/tenant/:tenant/maintenance/:maintenance",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "tenant",
+                                        ":tenant",
+                                        "maintenance",
+                                        ":maintenance"
+                                    ],
+                                    "variable": []
+                                },
+                                "auth": {
+                                    "type": "bearer",
+                                    "bearer": [
+                                        {
+                                            "key": "token",
+                                            "value": "{{auth_token}}"
+                                        }
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "name": "start",
+                            "item": [
+                                {
+                                    "name": "[POST] api/tenant/{tenant}/maintenance/{maintenance}/start",
+                                    "request": {
+                                        "method": "POST",
+                                        "header": [
+                                            {
+                                                "key": "Accept",
+                                                "value": "application/json",
+                                                "type": "text"
+                                            },
+                                            {
+                                                "key": "Content-Type",
+                                                "value": "application/json",
+                                                "type": "text"
+                                            }
+                                        ],
+                                        "url": {
+                                            "raw": "{{base_url}}/api/tenant/:tenant/maintenance/:maintenance/start",
+                                            "host": [
+                                                "{{base_url}}"
+                                            ],
+                                            "path": [
+                                                "api",
+                                                "tenant",
+                                                ":tenant",
+                                                "maintenance",
+                                                ":maintenance",
+                                                "start"
+                                            ],
+                                            "variable": []
+                                        },
+                                        "auth": {
+                                            "type": "bearer",
+                                            "bearer": [
+                                                {
+                                                    "key": "token",
+                                                    "value": "{{auth_token}}"
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "name": "complete",
+                            "item": [
+                                {
+                                    "name": "[POST] api/tenant/{tenant}/maintenance/{maintenance}/complete",
+                                    "request": {
+                                        "method": "POST",
+                                        "header": [
+                                            {
+                                                "key": "Accept",
+                                                "value": "application/json",
+                                                "type": "text"
+                                            },
+                                            {
+                                                "key": "Content-Type",
+                                                "value": "application/json",
+                                                "type": "text"
+                                            }
+                                        ],
+                                        "url": {
+                                            "raw": "{{base_url}}/api/tenant/:tenant/maintenance/:maintenance/complete",
+                                            "host": [
+                                                "{{base_url}}"
+                                            ],
+                                            "path": [
+                                                "api",
+                                                "tenant",
+                                                ":tenant",
+                                                "maintenance",
+                                                ":maintenance",
+                                                "complete"
+                                            ],
+                                            "variable": []
+                                        },
+                                        "auth": {
+                                            "type": "bearer",
+                                            "bearer": [
+                                                {
+                                                    "key": "token",
+                                                    "value": "{{auth_token}}"
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "name": "cancel",
+                            "item": [
+                                {
+                                    "name": "[POST] api/tenant/{tenant}/maintenance/{maintenance}/cancel",
+                                    "request": {
+                                        "method": "POST",
+                                        "header": [
+                                            {
+                                                "key": "Accept",
+                                                "value": "application/json",
+                                                "type": "text"
+                                            },
+                                            {
+                                                "key": "Content-Type",
+                                                "value": "application/json",
+                                                "type": "text"
+                                            }
+                                        ],
+                                        "url": {
+                                            "raw": "{{base_url}}/api/tenant/:tenant/maintenance/:maintenance/cancel",
+                                            "host": [
+                                                "{{base_url}}"
+                                            ],
+                                            "path": [
+                                                "api",
+                                                "tenant",
+                                                ":tenant",
+                                                "maintenance",
+                                                ":maintenance",
+                                                "cancel"
                                             ],
                                             "variable": []
                                         },
