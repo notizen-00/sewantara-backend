@@ -15,7 +15,6 @@ class CategoryController extends Controller
     public function index(
         Request $request,
         ManageCategories $categories,
-        string $tenant,
     ): JsonResponse {
         $result = $categories->paginate(
             search: $request->string('search')->toString() ?: null,
@@ -33,7 +32,6 @@ class CategoryController extends Controller
     public function store(
         StoreCategoryRequest $request,
         ManageCategories $categories,
-        string $tenant,
     ): JsonResponse {
         $category = $categories->create($request->validated());
 
@@ -45,7 +43,6 @@ class CategoryController extends Controller
     }
 
     public function show(
-        string $tenant,
         ManageCategories $categories,
         Category $category,
     ): JsonResponse {
@@ -57,7 +54,6 @@ class CategoryController extends Controller
 
     public function update(
         UpdateCategoryRequest $request,
-        string $tenant,
         ManageCategories $categories,
         Category $category,
     ): JsonResponse {
@@ -74,7 +70,6 @@ class CategoryController extends Controller
     }
 
     public function destroy(
-        string $tenant,
         ManageCategories $categories,
         Category $category,
     ): JsonResponse {

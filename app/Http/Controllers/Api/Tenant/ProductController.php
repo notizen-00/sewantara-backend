@@ -15,7 +15,6 @@ class ProductController extends Controller
     public function index(
         Request $request,
         ManageProducts $products,
-        string $tenant,
     ): JsonResponse {
         $result = $products->paginate(
             search: $request->string('search')->toString() ?: null,
@@ -33,7 +32,6 @@ class ProductController extends Controller
     public function store(
         StoreProductRequest $request,
         ManageProducts $products,
-        string $tenant,
     ): JsonResponse {
         $product = $products->create($request->validated());
 
@@ -45,7 +43,6 @@ class ProductController extends Controller
     }
 
     public function show(
-        string $tenant,
         ManageProducts $products,
         Product $product,
     ): JsonResponse {
@@ -57,7 +54,6 @@ class ProductController extends Controller
 
     public function update(
         UpdateProductRequest $request,
-        string $tenant,
         ManageProducts $products,
         Product $product,
     ): JsonResponse {
@@ -71,7 +67,6 @@ class ProductController extends Controller
     }
 
     public function destroy(
-        string $tenant,
         ManageProducts $products,
         Product $product,
     ): JsonResponse {

@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Route;
 use Stancl\Tenancy\Exceptions\TenantCouldNotBeIdentifiedByPathException;
 use Stancl\Tenancy\Resolvers\PathTenantResolver;
 use Stancl\Tenancy\Tenancy;
@@ -22,6 +23,12 @@ class InitializeTenantByPath
             $tenant = $this->resolver->resolve($request->route());
         } catch (TenantCouldNotBeIdentifiedByPathException) {
             return $this->tenantNotFound();
+        }
+
+        $route = $request->route();
+
+        if ($route instanceof Route) {
+            $route->forgetParameter(PathTenantResolver::$tenantParameterName);
         }
 
         $this->tenancy->initialize($tenant);
