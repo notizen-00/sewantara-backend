@@ -60,6 +60,7 @@ test('registration stores the central owner and complete tenant hostname', funct
         ->assertJsonPath('data.domain.url', 'http://kendokenceng.localhost');
 
     $this->assertDatabaseHas('users', [
+        'tenant_id' => Tenant::query()->firstOrFail()->getTenantKey(),
         'email' => 'owner.kendo@gmail.com',
         'is_active' => true,
     ]);

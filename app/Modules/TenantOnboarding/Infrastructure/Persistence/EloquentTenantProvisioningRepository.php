@@ -50,6 +50,7 @@ class EloquentTenantProvisioningRepository implements TenantProvisioningReposito
 
         CentralUser::query()->create([
             'id' => $ownerId,
+            'tenant_id' => $tenant->getTenantKey(),
             'name' => $command->ownerName,
             'email' => $command->ownerEmail,
             'phone' => $command->ownerPhone,

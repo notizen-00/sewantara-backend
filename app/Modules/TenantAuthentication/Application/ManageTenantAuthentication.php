@@ -18,7 +18,9 @@ class ManageTenantAuthentication
         string $password,
         string $deviceName,
     ): array {
-        $user = User::query()->where('email', $email)->first();
+        $user = User::query()
+            ->whereRaw('LOWER(email) = ?', [mb_strtolower(trim($email))])
+            ->first();
 
         if (! $user || ! Hash::check($password, $user->password)) {
             throw new InvalidTenantCredentials;

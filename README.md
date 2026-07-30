@@ -195,9 +195,11 @@ Endpoint registrasi dibatasi `5 request/menit/IP`.
 
 ### Tenant API
 
-Semua endpoint berikut memakai prefix `/api/tenant/{tenant}`:
+Endpoint operasional tenant memakai prefix `/api/tenant/{tenant}`. Khusus
+login, tenant dikenali otomatis melalui akun pusat berdasarkan alamat email
+sehingga ID tenant tidak perlu dikirim melalui URL:
 
-- `POST /auth/login`
+- `POST http://localhost/api/tenant/auth/login`
 - `POST /auth/logout`
 - `GET /me`
 - `GET /onboarding`

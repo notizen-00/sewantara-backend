@@ -3,6 +3,7 @@
 use App\Models\Tenant;
 use App\Models\User;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Routing\Route;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Schema;
@@ -38,6 +39,16 @@ beforeEach(function () {
     $resolver->shouldReceive('resolve')->andReturn($this->tenant);
     app()->instance(PathTenantResolver::class, $resolver);
 
+    DB::table('tenants')->insert([
+        'id' => 'tenant-a',
+        'name' => 'Tenant A',
+        'slug' => 'tenant-a',
+        'status' => 'active',
+        'data' => null,
+        'created_at' => now(),
+        'updated_at' => now(),
+    ]);
+
     $this->user = User::query()->create([
         'id' => '019c0000-0000-7000-8000-000000000001',
         'tenant_id' => 'tenant-a',
@@ -53,6 +64,16 @@ afterEach(function () {
     app()->forgetInstance(PathTenantResolver::class);
     $this->tenancy->end();
     Mockery::close();
+});
+
+test('tenant login route does not require a tenant parameter', function () {
+    /** @var Route $route */
+    $route = app('router')->getRoutes()->getByName('tenant.auth.login');
+
+    expect($route->uri())->toBe('api/tenant/auth/login')
+        ->and($route->parameterNames())->toBe([])
+        ->and($route->gatherMiddleware())
+        ->not->toContain('tenant.path');
 });
 
 test('tenant user can login with credentials and receive a Sanctum bearer token', function () {
@@ -71,8 +92,16 @@ test('tenant user can login with credentials and receive a Sanctum bearer token'
         ->and(User::query()->firstOrFail()->last_login_at)->not->toBeNull();
 });
 
+test('central tenant detection treats email addresses case insensitively', function () {
+    $this->postJson('http://localhost/api/tenant/auth/login', [
+        'email' => 'OWNER@EXAMPLE.COM',
+        'password' => 'StrongPassword123!',
+    ])->assertOk()
+        ->assertJsonPath('data.user.email', 'owner@example.com');
+});
+
 test('invalid credentials are rejected without issuing a token', function () {
-    $this->postJson('/api/tenant/tenant-a/auth/login', [
+    $this->postJson('http://localhost/api/tenant/auth/login', [
         'email' => 'owner@example.com',
         'password' => 'wrong-password',
     ])->assertUnauthorized()
@@ -103,7 +132,7 @@ test('logout revokes the current bearer token', function () {
 
 function loginTenantUser($test): TestResponse
 {
-    return $test->postJson('/api/tenant/tenant-a/auth/login', [
+    return $test->postJson('http://localhost/api/tenant/auth/login', [
         'email' => 'owner@example.com',
         'password' => 'StrongPassword123!',
         'device_name' => 'pest',
@@ -112,6 +141,16 @@ function loginTenantUser($test): TestResponse
 
 function createTenantAuthenticationTestTables(): void
 {
+    Schema::create('tenants', function (Blueprint $table): void {
+        $table->string('id')->primary();
+        $table->string('name');
+        $table->string('slug')->unique();
+        $table->string('status');
+        $table->json('data')->nullable();
+        $table->timestamps();
+        $table->softDeletes();
+    });
+
     Schema::create('users', function (Blueprint $table): void {
         $table->uuid('id')->primary();
         $table->string('tenant_id')->nullable()->index();

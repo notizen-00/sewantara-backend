@@ -18,14 +18,14 @@ use App\Http\Controllers\Api\Tenant\TenantAuthController;
 use App\Http\Controllers\Api\Tenant\TenantOnboardingController;
 use Illuminate\Support\Facades\Route;
 
+Route::post('tenant/auth/login', [TenantAuthController::class, 'login'])
+    ->middleware('throttle:5,1')
+    ->name('tenant.auth.login');
+
 Route::prefix('tenant/{tenant}')
     ->name('tenant.')
     ->middleware('tenant.path')
     ->group(function () {
-        Route::post('/auth/login', [TenantAuthController::class, 'login'])
-            ->middleware(['tenant.accessible', 'throttle:5,1'])
-            ->name('auth.login');
-
         Route::middleware([
             'auth:sanctum',
             'tenant.user',

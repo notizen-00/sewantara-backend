@@ -39,7 +39,7 @@ Registrasi menghasilkan tenant berstatus `onboarding`, bukan langsung
 ## Tenant Authentication
 
 ```http
-POST /api/tenant/{tenant}/auth/login
+POST http://localhost/api/tenant/auth/login
 ```
 
 ```json
@@ -52,6 +52,9 @@ POST /api/tenant/{tenant}/auth/login
 
 Response menghasilkan `access_token` Sanctum. Kirim token pada endpoint tenant
 yang dilindungi:
+
+Tenant tidak perlu dikirim melalui URL atau body. Sistem mengenali tenant
+secara otomatis melalui relasi akun pusat berdasarkan alamat email.
 
 ```http
 Authorization: Bearer {access_token}
