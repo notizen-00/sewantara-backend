@@ -140,6 +140,30 @@ test('cancelling a booking releases reservations and records the cancellation', 
         ->toBe('Customer membatalkan.');
 });
 
+test('rental engine automatically assigns serialized units when configured', function () {
+    DB::table('rental_configurations')->update([
+        'allocation_strategy' => 'auto_assign',
+    ]);
+
+    $booking = app(ManageBookings::class)->create('tenant-a', null, [
+        'customer_id' => 1,
+        'branch_id' => 1,
+        'start_at' => now()->addDay(),
+        'end_at' => now()->addDays(2),
+        'items' => [
+            [
+                'product_id' => 1,
+                'quantity' => 1,
+            ],
+        ],
+    ]);
+
+    expect($booking->allocations)->toHaveCount(1)
+        ->and($booking->allocations->first()->product_unit_id)->toBe(1)
+        ->and(DB::table('product_units')->where('id', 1)->value('status'))
+        ->toBe('reserved');
+});
+
 function seedInventoryManagementData(): void
 {
     $now = now();
@@ -187,6 +211,7 @@ function seedInventoryManagementData(): void
             'product_id' => 1,
             'branch_id' => 1,
             'pricing_type' => 'daily',
+            'duration' => 1,
             'price' => 200000,
             'is_active' => true,
         ],
@@ -196,6 +221,7 @@ function seedInventoryManagementData(): void
             'product_id' => 2,
             'branch_id' => 1,
             'pricing_type' => 'daily',
+            'duration' => 1,
             'price' => 50000,
             'is_active' => true,
         ],
@@ -227,10 +253,34 @@ function seedInventoryManagementData(): void
         'created_at' => $now,
         'updated_at' => $now,
     ]);
+
+    DB::table('rental_configurations')->insert([
+        'id' => '019c0000-0000-7000-8000-000000000013',
+        'tenant_id' => 'tenant-a',
+        'rental_model' => 'per_day',
+        'booking_strategy' => 'date_range',
+        'allocation_strategy' => 'manual',
+        'slot_duration_minutes' => null,
+        'created_at' => $now,
+        'updated_at' => $now,
+    ]);
 }
 
 function createInventoryManagementTables(): void
 {
+    Schema::create('rental_configurations', function (Blueprint $table): void {
+        $table->uuid('id')->primary();
+        $table->string('tenant_id');
+        $table->string('rental_model');
+        $table->string('booking_strategy');
+        $table->string('allocation_strategy');
+        $table->unsignedInteger('slot_duration_minutes')->nullable();
+        $table->boolean('allow_walk_in')->default(true);
+        $table->boolean('allow_online_booking')->default(true);
+        $table->boolean('realtime_availability')->default(true);
+        $table->timestamps();
+    });
+
     Schema::create('customers', function (Blueprint $table): void {
         $table->id();
         $table->string('tenant_id');
@@ -259,6 +309,7 @@ function createInventoryManagementTables(): void
         $table->unsignedBigInteger('product_id');
         $table->unsignedBigInteger('branch_id')->nullable();
         $table->string('pricing_type');
+        $table->integer('duration')->default(1);
         $table->decimal('price');
         $table->boolean('is_active');
     });
@@ -302,6 +353,7 @@ function createInventoryManagementTables(): void
         $table->dateTime('actual_start_at')->nullable();
         $table->dateTime('actual_end_at')->nullable();
         $table->string('status');
+        $table->string('booking_channel')->default('walk_in');
         $table->string('fulfillment_type');
         $table->decimal('subtotal')->default(0);
         $table->decimal('discount_amount')->default(0);

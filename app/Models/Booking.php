@@ -23,6 +23,7 @@ class Booking extends Model
         'actual_start_at',
         'actual_end_at',
         'status',
+        'booking_channel',
         'fulfillment_type',
         'subtotal',
         'discount_amount',

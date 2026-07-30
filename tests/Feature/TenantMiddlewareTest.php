@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\EnsureTenantIsAccessible;
 use App\Http\Middleware\EnsureTenantIsActive;
 use App\Http\Middleware\EnsureTenantSubscriptionActive;
 use App\Http\Middleware\EnsureUserBelongsToTenant;
@@ -173,17 +174,29 @@ test('main subscription must exist and be active', function () {
         ->and($allowed->getStatusCode())->toBe(200);
 });
 
-test('tenant API routes use the complete guard chain in order', function () {
-    $route = app('router')->getRoutes()->getByName('tenant.products.index');
-    $expected = [
+test('tenant API routes separate onboarding setup from active operations', function () {
+    $setupRoute = app('router')->getRoutes()->getByName('tenant.products.index');
+    $operationalRoute = app('router')->getRoutes()->getByName('tenant.bookings.index');
+    $setupExpected = [
+        InitializeTenantByPath::class,
+        EnsureUserBelongsToTenant::class,
+        EnsureTenantIsAccessible::class,
+        EnsureTenantSubscriptionActive::class,
+    ];
+    $operationalExpected = [
         InitializeTenantByPath::class,
         EnsureUserBelongsToTenant::class,
         EnsureTenantIsActive::class,
         EnsureTenantSubscriptionActive::class,
     ];
 
-    $middleware = app('router')->gatherRouteMiddleware($route);
-    $actual = array_values(array_intersect($middleware, $expected));
+    $setupMiddleware = app('router')->gatherRouteMiddleware($setupRoute);
+    $operationalMiddleware = app('router')->gatherRouteMiddleware($operationalRoute);
 
-    expect($actual)->toBe($expected);
+    expect(array_values(array_intersect($setupMiddleware, $setupExpected)))
+        ->toBe($setupExpected)
+        ->and(array_values(array_intersect(
+            $operationalMiddleware,
+            $operationalExpected,
+        )))->toBe($operationalExpected);
 });

@@ -7,7 +7,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Stancl\Tenancy\Tenancy;
 
-class EnsureTenantIsActive
+class EnsureTenantIsAccessible
 {
     public function __construct(private readonly Tenancy $tenancy) {}
 
@@ -19,20 +19,12 @@ class EnsureTenantIsActive
             return $this->error('TENANT_NOT_FOUND', 'Tenant tidak ditemukan.', 404);
         }
 
-        if ($tenant->status !== 'active') {
-            if ($tenant->status === 'onboarding') {
-                return $this->error(
-                    'TENANT_ONBOARDING_REQUIRED',
-                    'Selesaikan onboarding sebelum menggunakan fitur operasional.',
-                    423,
-                );
-            }
-
+        if (! in_array($tenant->status, ['onboarding', 'active'], true)) {
             $code = $tenant->status === 'suspended'
                 ? 'TENANT_SUSPENDED'
-                : 'TENANT_INACTIVE';
+                : 'TENANT_INACCESSIBLE';
 
-            return $this->error($code, 'Tenant sedang tidak aktif.', 423);
+            return $this->error($code, 'Tenant tidak dapat diakses.', 423);
         }
 
         return $next($request);

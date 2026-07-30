@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\EnsureTenantIsAccessible;
 use App\Http\Middleware\EnsureTenantIsActive;
 use App\Http\Middleware\EnsureTenantSubscriptionActive;
 use App\Http\Middleware\EnsureUserBelongsToTenant;
@@ -24,6 +25,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'tenant.path' => InitializeTenantByPath::class,
             'tenant.user' => EnsureUserBelongsToTenant::class,
             'tenant.active' => EnsureTenantIsActive::class,
+            'tenant.accessible' => EnsureTenantIsAccessible::class,
             'tenant.subscription' => EnsureTenantSubscriptionActive::class,
         ]);
     })

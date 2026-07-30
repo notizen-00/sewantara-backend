@@ -26,6 +26,16 @@ POST /api/central/auth/register
 }
 ```
 
+`business_type` wajib menggunakan `code` dari:
+
+```http
+GET /api/central/business-templates
+```
+
+Registrasi menghasilkan tenant berstatus `onboarding`, bukan langsung
+`active`. Owner tetap dapat login, tetapi endpoint operasional mengembalikan
+`TENANT_ONBOARDING_REQUIRED` sampai proses Go Live selesai.
+
 ## Tenant Authentication
 
 ```http
@@ -53,6 +63,50 @@ Logout dan revoke token aktif:
 ```http
 POST /api/tenant/{tenant}/auth/logout
 ```
+
+## Guided Tenant Onboarding
+
+```text
+GET   /api/tenant/{tenant}/onboarding
+PATCH /api/tenant/{tenant}/onboarding/business
+PATCH /api/tenant/{tenant}/onboarding/rental
+POST  /api/tenant/{tenant}/onboarding/inventory/complete
+POST  /api/tenant/{tenant}/onboarding/pricing/complete
+PATCH /api/tenant/{tenant}/onboarding/booking
+PATCH /api/tenant/{tenant}/onboarding/payments
+POST  /api/tenant/{tenant}/onboarding/go-live
+```
+
+Urutan setup adalah business, template, rental configuration, inventory,
+pricing, booking configuration, payment configuration, lalu Go Live.
+
+Inventory dapat disiapkan melalui endpoint category, product, product unit,
+dan inventory stock. Harga disiapkan melalui:
+
+```text
+GET    /api/tenant/{tenant}/product-prices
+POST   /api/tenant/{tenant}/product-prices
+PATCH  /api/tenant/{tenant}/product-prices/{productPrice}
+DELETE /api/tenant/{tenant}/product-prices/{productPrice}
+```
+
+Go Live memvalidasi business profile dan operating hours, rental
+configuration, inventory, harga yang kompatibel dengan rental model, booking
+configuration, minimal satu payment method, branch aktif, dan subscription.
+
+Konfigurasi payment method disimpan terenkripsi pada database tenant.
+
+Rental engine mendukung:
+
+| Rental model | Pricing | Booking strategy umum |
+|---|---|---|
+| `per_hour` | `hourly` | `queue` atau `date_range` |
+| `per_day` | `daily` | `date_range` |
+| `session` | `event` | `session` |
+
+`auto_assign` membuat engine memilih unit tersedia tanpa bergantung pada nama
+kategori. Queue dan session menggunakan `slot_duration_minutes`; jika
+`end_at` tidak dikirim, engine membentuk waktu selesai dari durasi slot.
 
 ## Product Category Master
 

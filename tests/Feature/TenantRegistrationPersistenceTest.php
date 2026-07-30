@@ -2,6 +2,7 @@
 
 use App\Models\Tenant;
 use App\Modules\TenantOnboarding\Contracts\TenantEnvironmentProvisioner;
+use Database\Seeders\BusinessTemplateSeeder;
 use Database\Seeders\PlanSeeder;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
@@ -23,7 +24,10 @@ test('registration stores the central owner and complete tenant hostname', funct
         '--force' => true,
     ]);
 
-    $this->seed(PlanSeeder::class);
+    $this->seed([
+        BusinessTemplateSeeder::class,
+        PlanSeeder::class,
+    ]);
 
     $planId = DB::table(config('laravel-subscriptions.tables.plans'))
         ->where('slug', 'starter')

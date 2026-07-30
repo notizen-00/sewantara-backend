@@ -14,7 +14,7 @@ use App\Modules\TenantOnboarding\Contracts\TrialSubscriptionStarter;
 
 afterEach(fn () => Mockery::close());
 
-test('tenant onboarding activates the tenant immediately for its trial', function () {
+test('tenant registration starts the guided onboarding during its trial', function () {
     $command = onboardingCommand();
     $plan = new AvailablePlan(1, 'starter', 'month');
     $tenant = provisionedTenant();
@@ -57,7 +57,7 @@ test('tenant onboarding activates the tenant immediately for its trial', functio
     ))->execute($command);
 
     expect($registered->tenantId)->toBe('tenant-id')
-        ->and($registered->tenantStatus)->toBe('active')
+        ->and($registered->tenantStatus)->toBe('onboarding')
         ->and($registered->subscriptionStatus)->toBe('trial')
         ->and($registered->planSlug)->toBe('starter');
 });

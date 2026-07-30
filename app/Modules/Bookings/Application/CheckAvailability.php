@@ -3,15 +3,29 @@
 namespace App\Modules\Bookings\Application;
 
 use App\Models\ProductUnit;
+use App\Modules\RentalEngine\Application\RentalEngine;
 use Illuminate\Support\Collection;
+use Illuminate\Validation\ValidationException;
 
 class CheckAvailability
 {
+    public function __construct(
+        private readonly RentalEngine $engine,
+    ) {}
+
     public function execute(string $tenantId, array $criteria): Collection
     {
+        if (! $this->engine->usesRealtimeAvailability()) {
+            throw ValidationException::withMessages([
+                'availability' => ['Realtime availability dinonaktifkan oleh tenant.'],
+            ]);
+        }
+
+        $criteria = $this->engine->prepareBooking($criteria);
+
         return ProductUnit::query()
             ->where('product_id', $criteria['product_id'])
-            ->where('status', 'available')
+            ->whereIn('status', ['available', 'reserved'])
             ->when($criteria['branch_id'] ?? null, fn ($query, int $branchId) => $query->where('branch_id', $branchId))
             ->whereNotIn('id', function ($query) use ($criteria, $tenantId): void {
                 $query->select('product_unit_id')

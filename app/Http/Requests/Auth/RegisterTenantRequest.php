@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Auth;
 
+use App\Models\BusinessTemplate;
 use App\Models\CentralUser;
 use App\Models\Domain;
 use App\Support\TenantHostname;
@@ -28,7 +29,14 @@ class RegisterTenantRequest extends FormRequest
     {
         return [
             'business_name' => ['required', 'string', 'max:150'],
-            'business_type' => ['nullable', 'string', 'max:100'],
+            'business_type' => [
+                'required',
+                'string',
+                'max:100',
+                Rule::exists(BusinessTemplate::class, 'code')
+                    ->where('is_active', true)
+                    ->whereNull('deleted_at'),
+            ],
             'subdomain' => [
                 'required',
                 'string',

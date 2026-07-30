@@ -24,10 +24,6 @@ class InitializeTenantByPath
             return $this->tenantNotFound();
         }
 
-        if ($tenant->status !== 'active') {
-            return $this->tenantNotFound();
-        }
-
         $this->tenancy->initialize($tenant);
         app()->instance('currentTenant', $tenant);
         $request->attributes->set('tenant', $tenant);

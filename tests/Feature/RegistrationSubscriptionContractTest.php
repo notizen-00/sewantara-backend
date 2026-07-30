@@ -11,6 +11,7 @@ test('registration only accepts essential onboarding fields', function () {
 
     expect($rules)->toHaveKeys([
         'business_name',
+        'business_type',
         'subdomain',
         'owner.name',
         'owner.email',

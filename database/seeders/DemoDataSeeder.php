@@ -16,6 +16,7 @@ class DemoDataSeeder extends Seeder
             TenantInventorySeeder::class,
             TenantBookingSeeder::class,
             TenantBillingSeeder::class,
+            DemoTenantGoLiveSeeder::class,
         ]);
     }
 }

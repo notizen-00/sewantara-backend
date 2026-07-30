@@ -1,6 +1,7 @@
 <?php
 
 use Database\Seeders\DemoDataSeeder;
+use Database\Seeders\DemoTenantGoLiveSeeder;
 use Database\Seeders\DemoTenantRegistrationSeeder;
 use Database\Seeders\TenantAccessControlSeeder;
 use Database\Seeders\TenantBillingSeeder;
@@ -36,6 +37,7 @@ test('demo data seeder runs feature seeders in dependency order', function () {
         TenantInventorySeeder::class,
         TenantBookingSeeder::class,
         TenantBillingSeeder::class,
+        DemoTenantGoLiveSeeder::class,
     ]);
 });
 

@@ -11,6 +11,8 @@ Sewantara adalah backend SaaS multi-tenant untuk pengelolaan berbagai jenis bisn
 | Tenant middleware | Selesai | Validasi context, user tenant, status tenant, dan subscription aktif |
 | Plan dan feature | Selesai | Seeder Starter, Growth, dan Scale menggunakan LaravelCM Subscriptions |
 | Registrasi tenant | Selesai | Tenant, schema, migration, dan owner langsung disiapkan untuk masa trial |
+| Guided onboarding | Selesai | Business, template, rental engine, inventory, pricing, booking, payment, dan Go Live |
+| Rental engine | Selesai | Per-hour, per-day, session, strategy booking, dan allocation dibaca dari konfigurasi tenant |
 | Trial subscription | Selesai | Subscription `main` memperoleh trial 14 hari dari konfigurasi plan |
 | Midtrans Snap adapter | Fondasi selesai | Sudah memakai SDK resmi `midtrans/midtrans-php` |
 | Billing subscription | Sebagian selesai | Webhook pembayaran terverifikasi; checkout, reconciliation, dan renewal belum dibuat |
@@ -184,6 +186,7 @@ Jangan menyimpan Server Key asli di repository.
 | GET | `/api/shared/health` | Health check bersama |
 | GET | `/api/central/plans` | Daftar plan aktif beserta feature |
 | POST | `/api/central/auth/register` | Registrasi tenant dengan trial |
+| GET | `/api/central/business-templates` | Preset template rental yang aktif |
 | GET | `/api/central/tenants` | Daftar tenant sementara |
 | POST | `/api/central/tenants` | Membuat tenant sementara |
 | GET | `/api/central/tenants/{tenant}` | Detail tenant |
@@ -197,12 +200,21 @@ Semua endpoint berikut memakai prefix `/api/tenant/{tenant}`:
 - `POST /auth/login`
 - `POST /auth/logout`
 - `GET /me`
+- `GET /onboarding`
+- `PATCH /onboarding/business`
+- `PATCH /onboarding/rental`
+- `POST /onboarding/inventory/complete`
+- `POST /onboarding/pricing/complete`
+- `PATCH /onboarding/booking`
+- `PATCH /onboarding/payments`
+- `POST /onboarding/go-live`
 - `/branches`
 - `GET|POST /categories`
 - `GET|PATCH|DELETE /categories/{category}`
 - `GET|POST /products`
 - `GET|PATCH|DELETE /products/{product}`
 - `/product-units`
+- `/product-prices`
 - `GET /inventory/stocks`
 - `POST /inventory/stocks/adjust`
 - `GET /inventory/movements/stocks`
@@ -282,12 +294,14 @@ Proses registrasi:
 4. Membuat owner di database central dan menyimpan hash yang sama untuk provisioning user tenant.
 5. Membuat subscription package bernama `main`.
 6. Mengaktifkan trial sesuai plan.
-7. Langsung membuat schema tenant, menjalankan tenant migration, lalu membuat owner dan branch utama dari nama usaha tanpa menunggu pembayaran.
-8. Tenant berstatus aktif selama trial setelah seluruh provisioning berhasil.
+7. Membuat schema tenant, owner, branch utama, business profile, rental configuration, progress onboarding, dan metode pembayaran awal.
+8. Tenant berstatus `onboarding` dan dapat login untuk menyelesaikan setup.
+9. Fitur operasional tetap terkunci sampai checklist Go Live lengkap.
+10. Tenant berubah menjadi `active` setelah Go Live berhasil.
 
 Frontend tidak mengirim `slug`, `timezone`, `currency`, atau `status`. Backend membuat
 slug secara otomatis, menggunakan timezone `Asia/Jakarta` dan currency `IDR`, serta
-mengelola status tenant berdasarkan proses pembayaran dan provisioning.
+mengelola status tenant berdasarkan provisioning dan progress onboarding.
 
 Tidak ada transaksi Midtrans saat registrasi. Checkout baru akan dibuat saat invoice subscription perlu dibayar.
 

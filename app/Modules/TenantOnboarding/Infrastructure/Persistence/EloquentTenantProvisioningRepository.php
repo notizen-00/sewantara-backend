@@ -2,6 +2,7 @@
 
 namespace App\Modules\TenantOnboarding\Infrastructure\Persistence;
 
+use App\Models\BusinessTemplate;
 use App\Models\CentralUser;
 use App\Models\Domain;
 use App\Models\Tenant;
@@ -16,6 +17,11 @@ class EloquentTenantProvisioningRepository implements TenantProvisioningReposito
 {
     public function provision(RegisterTenantCommand $command): ProvisionedTenant
     {
+        $template = BusinessTemplate::query()
+            ->where('code', $command->businessType)
+            ->where('is_active', true)
+            ->firstOrFail();
+
         $tenant = Tenant::create([
             'name' => $command->businessName,
             'slug' => $this->uniqueTenantSlug($command->businessName),
@@ -59,6 +65,11 @@ class EloquentTenantProvisioningRepository implements TenantProvisioningReposito
             'phone' => $command->ownerPhone,
             'password' => $password,
             'is_active' => true,
+        ]);
+        $tenant->setInternal('pending_onboarding', [
+            'template_code' => $template->code,
+            'template_version' => $template->version,
+            'configuration' => $template->configuration,
         ]);
         $tenant->save();
 

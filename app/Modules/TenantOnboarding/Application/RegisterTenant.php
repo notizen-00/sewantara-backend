@@ -56,7 +56,7 @@ class RegisterTenant
             tenantId: $registration->tenantId,
             tenantName: $registration->tenantName,
             tenantSlug: $registration->tenantSlug,
-            tenantStatus: 'active',
+            tenantStatus: 'onboarding',
             timezone: $registration->timezone,
             currency: $registration->currency,
             domain: $registration->domain,

@@ -13,7 +13,8 @@ class AvailabilityController extends Controller
         $validated = $request->validate([
             'product_id' => ['required', 'integer', 'min:1'],
             'start_at' => ['required', 'date'],
-            'end_at' => ['required', 'date', 'after:start_at'],
+            'end_at' => ['nullable', 'date', 'after:start_at'],
+            'booking_channel' => ['nullable', 'in:walk_in,online'],
             'branch_id' => ['nullable', 'integer', 'min:1'],
         ]);
 

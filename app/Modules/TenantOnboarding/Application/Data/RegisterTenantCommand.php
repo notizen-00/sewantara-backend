@@ -6,7 +6,7 @@ readonly class RegisterTenantCommand
 {
     public function __construct(
         public string $businessName,
-        public ?string $businessType,
+        public string $businessType,
         public string $subdomain,
         public string $ownerName,
         public string $ownerEmail,
@@ -23,7 +23,7 @@ readonly class RegisterTenantCommand
     {
         return new self(
             businessName: $data['business_name'],
-            businessType: $data['business_type'] ?? null,
+            businessType: $data['business_type'],
             subdomain: $data['subdomain'],
             ownerName: $data['owner']['name'],
             ownerEmail: $data['owner']['email'],

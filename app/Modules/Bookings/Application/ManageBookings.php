@@ -10,7 +10,7 @@ use App\Models\Invoice;
 use App\Models\Product;
 use App\Models\ProductUnit;
 use App\Modules\Inventory\Application\InventoryBookingLifecycle;
-use Carbon\CarbonImmutable;
+use App\Modules\RentalEngine\Application\RentalEngine;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -20,6 +20,7 @@ class ManageBookings
 {
     public function __construct(
         private readonly InventoryBookingLifecycle $inventory,
+        private readonly RentalEngine $engine,
     ) {}
 
     public function paginate(?string $status, int $perPage = 20): LengthAwarePaginator
@@ -33,6 +34,7 @@ class ManageBookings
 
     public function create(string $tenantId, ?string $creatorId, array $attributes): Booking
     {
+        $attributes = $this->engine->prepareBooking($attributes);
         $customer = Customer::query()->findOrFail($attributes['customer_id']);
 
         if ($customer->status === 'blacklisted') {
@@ -68,6 +70,10 @@ class ManageBookings
                 $deposit += $lineDeposit;
             }
 
+            $preparedItems = $this->assignUnitsWhenConfigured(
+                $preparedItems,
+                $attributes,
+            );
             $this->guardUnitAvailability($preparedItems, $attributes);
 
             $booking = Booking::create([
@@ -79,6 +85,7 @@ class ManageBookings
                 'start_at' => $attributes['start_at'],
                 'end_at' => $attributes['end_at'],
                 'status' => 'pending',
+                'booking_channel' => $attributes['booking_channel'],
                 'fulfillment_type' => $attributes['fulfillment_type'] ?? 'pickup',
                 'subtotal' => $subtotal,
                 'deposit_amount' => $deposit,
@@ -221,7 +228,7 @@ class ManageBookings
      */
     private function resolvePricing(Product $product, array $attributes): array
     {
-        $pricingType = $product->default_pricing_type;
+        $pricingType = $this->engine->pricingType();
         $price = DB::table('product_prices')
             ->where('product_id', $product->getKey())
             ->where('pricing_type', $pricingType)
@@ -231,7 +238,7 @@ class ManageBookings
                     ->orWhereNull('branch_id');
             })
             ->orderByRaw('branch_id IS NULL')
-            ->value('price');
+            ->first(['price', 'duration']);
 
         if ($price === null) {
             throw ValidationException::withMessages([
@@ -239,15 +246,58 @@ class ManageBookings
             ]);
         }
 
-        $start = CarbonImmutable::parse($attributes['start_at']);
-        $end = CarbonImmutable::parse($attributes['end_at']);
-        $duration = match ($pricingType) {
-            'hourly' => max(1, (int) ceil($start->diffInMinutes($end) / 60)),
-            'weekly' => max(1, (int) ceil($start->diffInMinutes($end) / 10080)),
-            'monthly' => max(1, (int) ceil($start->diffInMinutes($end) / 43200)),
-            default => max(1, (int) ceil($start->diffInMinutes($end) / 1440)),
-        };
+        $duration = $this->engine->billableDuration(
+            $attributes['start_at'],
+            $attributes['end_at'],
+            (int) $price->duration,
+        );
 
-        return [(float) $price, $duration, $pricingType];
+        return [(float) $price->price, $duration, $pricingType];
+    }
+
+    private function assignUnitsWhenConfigured(
+        array $preparedItems,
+        array $attributes,
+    ): array {
+        if (! $this->engine->usesAutoAssignment()) {
+            return $preparedItems;
+        }
+
+        foreach ($preparedItems as &$prepared) {
+            if ($prepared['product']->inventory_type !== 'serialized'
+                || ! empty($prepared['item']['unit_ids'])) {
+                continue;
+            }
+
+            $units = ProductUnit::query()
+                ->where('product_id', $prepared['product']->getKey())
+                ->when(
+                    $attributes['branch_id'] ?? null,
+                    fn ($query, int $branchId) => $query->where('branch_id', $branchId),
+                )
+                ->whereIn('status', ['available', 'reserved'])
+                ->whereNotIn('id', function ($query) use ($attributes): void {
+                    $query->select('product_unit_id')
+                        ->from('booking_unit_allocations')
+                        ->whereIn('status', ['reserved', 'checked_out'])
+                        ->where('start_at', '<', $attributes['end_at'])
+                        ->where('end_at', '>', $attributes['start_at']);
+                })
+                ->lockForUpdate()
+                ->limit((int) $prepared['item']['quantity'])
+                ->pluck('id')
+                ->all();
+
+            if (count($units) !== (int) $prepared['item']['quantity']) {
+                throw ValidationException::withMessages([
+                    'items' => ["Unit {$prepared['product']->name} yang tersedia tidak mencukupi."],
+                ]);
+            }
+
+            $prepared['item']['unit_ids'] = $units;
+        }
+        unset($prepared);
+
+        return $preparedItems;
     }
 }
