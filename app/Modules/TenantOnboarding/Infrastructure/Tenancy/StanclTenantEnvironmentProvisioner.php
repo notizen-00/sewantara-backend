@@ -3,7 +3,6 @@
 namespace App\Modules\TenantOnboarding\Infrastructure\Tenancy;
 
 use App\Models\Tenant;
-use App\Models\User;
 use App\Modules\TenantOnboarding\Contracts\TenantEnvironmentProvisioner;
 use Illuminate\Support\Facades\Artisan;
 use LogicException;
@@ -15,6 +14,7 @@ class StanclTenantEnvironmentProvisioner implements TenantEnvironmentProvisioner
 {
     public function __construct(
         private readonly DatabaseManager $databaseManager,
+        private readonly InitializeTenantDatabase $initializeTenantDatabase,
     ) {}
 
     public function provision(string $tenantId): void
@@ -55,13 +55,13 @@ class StanclTenantEnvironmentProvisioner implements TenantEnvironmentProvisioner
                 throw new LogicException('Data owner tenant belum tersedia.');
             }
 
-            $tenant->run(function () use ($owner): void {
-                $user = User::query()->find($owner['id']);
-
-                if ($user === null) {
-                    User::query()->forceCreate($owner);
-                }
-            });
+            $tenant->run(
+                fn () => $this->initializeTenantDatabase->handle(
+                    (string) $tenant->getTenantKey(),
+                    (string) $tenant->name,
+                    $owner,
+                ),
+            );
 
             $tenant->setInternal('pending_owner', null);
             $tenant->forceFill([

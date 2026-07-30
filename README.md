@@ -269,7 +269,7 @@ Proses registrasi:
 4. Membuat owner di database central dan menyimpan hash yang sama untuk provisioning user tenant.
 5. Membuat subscription package bernama `main`.
 6. Mengaktifkan trial sesuai plan.
-7. Langsung membuat schema tenant, menjalankan tenant migration, lalu membuat owner tanpa menunggu pembayaran.
+7. Langsung membuat schema tenant, menjalankan tenant migration, lalu membuat owner dan branch utama dari nama usaha tanpa menunggu pembayaran.
 8. Tenant berstatus aktif selama trial setelah seluruh provisioning berhasil.
 
 Frontend tidak mengirim `slug`, `timezone`, `currency`, atau `status`. Backend membuat
