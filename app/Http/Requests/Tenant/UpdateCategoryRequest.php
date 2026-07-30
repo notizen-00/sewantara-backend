@@ -43,7 +43,6 @@ class UpdateCategoryRequest extends FormRequest
                     ->ignore($categoryId),
             ],
             'description' => ['sometimes', 'nullable', 'string'],
-            'image_path' => ['sometimes', 'nullable', 'string', 'max:255'],
             'sort_order' => ['sometimes', 'integer', 'min:0'],
             'is_active' => ['sometimes', 'boolean'],
         ];

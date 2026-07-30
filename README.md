@@ -236,6 +236,13 @@ sehingga ID tenant tidak perlu dikirim melalui URL:
 - `POST /maintenance/{maintenance}/cancel`
 - `/availability/check`
 - `/reports/dashboard`
+- `GET|PATCH /settings`
+- `POST /settings/images`
+- `DELETE /settings/images/{image}`
+- `POST|DELETE /categories/{category}/image`
+- `POST /products/{product}/images`
+- `PATCH|DELETE /products/{product}/images/{productImage}`
+- `GET /media/{path}`
 
 Endpoint selain login wajib mengirim header:
 
@@ -356,8 +363,8 @@ composer test
 Status test saat README ini diperbarui:
 
 ```text
-51 tests passed
-522 assertions
+79 tests passed
+1187 assertions
 ```
 
 Test mencakup Sanctum login/logout, hierarchy kategori, CRUD dan isolation
@@ -382,6 +389,7 @@ Dokumentasi lengkap berada di folder [`docs`](docs), termasuk:
 - Database Design
 - Architecture
 - API Specification
+- Tenant Settings and Private Media API
 - Mitra Dashboard API Guide
 - Security Guide
 - Testing Guide

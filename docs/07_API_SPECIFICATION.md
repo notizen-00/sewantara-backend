@@ -158,19 +158,20 @@ POST   /api/tenant/{tenant}/categories
 GET    /api/tenant/{tenant}/categories/{category}
 PATCH  /api/tenant/{tenant}/categories/{category}
 DELETE /api/tenant/{tenant}/categories/{category}
+POST   /api/tenant/{tenant}/categories/{category}/image
+DELETE /api/tenant/{tenant}/categories/{category}/image
 ```
 
 Query list mendukung `search`, `parent_id`, `roots_only`, `is_active`, dan
 `per_page`.
 
-Contoh request create:
+Contoh request create metadata:
 
 ```json
 {
   "parent_id": null,
   "name": "Kamera",
   "description": "Peralatan kamera dan aksesorinya",
-  "image_path": "categories/camera.jpg",
   "sort_order": 10,
   "is_active": true
 }
@@ -178,6 +179,27 @@ Contoh request create:
 
 `slug` dibuat otomatis jika tidak dikirim. Parent wajib berasal dari tenant
 yang sama dan kategori tidak dapat menjadi parent bagi dirinya sendiri.
+Gambar dikirim sebagai field file `image` menggunakan `multipart/form-data`,
+baik saat create maupun melalui endpoint khusus image.
+
+## Tenant Settings dan Private Media
+
+```text
+GET    /api/tenant/{tenant}/settings
+PATCH  /api/tenant/{tenant}/settings
+POST   /api/tenant/{tenant}/settings/images
+DELETE /api/tenant/{tenant}/settings/images/{image}
+GET    /api/tenant/{tenant}/media/{path}
+
+POST   /api/tenant/{tenant}/products/{product}/images
+PATCH  /api/tenant/{tenant}/products/{product}/images/{productImage}
+DELETE /api/tenant/{tenant}/products/{product}/images/{productImage}
+```
+
+Logo tenant, logo cabang, gambar kategori, dan foto produk disimpan pada disk
+private yang diisolasi per tenant oleh `FilesystemTenancyBootstrapper`.
+Dokumentasi request, response, validasi, dan integrasi frontend tersedia di
+[`16_TENANT_SETTINGS_PRIVATE_MEDIA_API.md`](16_TENANT_SETTINGS_PRIVATE_MEDIA_API.md).
 
 ## Inventory Lifecycle
 

@@ -222,4 +222,15 @@ function createProductCrudTestTables(): void
         $table->timestamps();
         $table->softDeletes();
     });
+
+    Schema::create('product_images', function (Blueprint $table): void {
+        $table->id();
+        $table->string('tenant_id')->index();
+        $table->unsignedBigInteger('product_id');
+        $table->string('image_path');
+        $table->string('alt_text')->nullable();
+        $table->boolean('is_primary')->default(false);
+        $table->integer('sort_order')->default(0);
+        $table->timestamps();
+    });
 }

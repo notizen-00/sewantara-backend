@@ -1,10 +1,13 @@
 <?php
 
+use App\Models\Product;
 use App\Models\Tenant;
 use App\Models\User;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\Storage;
 use Laravelcm\Subscriptions\Models\Subscription;
 use Stancl\Tenancy\Resolvers\PathTenantResolver;
 use Stancl\Tenancy\Tenancy;
@@ -15,6 +18,7 @@ beforeEach(function () {
     config()->set('tenancy.database.central_connection', 'sqlite');
     DB::purge('sqlite');
     DB::setDefaultConnection('sqlite');
+    Storage::fake('local');
 
     createProductCategoryCrudTestTables();
 
@@ -78,7 +82,6 @@ test('product category master supports hierarchy CRUD and tenant isolation', fun
     $root = $this->postJson('/api/tenant/tenant-a/categories', [
         'name' => 'Kamera',
         'description' => 'Peralatan kamera',
-        'image_path' => 'categories/camera.jpg',
         'sort_order' => 10,
         'is_active' => true,
     ], $this->headers);
@@ -89,6 +92,27 @@ test('product category master supports hierarchy CRUD and tenant isolation', fun
         ->assertJsonPath('data.tenant_id', 'tenant-a');
 
     $rootId = $root->json('data.id');
+
+    $categoryImage = $this->post(
+        "/api/tenant/tenant-a/categories/{$rootId}/image",
+        ['image' => UploadedFile::fake()->image('camera.jpg', 640, 480)],
+        $this->headers,
+    )->assertOk();
+
+    $categoryImagePath = $categoryImage->json('data.image_path');
+
+    expect($categoryImagePath)->toStartWith("categories/{$rootId}/");
+    Storage::disk('local')->assertExists($categoryImagePath);
+
+    $this->delete(
+        "/api/tenant/tenant-a/categories/{$rootId}/image",
+        [],
+        $this->headers,
+    )->assertOk()
+        ->assertJsonPath('data.image_path', null)
+        ->assertJsonPath('data.image_url', null);
+
+    Storage::disk('local')->assertMissing($categoryImagePath);
 
     $secondRoot = $this->postJson('/api/tenant/tenant-a/categories', [
         'name' => 'Kamera',
@@ -176,6 +200,64 @@ test('product category master supports hierarchy CRUD and tenant isolation', fun
         ->not->toBeNull();
 });
 
+test('product photos are private and primary photo is reassigned on delete', function () {
+    $product = Product::query()->create([
+        'tenant_id' => 'tenant-a',
+        'name' => 'Sony A7 IV',
+        'slug' => 'sony-a7-iv',
+        'inventory_type' => 'serialized',
+        'default_pricing_type' => 'daily',
+    ]);
+
+    $first = $this->post(
+        "/api/tenant/tenant-a/products/{$product->getKey()}/images",
+        [
+            'image' => UploadedFile::fake()->image('front.jpg', 800, 600),
+            'alt_text' => 'Tampak depan',
+        ],
+        $this->headers,
+    )->assertCreated()
+        ->assertJsonPath('data.is_primary', true);
+
+    $firstId = $first->json('data.id');
+    $firstPath = $first->json('data.image_path');
+
+    expect($firstPath)->toStartWith("products/{$product->getKey()}/");
+    Storage::disk('local')->assertExists($firstPath);
+
+    $second = $this->post(
+        "/api/tenant/tenant-a/products/{$product->getKey()}/images",
+        [
+            'image' => UploadedFile::fake()->image('side.webp', 800, 600),
+            'is_primary' => true,
+        ],
+        $this->headers,
+    )->assertCreated()
+        ->assertJsonPath('data.is_primary', true);
+
+    $secondId = $second->json('data.id');
+
+    expect(DB::table('product_images')->where('id', $firstId)->value('is_primary'))
+        ->toBe(0);
+
+    $this->delete(
+        "/api/tenant/tenant-a/products/{$product->getKey()}/images/{$secondId}",
+        [],
+        $this->headers,
+    )->assertOk();
+
+    expect(DB::table('product_images')->where('id', $firstId)->value('is_primary'))
+        ->toBe(1);
+
+    $this->delete(
+        "/api/tenant/tenant-a/products/{$product->getKey()}/images/{$firstId}",
+        [],
+        $this->headers,
+    )->assertOk();
+
+    Storage::disk('local')->assertMissing($firstPath);
+});
+
 function createProductCategoryCrudTestTables(): void
 {
     Schema::create('users', function (Blueprint $table): void {
@@ -238,7 +320,31 @@ function createProductCategoryCrudTestTables(): void
         $table->id();
         $table->string('tenant_id')->index();
         $table->unsignedBigInteger('category_id')->nullable();
+        $table->string('name');
+        $table->string('slug');
+        $table->string('sku')->nullable();
+        $table->string('brand')->nullable();
+        $table->string('model')->nullable();
+        $table->text('description')->nullable();
+        $table->string('inventory_type');
+        $table->string('default_pricing_type');
+        $table->integer('minimum_rental_duration')->default(1);
+        $table->decimal('deposit_amount', 18, 2)->default(0);
+        $table->decimal('late_fee_amount', 18, 2)->default(0);
+        $table->boolean('is_featured')->default(false);
+        $table->boolean('is_active')->default(true);
         $table->timestamps();
         $table->softDeletes();
+    });
+
+    Schema::create('product_images', function (Blueprint $table): void {
+        $table->id();
+        $table->string('tenant_id')->index();
+        $table->unsignedBigInteger('product_id');
+        $table->string('image_path');
+        $table->string('alt_text')->nullable();
+        $table->boolean('is_primary')->default(false);
+        $table->integer('sort_order')->default(0);
+        $table->timestamps();
     });
 }

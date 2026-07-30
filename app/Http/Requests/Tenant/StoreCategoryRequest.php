@@ -35,7 +35,7 @@ class StoreCategoryRequest extends FormRequest
                     ->where('tenant_id', $tenantId),
             ],
             'description' => ['nullable', 'string'],
-            'image_path' => ['nullable', 'string', 'max:255'],
+            'image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:5120'],
             'sort_order' => ['nullable', 'integer', 'min:0'],
             'is_active' => ['nullable', 'boolean'],
         ];

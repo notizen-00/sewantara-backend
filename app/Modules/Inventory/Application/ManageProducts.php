@@ -16,7 +16,7 @@ class ManageProducts
         int $perPage = 20,
     ): LengthAwarePaginator {
         return Product::query()
-            ->with('category')
+            ->with(['category', 'images'])
             ->withCount('units')
             ->when($search, fn ($query, string $value) => $query->where(
                 fn ($query) => $query
@@ -42,19 +42,19 @@ class ManageProducts
         $attributes['is_featured'] ??= false;
         $attributes['is_active'] ??= true;
 
-        return Product::create($attributes);
+        return Product::create($attributes)->load('images');
     }
 
     public function detail(Product $product): Product
     {
-        return $product->load(['category', 'units']);
+        return $product->load(['category', 'units', 'images']);
     }
 
     public function update(Product $product, array $attributes): Product
     {
         $product->update($attributes);
 
-        return $product->refresh();
+        return $product->refresh()->load('images');
     }
 
     public function delete(Product $product): void

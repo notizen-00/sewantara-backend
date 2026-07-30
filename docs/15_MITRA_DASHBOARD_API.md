@@ -303,6 +303,8 @@ Content-Type: application/json
 
 `X-Branch-Id` wajib berupa ID cabang aktif yang dimiliki user. Backend juga
 mengembalikan header response `X-Branch-Id` berisi branch yang sedang aktif.
+Untuk upload gambar gunakan `multipart/form-data` dan biarkan HTTP client
+membentuk header `Content-Type` beserta boundary secara otomatis.
 
 Error branch penting:
 
@@ -625,6 +627,8 @@ POST   /api/tenant/{tenant}/categories
 GET    /api/tenant/{tenant}/categories/{category}
 PATCH  /api/tenant/{tenant}/categories/{category}
 DELETE /api/tenant/{tenant}/categories/{category}
+POST   /api/tenant/{tenant}/categories/{category}/image
+DELETE /api/tenant/{tenant}/categories/{category}/image
 ```
 
 Query list:
@@ -633,7 +637,7 @@ Query list:
 search, parent_id, roots_only, is_active, per_page
 ```
 
-Create:
+Create metadata:
 
 ```json
 {
@@ -641,11 +645,13 @@ Create:
   "name": "Kamera",
   "slug": "kamera",
   "description": "Peralatan kamera",
-  "image_path": "categories/kamera.jpg",
   "sort_order": 10,
   "is_active": true
 }
 ```
+
+Gambar kategori tidak menerima path dari client. Kirim file `image` sebagai
+`multipart/form-data` saat create atau melalui endpoint khusus image.
 
 ### Produk
 
@@ -655,6 +661,9 @@ POST   /api/tenant/{tenant}/products
 GET    /api/tenant/{tenant}/products/{product}
 PATCH  /api/tenant/{tenant}/products/{product}
 DELETE /api/tenant/{tenant}/products/{product}
+POST   /api/tenant/{tenant}/products/{product}/images
+PATCH  /api/tenant/{tenant}/products/{product}/images/{productImage}
+DELETE /api/tenant/{tenant}/products/{product}/images/{productImage}
 ```
 
 Query list:
@@ -695,6 +704,16 @@ serialized, quantity
 ```text
 hourly, daily, weekly, monthly, event, custom
 ```
+
+## Settings dan Private Media
+
+Logo tenant, logo cabang, gambar kategori, dan foto produk disimpan private per
+tenant. Dashboard harus mengunggah file menggunakan `multipart/form-data` dan
+mengambil file melalui endpoint media terautentikasi.
+
+Panduan lengkap:
+
+[`16_TENANT_SETTINGS_PRIVATE_MEDIA_API.md`](16_TENANT_SETTINGS_PRIVATE_MEDIA_API.md)
 
 ### Unit Produk Serialized
 

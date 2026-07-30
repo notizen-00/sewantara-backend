@@ -31,9 +31,9 @@ class UpdateTenantSettingsRequest extends FormRequest
             'regular.time_format' => ['nullable', 'string', 'max:30'],
 
             'branding' => ['nullable', 'array'],
-            'branding.logo_url' => ['nullable', 'url', 'max:2048'],
-            'branding.favicon_url' => ['nullable', 'url', 'max:2048'],
-            'branding.invoice_logo_url' => ['nullable', 'url', 'max:2048'],
+            'branding.logo_url' => ['prohibited'],
+            'branding.favicon_url' => ['prohibited'],
+            'branding.invoice_logo_url' => ['prohibited'],
             'branding.primary_color' => ['nullable', 'regex:/^#[0-9a-fA-F]{6}$/'],
             'branding.secondary_color' => ['nullable', 'regex:/^#[0-9a-fA-F]{6}$/'],
 
@@ -45,7 +45,7 @@ class UpdateTenantSettingsRequest extends FormRequest
             'branch.latitude' => ['nullable', 'numeric'],
             'branch.longitude' => ['nullable', 'numeric'],
             'branch.is_active' => ['nullable', 'boolean'],
-            'branch.logo_url' => ['nullable', 'url', 'max:2048'],
+            'branch.logo_url' => ['prohibited'],
 
             'rental_engine' => ['nullable', 'array'],
             'rental_engine.rental_model' => ['nullable', Rule::enum(RentalModel::class)],

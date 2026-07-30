@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\Tenant;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Tenant\StoreCategoryImageRequest;
 use App\Http\Requests\Tenant\StoreCategoryRequest;
 use App\Http\Requests\Tenant\UpdateCategoryRequest;
 use App\Models\Category;
@@ -79,6 +80,36 @@ class CategoryController extends Controller
             'success' => true,
             'message' => 'Kategori produk berhasil dihapus.',
             'data' => null,
+        ]);
+    }
+
+    public function storeImage(
+        StoreCategoryImageRequest $request,
+        ManageCategories $categories,
+        Category $category,
+    ): JsonResponse {
+        $category = $categories->updateImage(
+            $category,
+            $request->file('image'),
+        );
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Gambar kategori berhasil diperbarui.',
+            'data' => $category,
+        ]);
+    }
+
+    public function destroyImage(
+        ManageCategories $categories,
+        Category $category,
+    ): JsonResponse {
+        $category = $categories->deleteImage($category);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Gambar kategori berhasil dihapus.',
+            'data' => $category,
         ]);
     }
 }

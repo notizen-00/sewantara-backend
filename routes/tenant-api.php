@@ -12,9 +12,11 @@ use App\Http\Controllers\Api\Tenant\InventoryStockController;
 use App\Http\Controllers\Api\Tenant\MaintenanceController;
 use App\Http\Controllers\Api\Tenant\PaymentController;
 use App\Http\Controllers\Api\Tenant\ProductController;
+use App\Http\Controllers\Api\Tenant\ProductImageController;
 use App\Http\Controllers\Api\Tenant\ProductPriceController;
 use App\Http\Controllers\Api\Tenant\ProductUnitController;
 use App\Http\Controllers\Api\Tenant\TenantAuthController;
+use App\Http\Controllers\Api\Tenant\TenantMediaController;
 use App\Http\Controllers\Api\Tenant\TenantOnboardingController;
 use App\Http\Controllers\Api\Tenant\TenantSettingController;
 use Illuminate\Support\Facades\Route;
@@ -62,11 +64,29 @@ Route::prefix('tenant/{tenant}')
                         ->name('settings.show');
                     Route::patch('/settings', [TenantSettingController::class, 'update'])
                         ->name('settings.update');
+                    Route::post('/settings/images', [TenantSettingController::class, 'updateImages'])
+                        ->name('settings.images.update');
+                    Route::delete('/settings/images/{image}', [TenantSettingController::class, 'destroyImage'])
+                        ->name('settings.images.destroy');
+
+                    Route::get('/media/{path}', TenantMediaController::class)
+                        ->where('path', '.*')
+                        ->name('media.show');
 
                     Route::apiResource('branches', BranchController::class)->only(['index', 'store']);
                     Route::post('/branches/{branch}/sync-master-data', [BranchController::class, 'syncMasterData'])
                         ->name('branches.sync-master-data');
+                    Route::post('/categories/{category}/image', [CategoryController::class, 'storeImage'])
+                        ->name('categories.image.store');
+                    Route::delete('/categories/{category}/image', [CategoryController::class, 'destroyImage'])
+                        ->name('categories.image.destroy');
                     Route::apiResource('categories', CategoryController::class);
+                    Route::post('/products/{product}/images', [ProductImageController::class, 'store'])
+                        ->name('products.images.store');
+                    Route::patch('/products/{product}/images/{productImage}', [ProductImageController::class, 'update'])
+                        ->name('products.images.update');
+                    Route::delete('/products/{product}/images/{productImage}', [ProductImageController::class, 'destroy'])
+                        ->name('products.images.destroy');
                     Route::apiResource('products', ProductController::class);
                     Route::apiResource('product-units', ProductUnitController::class)->only(['index', 'store']);
                     Route::apiResource('product-prices', ProductPriceController::class)

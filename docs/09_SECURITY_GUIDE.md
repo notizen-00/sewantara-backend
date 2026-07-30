@@ -415,19 +415,23 @@ tenant:{tenantId}:subscription
 
 ## Storage Isolation
 
-Direkomendasikan:
+File tenant menggunakan disk private `local`. Setelah tenant diinisialisasi,
+`FilesystemTenancyBootstrapper` mengubah root disk menjadi:
 
 ```text
-storage/
-
-tenant-1/
-
-tenant-2/
-
-tenant-3/
+storage/{suffix_base}{tenant_id}/app/
 ```
 
-Tenant tidak boleh membaca file tenant lain.
+Path database tidak mengandung tenant ID. Endpoint media wajib melewati
+middleware tenant, autentikasi Sanctum, validasi user tenant, branch context,
+status tenant, dan subscription. Path di luar folder media yang dikelola
+aplikasi harus menghasilkan `404`.
+
+Tenant tidak boleh membaca file tenant lain dan file private tidak boleh
+disajikan melalui symlink `public/storage`.
+
+Kontrak endpoint private media dijelaskan di
+[`16_TENANT_SETTINGS_PRIVATE_MEDIA_API.md`](16_TENANT_SETTINGS_PRIVATE_MEDIA_API.md).
 
 ---
 

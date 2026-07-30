@@ -3,11 +3,18 @@
 namespace App\Modules\Inventory\Application;
 
 use App\Models\Category;
+use App\Support\TenantPrivateMedia;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Str;
+use Throwable;
 
 class ManageCategories
 {
+    public function __construct(
+        private readonly TenantPrivateMedia $media,
+    ) {}
+
     public function paginate(
         ?string $search,
         ?int $parentId,
@@ -43,12 +50,27 @@ class ManageCategories
 
     public function create(array $attributes): Category
     {
+        $image = $attributes['image'] ?? null;
+        unset($attributes['image']);
+
         $attributes['slug'] ??= Str::slug($attributes['name']);
         $attributes['slug'] = $this->uniqueSlug($attributes['slug']);
         $attributes['sort_order'] ??= 0;
         $attributes['is_active'] ??= true;
 
-        return Category::create($attributes)->load('parent');
+        $category = Category::create($attributes);
+
+        if ($image instanceof UploadedFile) {
+            try {
+                return $this->updateImage($category, $image);
+            } catch (Throwable $exception) {
+                $category->forceDelete();
+
+                throw $exception;
+            }
+        }
+
+        return $category->load('parent');
     }
 
     public function detail(Category $category): Category
@@ -70,6 +92,38 @@ class ManageCategories
     public function delete(Category $category): void
     {
         $category->delete();
+    }
+
+    public function updateImage(
+        Category $category,
+        UploadedFile $image,
+    ): Category {
+        $path = $this->media->store(
+            $image,
+            "categories/{$category->getKey()}",
+        );
+        $oldPath = $category->image_path;
+
+        try {
+            $category->update(['image_path' => $path]);
+        } catch (Throwable $exception) {
+            $this->media->delete($path);
+
+            throw $exception;
+        }
+
+        $this->media->delete($oldPath);
+
+        return $this->detail($category->refresh());
+    }
+
+    public function deleteImage(Category $category): Category
+    {
+        $path = $category->image_path;
+        $category->update(['image_path' => null]);
+        $this->media->delete($path);
+
+        return $this->detail($category->refresh());
     }
 
     private function uniqueSlug(string $value): string

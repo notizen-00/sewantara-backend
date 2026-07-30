@@ -5,23 +5,19 @@ namespace App\Models;
 use App\Support\TenantPrivateMedia;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Stancl\Tenancy\Database\Concerns\BelongsToTenant;
 
-class Category extends Model
+class ProductImage extends Model
 {
-    use BelongsToTenant, SoftDeletes;
+    use BelongsToTenant;
 
     protected $fillable = [
         'tenant_id',
-        'parent_id',
-        'name',
-        'slug',
-        'description',
+        'product_id',
         'image_path',
+        'alt_text',
+        'is_primary',
         'sort_order',
-        'is_active',
     ];
 
     protected $appends = [
@@ -31,24 +27,14 @@ class Category extends Model
     protected function casts(): array
     {
         return [
+            'is_primary' => 'boolean',
             'sort_order' => 'integer',
-            'is_active' => 'boolean',
         ];
     }
 
-    public function parent(): BelongsTo
+    public function product(): BelongsTo
     {
-        return $this->belongsTo(self::class, 'parent_id');
-    }
-
-    public function children(): HasMany
-    {
-        return $this->hasMany(self::class, 'parent_id');
-    }
-
-    public function products(): HasMany
-    {
-        return $this->hasMany(Product::class);
+        return $this->belongsTo(Product::class);
     }
 
     public function getImageUrlAttribute(): ?string

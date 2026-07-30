@@ -821,6 +821,235 @@
                     ]
                 },
                 {
+                    "name": "settings",
+                    "item": [
+                        {
+                            "name": "[GET] api/tenant/{tenant}/settings",
+                            "request": {
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Accept",
+                                        "value": "application/json",
+                                        "type": "text"
+                                    },
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json",
+                                        "type": "text"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{base_url}}/api/tenant/{{tenant}}/settings",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "tenant",
+                                        "{{tenant}}",
+                                        "settings"
+                                    ],
+                                    "variable": []
+                                },
+                                "auth": {
+                                    "type": "bearer",
+                                    "bearer": [
+                                        {
+                                            "key": "token",
+                                            "value": "{{auth_token}}"
+                                        }
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "name": "[PATCH] api/tenant/{tenant}/settings",
+                            "request": {
+                                "method": "PATCH",
+                                "header": [
+                                    {
+                                        "key": "Accept",
+                                        "value": "application/json",
+                                        "type": "text"
+                                    },
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json",
+                                        "type": "text"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{base_url}}/api/tenant/{{tenant}}/settings",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "tenant",
+                                        "{{tenant}}",
+                                        "settings"
+                                    ],
+                                    "variable": []
+                                },
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n    \"regular\": {\n        \"timezone\": \"sample_text\",\n        \"currency\": \"sample_text\",\n        \"business_name\": \"sample_text\",\n        \"operating_hours\": [],\n        \"default_language\": \"sample_text\",\n        \"date_format\": \"sample_text\",\n        \"time_format\": \"sample_text\"\n    },\n    \"branding\": {\n        \"logo_url\": \"sample_text\",\n        \"favicon_url\": \"sample_text\",\n        \"invoice_logo_url\": \"sample_text\",\n        \"primary_color\": \"sample_text\",\n        \"secondary_color\": \"sample_text\"\n    },\n    \"branch\": {\n        \"name\": \"sample_text\",\n        \"email\": \"user36@example.com\",\n        \"phone\": \"sample_text\",\n        \"address\": \"sample_text\",\n        \"latitude\": 61,\n        \"longitude\": 31,\n        \"is_active\": 0,\n        \"logo_url\": \"sample_text\"\n    },\n    \"rental_engine\": {\n        \"rental_model\": \"sample_text\",\n        \"booking_strategy\": \"sample_text\",\n        \"allocation_strategy\": \"sample_text\",\n        \"slot_duration_minutes\": 1059,\n        \"enable_waiting_list\": 1,\n        \"allow_walk_in\": 1,\n        \"allow_online_booking\": 0,\n        \"allow_extend_booking\": 0,\n        \"realtime_availability\": 0,\n        \"auto_reminder\": 0,\n        \"auto_cancel_unpaid\": 1,\n        \"auto_cancel_minutes\": 6\n    }\n}",
+                                    "options": []
+                                },
+                                "auth": {
+                                    "type": "bearer",
+                                    "bearer": [
+                                        {
+                                            "key": "token",
+                                            "value": "{{auth_token}}"
+                                        }
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "name": "images",
+                            "item": [
+                                {
+                                    "name": "[POST] api/tenant/{tenant}/settings/images",
+                                    "request": {
+                                        "method": "POST",
+                                        "header": [
+                                            {
+                                                "key": "Accept",
+                                                "value": "application/json",
+                                                "type": "text"
+                                            },
+                                            {
+                                                "key": "Content-Type",
+                                                "value": "application/json",
+                                                "type": "text"
+                                            }
+                                        ],
+                                        "url": {
+                                            "raw": "{{base_url}}/api/tenant/{{tenant}}/settings/images",
+                                            "host": [
+                                                "{{base_url}}"
+                                            ],
+                                            "path": [
+                                                "api",
+                                                "tenant",
+                                                "{{tenant}}",
+                                                "settings",
+                                                "images"
+                                            ],
+                                            "variable": []
+                                        },
+                                        "body": {
+                                            "mode": "raw",
+                                            "raw": "{\n    \"logo\": \"sample_text\",\n    \"favicon\": \"sample_text\",\n    \"invoice_logo\": \"sample_text\",\n    \"branch_logo\": \"sample_text\"\n}",
+                                            "options": []
+                                        },
+                                        "auth": {
+                                            "type": "bearer",
+                                            "bearer": [
+                                                {
+                                                    "key": "token",
+                                                    "value": "{{auth_token}}"
+                                                }
+                                            ]
+                                        }
+                                    }
+                                },
+                                {
+                                    "name": "[DELETE] api/tenant/{tenant}/settings/images/{image}",
+                                    "request": {
+                                        "method": "DELETE",
+                                        "header": [
+                                            {
+                                                "key": "Accept",
+                                                "value": "application/json",
+                                                "type": "text"
+                                            },
+                                            {
+                                                "key": "Content-Type",
+                                                "value": "application/json",
+                                                "type": "text"
+                                            }
+                                        ],
+                                        "url": {
+                                            "raw": "{{base_url}}/api/tenant/{{tenant}}/settings/images/:image",
+                                            "host": [
+                                                "{{base_url}}"
+                                            ],
+                                            "path": [
+                                                "api",
+                                                "tenant",
+                                                "{{tenant}}",
+                                                "settings",
+                                                "images",
+                                                ":image"
+                                            ],
+                                            "variable": []
+                                        },
+                                        "auth": {
+                                            "type": "bearer",
+                                            "bearer": [
+                                                {
+                                                    "key": "token",
+                                                    "value": "{{auth_token}}"
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "media",
+                    "item": [
+                        {
+                            "name": "[GET] api/tenant/{tenant}/media/{path}",
+                            "request": {
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Accept",
+                                        "value": "application/json",
+                                        "type": "text"
+                                    },
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json",
+                                        "type": "text"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{base_url}}/api/tenant/{{tenant}}/media/:path",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "tenant",
+                                        "{{tenant}}",
+                                        "media",
+                                        ":path"
+                                    ],
+                                    "variable": []
+                                },
+                                "auth": {
+                                    "type": "bearer",
+                                    "bearer": [
+                                        {
+                                            "key": "token",
+                                            "value": "{{auth_token}}"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    ]
+                },
+                {
                     "name": "branches",
                     "item": [
                         {
@@ -956,6 +1185,100 @@
                     "name": "categories",
                     "item": [
                         {
+                            "name": "image",
+                            "item": [
+                                {
+                                    "name": "[POST] api/tenant/{tenant}/categories/{category}/image",
+                                    "request": {
+                                        "method": "POST",
+                                        "header": [
+                                            {
+                                                "key": "Accept",
+                                                "value": "application/json",
+                                                "type": "text"
+                                            },
+                                            {
+                                                "key": "Content-Type",
+                                                "value": "application/json",
+                                                "type": "text"
+                                            }
+                                        ],
+                                        "url": {
+                                            "raw": "{{base_url}}/api/tenant/{{tenant}}/categories/:category/image",
+                                            "host": [
+                                                "{{base_url}}"
+                                            ],
+                                            "path": [
+                                                "api",
+                                                "tenant",
+                                                "{{tenant}}",
+                                                "categories",
+                                                ":category",
+                                                "image"
+                                            ],
+                                            "variable": []
+                                        },
+                                        "body": {
+                                            "mode": "raw",
+                                            "raw": "{\n    \"image\": \"sample_text\"\n}",
+                                            "options": []
+                                        },
+                                        "auth": {
+                                            "type": "bearer",
+                                            "bearer": [
+                                                {
+                                                    "key": "token",
+                                                    "value": "{{auth_token}}"
+                                                }
+                                            ]
+                                        }
+                                    }
+                                },
+                                {
+                                    "name": "[DELETE] api/tenant/{tenant}/categories/{category}/image",
+                                    "request": {
+                                        "method": "DELETE",
+                                        "header": [
+                                            {
+                                                "key": "Accept",
+                                                "value": "application/json",
+                                                "type": "text"
+                                            },
+                                            {
+                                                "key": "Content-Type",
+                                                "value": "application/json",
+                                                "type": "text"
+                                            }
+                                        ],
+                                        "url": {
+                                            "raw": "{{base_url}}/api/tenant/{{tenant}}/categories/:category/image",
+                                            "host": [
+                                                "{{base_url}}"
+                                            ],
+                                            "path": [
+                                                "api",
+                                                "tenant",
+                                                "{{tenant}}",
+                                                "categories",
+                                                ":category",
+                                                "image"
+                                            ],
+                                            "variable": []
+                                        },
+                                        "auth": {
+                                            "type": "bearer",
+                                            "bearer": [
+                                                {
+                                                    "key": "token",
+                                                    "value": "{{auth_token}}"
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            ]
+                        },
+                        {
                             "name": "[GET] api/tenant/{tenant}/categories",
                             "request": {
                                 "method": "GET",
@@ -1026,7 +1349,7 @@
                                 },
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\n    \"parent_id\": 1,\n    \"name\": \"sample_text\",\n    \"slug\": \"sample_text\",\n    \"description\": \"sample_text\",\n    \"image_path\": \"sample_text\",\n    \"sort_order\": 0,\n    \"is_active\": 1\n}",
+                                    "raw": "{\n    \"parent_id\": 1,\n    \"name\": \"sample_text\",\n    \"slug\": \"sample_text\",\n    \"description\": \"sample_text\",\n    \"image\": \"sample_text\",\n    \"sort_order\": 0,\n    \"is_active\": 1\n}",
                                     "options": []
                                 },
                                 "auth": {
@@ -1113,7 +1436,7 @@
                                 },
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\n    \"parent_id\": 1,\n    \"name\": \"sample_text\",\n    \"slug\": \"sample_text\",\n    \"description\": \"sample_text\",\n    \"image_path\": \"sample_text\",\n    \"sort_order\": 0,\n    \"is_active\": 1\n}",
+                                    "raw": "{\n    \"parent_id\": 1,\n    \"name\": \"sample_text\",\n    \"slug\": \"sample_text\",\n    \"description\": \"sample_text\",\n    \"sort_order\": 0,\n    \"is_active\": 1\n}",
                                     "options": []
                                 },
                                 "auth": {
@@ -1173,6 +1496,149 @@
                 {
                     "name": "products",
                     "item": [
+                        {
+                            "name": "images",
+                            "item": [
+                                {
+                                    "name": "[POST] api/tenant/{tenant}/products/{product}/images",
+                                    "request": {
+                                        "method": "POST",
+                                        "header": [
+                                            {
+                                                "key": "Accept",
+                                                "value": "application/json",
+                                                "type": "text"
+                                            },
+                                            {
+                                                "key": "Content-Type",
+                                                "value": "application/json",
+                                                "type": "text"
+                                            }
+                                        ],
+                                        "url": {
+                                            "raw": "{{base_url}}/api/tenant/{{tenant}}/products/:product/images",
+                                            "host": [
+                                                "{{base_url}}"
+                                            ],
+                                            "path": [
+                                                "api",
+                                                "tenant",
+                                                "{{tenant}}",
+                                                "products",
+                                                ":product",
+                                                "images"
+                                            ],
+                                            "variable": []
+                                        },
+                                        "body": {
+                                            "mode": "raw",
+                                            "raw": "{\n    \"image\": \"sample_text\",\n    \"alt_text\": \"sample_text\",\n    \"is_primary\": 0,\n    \"sort_order\": 0\n}",
+                                            "options": []
+                                        },
+                                        "auth": {
+                                            "type": "bearer",
+                                            "bearer": [
+                                                {
+                                                    "key": "token",
+                                                    "value": "{{auth_token}}"
+                                                }
+                                            ]
+                                        }
+                                    }
+                                },
+                                {
+                                    "name": "[PATCH] api/tenant/{tenant}/products/{product}/images/{productImage}",
+                                    "request": {
+                                        "method": "PATCH",
+                                        "header": [
+                                            {
+                                                "key": "Accept",
+                                                "value": "application/json",
+                                                "type": "text"
+                                            },
+                                            {
+                                                "key": "Content-Type",
+                                                "value": "application/json",
+                                                "type": "text"
+                                            }
+                                        ],
+                                        "url": {
+                                            "raw": "{{base_url}}/api/tenant/{{tenant}}/products/:product/images/:productImage",
+                                            "host": [
+                                                "{{base_url}}"
+                                            ],
+                                            "path": [
+                                                "api",
+                                                "tenant",
+                                                "{{tenant}}",
+                                                "products",
+                                                ":product",
+                                                "images",
+                                                ":productImage"
+                                            ],
+                                            "variable": []
+                                        },
+                                        "body": {
+                                            "mode": "raw",
+                                            "raw": "{\n    \"alt_text\": \"sample_text\",\n    \"is_primary\": 1,\n    \"sort_order\": 0\n}",
+                                            "options": []
+                                        },
+                                        "auth": {
+                                            "type": "bearer",
+                                            "bearer": [
+                                                {
+                                                    "key": "token",
+                                                    "value": "{{auth_token}}"
+                                                }
+                                            ]
+                                        }
+                                    }
+                                },
+                                {
+                                    "name": "[DELETE] api/tenant/{tenant}/products/{product}/images/{productImage}",
+                                    "request": {
+                                        "method": "DELETE",
+                                        "header": [
+                                            {
+                                                "key": "Accept",
+                                                "value": "application/json",
+                                                "type": "text"
+                                            },
+                                            {
+                                                "key": "Content-Type",
+                                                "value": "application/json",
+                                                "type": "text"
+                                            }
+                                        ],
+                                        "url": {
+                                            "raw": "{{base_url}}/api/tenant/{{tenant}}/products/:product/images/:productImage",
+                                            "host": [
+                                                "{{base_url}}"
+                                            ],
+                                            "path": [
+                                                "api",
+                                                "tenant",
+                                                "{{tenant}}",
+                                                "products",
+                                                ":product",
+                                                "images",
+                                                ":productImage"
+                                            ],
+                                            "variable": []
+                                        },
+                                        "auth": {
+                                            "type": "bearer",
+                                            "bearer": [
+                                                {
+                                                    "key": "token",
+                                                    "value": "{{auth_token}}"
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            ]
+                        },
                         {
                             "name": "[GET] api/tenant/{tenant}/products",
                             "request": {
@@ -1244,7 +1710,7 @@
                                 },
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\n    \"category_id\": 1,\n    \"name\": \"sample_text\",\n    \"slug\": \"sample_text\",\n    \"sku\": \"sample_text\",\n    \"brand\": \"sample_text\",\n    \"model\": \"sample_text\",\n    \"description\": \"sample_text\",\n    \"inventory_type\": \"serialized\",\n    \"default_pricing_type\": \"daily\",\n    \"minimum_rental_duration\": 10,\n    \"deposit_amount\": 24,\n    \"late_fee_amount\": 72,\n    \"is_featured\": 0,\n    \"is_active\": 1\n}",
+                                    "raw": "{\n    \"category_id\": 1,\n    \"name\": \"sample_text\",\n    \"slug\": \"sample_text\",\n    \"sku\": \"sample_text\",\n    \"brand\": \"sample_text\",\n    \"model\": \"sample_text\",\n    \"description\": \"sample_text\",\n    \"inventory_type\": \"serialized\",\n    \"default_pricing_type\": \"daily\",\n    \"minimum_rental_duration\": 5,\n    \"deposit_amount\": 66,\n    \"late_fee_amount\": 34,\n    \"is_featured\": 1,\n    \"is_active\": 1\n}",
                                     "options": []
                                 },
                                 "auth": {
@@ -1331,7 +1797,7 @@
                                 },
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\n    \"category_id\": 1,\n    \"name\": \"sample_text\",\n    \"slug\": \"sample_text\",\n    \"sku\": \"sample_text\",\n    \"brand\": \"sample_text\",\n    \"model\": \"sample_text\",\n    \"description\": \"sample_text\",\n    \"inventory_type\": \"serialized\",\n    \"default_pricing_type\": \"daily\",\n    \"minimum_rental_duration\": 5,\n    \"deposit_amount\": 72,\n    \"late_fee_amount\": 80,\n    \"is_featured\": 1,\n    \"is_active\": 0\n}",
+                                    "raw": "{\n    \"category_id\": 1,\n    \"name\": \"sample_text\",\n    \"slug\": \"sample_text\",\n    \"sku\": \"sample_text\",\n    \"brand\": \"sample_text\",\n    \"model\": \"sample_text\",\n    \"description\": \"sample_text\",\n    \"inventory_type\": \"serialized\",\n    \"default_pricing_type\": \"daily\",\n    \"minimum_rental_duration\": 6,\n    \"deposit_amount\": 64,\n    \"late_fee_amount\": 25,\n    \"is_featured\": 0,\n    \"is_active\": 0\n}",
                                     "options": []
                                 },
                                 "auth": {

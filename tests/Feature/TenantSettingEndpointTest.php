@@ -3,8 +3,10 @@
 use App\Models\Tenant;
 use App\Models\User;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\Storage;
 use Laravelcm\Subscriptions\Models\Subscription;
 use Stancl\Tenancy\Resolvers\PathTenantResolver;
 use Stancl\Tenancy\Tenancy;
@@ -15,6 +17,7 @@ beforeEach(function () {
     config()->set('tenancy.database.central_connection', 'sqlite');
     DB::purge('sqlite');
     DB::setDefaultConnection('sqlite');
+    Storage::fake('local');
 
     createTenantSettingEndpointTables();
 
@@ -120,13 +123,11 @@ test('tenant can read and update regular branding branch and rental engine setti
             'default_language' => 'id',
         ],
         'branding' => [
-            'logo_url' => 'https://cdn.example.test/logo.png',
             'primary_color' => '#0F766E',
         ],
         'branch' => [
             'name' => 'Cabang Jember',
             'phone' => '0331123456',
-            'logo_url' => 'https://cdn.example.test/branch.png',
         ],
         'rental_engine' => [
             'rental_model' => 'per_hour',
@@ -140,9 +141,8 @@ test('tenant can read and update regular branding branch and rental engine setti
         ->assertJsonPath('success', true)
         ->assertJsonPath('data.regular.business_name', 'Sewantara Jember')
         ->assertJsonPath('data.regular.default_language', 'id')
-        ->assertJsonPath('data.branding.logo_url', 'https://cdn.example.test/logo.png')
+        ->assertJsonPath('data.branding.primary_color', '#0F766E')
         ->assertJsonPath('data.branch.name', 'Cabang Jember')
-        ->assertJsonPath('data.branch.settings.logo_url', 'https://cdn.example.test/branch.png')
         ->assertJsonPath('data.rental_engine.rental_model', 'per_hour')
         ->assertJsonPath('data.rental_engine.slot_duration_minutes', 60);
 
@@ -152,8 +152,62 @@ test('tenant can read and update regular branding branch and rental engine setti
         ->toBe('Cabang Jember')
         ->and(DB::table('rental_configurations')->value('allocation_strategy'))
         ->toBe('auto_assign')
-        ->and(DB::table('tenant_settings')->where('group', 'branding')->where('key', 'logo_url')->exists())
+        ->and(DB::table('tenant_settings')->where('group', 'branding')->where('key', 'primary_color')->exists())
         ->toBeTrue();
+});
+
+test('tenant images are stored privately and old files are removed', function () {
+    $response = $this->post('/api/tenant/tenant-a/settings/images', [
+        'logo' => UploadedFile::fake()->image('logo.png', 320, 320),
+        'branch_logo' => UploadedFile::fake()->image('branch-logo.jpg', 320, 320),
+    ], $this->headers);
+
+    $response->assertOk()
+        ->assertJsonPath('success', true);
+
+    $logoPath = $response->json('data.branding.logo_path');
+    $branchLogoPath = $response->json('data.branch.settings.logo_path');
+
+    expect($logoPath)->toStartWith('branding/')
+        ->and($branchLogoPath)->toStartWith('branches/1/');
+
+    Storage::disk('local')->assertExists($logoPath);
+    Storage::disk('local')->assertExists($branchLogoPath);
+
+    $this->get('/api/tenant/tenant-a/media/'.$logoPath, $this->headers)
+        ->assertOk()
+        ->assertHeader('content-disposition', 'inline')
+        ->assertHeader('cache-control', 'max-age=3600, private');
+
+    Storage::disk('local')->put('unmanaged/secret.txt', 'private');
+
+    $this->get(
+        '/api/tenant/tenant-a/media/unmanaged/secret.txt',
+        $this->headers,
+    )->assertNotFound();
+
+    $replacement = $this->post('/api/tenant/tenant-a/settings/images', [
+        'logo' => UploadedFile::fake()->image('new-logo.webp', 320, 320),
+    ], $this->headers)->assertOk();
+
+    $replacementPath = $replacement->json('data.branding.logo_path');
+
+    Storage::disk('local')->assertMissing($logoPath);
+    Storage::disk('local')->assertExists($replacementPath);
+
+    $this->delete(
+        '/api/tenant/tenant-a/settings/images/logo',
+        [],
+        $this->headers,
+    )->assertOk()
+        ->assertJsonMissingPath('data.branding.logo_path');
+
+    Storage::disk('local')->assertMissing($replacementPath);
+});
+
+test('private tenant media requires authentication', function () {
+    $this->getJson('/api/tenant/tenant-a/media/branding/missing.png')
+        ->assertUnauthorized();
 });
 
 function createTenantSettingEndpointTables(): void
