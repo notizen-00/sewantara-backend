@@ -5,7 +5,6 @@ namespace Database\Seeders;
 use Database\Seeders\Concerns\SeedsDemoTenant;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
 
 class TenantInventorySeeder extends Seeder
 {
@@ -148,7 +147,6 @@ class TenantInventorySeeder extends Seeder
 
             if (! $movementExists) {
                 DB::table('inventory_stock_movements')->insert([
-                    'id' => (string) Str::uuid(),
                     'tenant_id' => $tenantId,
                     'product_id' => $tripodId,
                     'branch_id' => $branchId,

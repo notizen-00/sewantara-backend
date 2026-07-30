@@ -30,7 +30,7 @@ class ManageInventoryStocks
 
     public function adjust(
         string $tenantId,
-        ?string $actorId,
+        ?int $actorId,
         array $attributes,
     ): InventoryStock {
         $product = Product::query()->findOrFail($attributes['product_id']);

@@ -12,7 +12,7 @@ class ManageBranches
         return Branch::query()->latest()->paginate($perPage);
     }
 
-    public function create(array $attributes, ?string $userId = null): Branch
+    public function create(array $attributes, ?int $userId = null): Branch
     {
         $attributes['is_active'] ??= true;
 

@@ -17,7 +17,7 @@ beforeEach(function () {
     DB::setDefaultConnection('sqlite');
 
     Schema::create('rental_configurations', function (Blueprint $table): void {
-        $table->uuid('id')->primary();
+        $table->id();
         $table->string('tenant_id');
         $table->string('rental_model');
         $table->string('booking_strategy');
@@ -32,7 +32,7 @@ beforeEach(function () {
 
 test('queue rental derives its period pricing and allocation from tenant configuration', function () {
     DB::table('rental_configurations')->insert([
-        'id' => '019c0000-0000-7000-8000-000000000201',
+        'id' => 1,
         'tenant_id' => 'tenant-a',
         'rental_model' => 'per_hour',
         'booking_strategy' => 'queue',
@@ -60,7 +60,7 @@ test('queue rental derives its period pricing and allocation from tenant configu
 
 test('session rental rejects periods outside its configured slot', function () {
     DB::table('rental_configurations')->insert([
-        'id' => '019c0000-0000-7000-8000-000000000202',
+        'id' => 2,
         'tenant_id' => 'tenant-a',
         'rental_model' => 'session',
         'booking_strategy' => 'session',

@@ -72,7 +72,9 @@ Sewantara menggunakan satu database PostgreSQL dengan schema terpisah untuk seti
 - User dan data operasional berada pada schema PostgreSQL milik tenant.
 - `DatabaseTenancyBootstrapper` mengalihkan koneksi setelah tenant diidentifikasi.
 - Schema tenant dibuat dan dimigrasikan otomatis saat registrasi agar trial dapat langsung digunakan.
-- Master data memakai `BIGINT` auto-increment; user, tenant, dan transaksi memakai UUID.
+- Seluruh primary key dan foreign key internal schema tenant memakai `BIGINT`
+  auto-increment. ID tenant pusat tetap berupa string karena berasal dari
+  database central.
 - Tenant merupakan subscriber subscription, bukan User.
 - Subscription utama selalu menggunakan nama `main`.
 
@@ -239,17 +241,12 @@ Endpoint selain login wajib mengirim header:
 
 ```http
 Authorization: Bearer {access_token}
+X-Branch-Id: {branch_id}
 Accept: application/json
 ```
 
-Endpoint operasional per cabang juga menerima:
-
-```http
-X-Branch-Id: 2
-```
-
-Tanpa header tersebut, sistem otomatis memakai cabang utama pengguna. Produk
-dan kategori merupakan master tingkat tenant. Harga dapat disinkronkan serta
+Header `X-Branch-Id` wajib dikirim pada seluruh endpoint tenant selain login.
+Produk dan kategori merupakan master tingkat tenant. Harga dapat disinkronkan serta
 struktur stok kosong dapat disiapkan dari cabang aktif melalui
 `POST /branches/{branch}/sync-master-data`; jumlah stok fisik dan unit
 berserial tidak ikut disalin.

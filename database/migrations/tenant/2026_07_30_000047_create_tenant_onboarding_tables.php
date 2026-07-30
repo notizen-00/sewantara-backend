@@ -4,14 +4,13 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
-use Illuminate\Support\Str;
 
 return new class extends Migration
 {
     public function up(): void
     {
         Schema::create('tenant_business_profiles', function (Blueprint $table): void {
-            $table->uuid('id')->primary();
+            $table->id();
             $table->string('tenant_id')->unique();
             $table->string('template_code', 100);
             $table->unsignedInteger('template_version')->default(1);
@@ -23,7 +22,7 @@ return new class extends Migration
         });
 
         Schema::create('rental_configurations', function (Blueprint $table): void {
-            $table->uuid('id')->primary();
+            $table->id();
             $table->string('tenant_id')->unique();
             $table->string('rental_model', 30);
             $table->string('booking_strategy', 30);
@@ -42,7 +41,7 @@ return new class extends Migration
         });
 
         Schema::create('tenant_onboarding', function (Blueprint $table): void {
-            $table->uuid('id')->primary();
+            $table->id();
             $table->string('tenant_id')->unique();
             $table->string('status', 30)->default('in_progress');
             $table->string('current_step', 50)->default('business_setup');
@@ -52,7 +51,7 @@ return new class extends Migration
         });
 
         Schema::create('tenant_payment_methods', function (Blueprint $table): void {
-            $table->uuid('id')->primary();
+            $table->id();
             $table->string('tenant_id')->index();
             $table->string('method', 30);
             $table->boolean('is_enabled')->default(false);
@@ -67,7 +66,6 @@ return new class extends Migration
             $now = now();
 
             DB::table('tenant_business_profiles')->insert([
-                'id' => (string) Str::uuid(),
                 'tenant_id' => $tenantId,
                 'template_code' => 'custom',
                 'template_version' => 1,
@@ -80,7 +78,6 @@ return new class extends Migration
             ]);
 
             DB::table('rental_configurations')->insert([
-                'id' => (string) Str::uuid(),
                 'tenant_id' => $tenantId,
                 'rental_model' => 'per_day',
                 'booking_strategy' => 'date_range',
@@ -100,7 +97,6 @@ return new class extends Migration
             ]);
 
             DB::table('tenant_onboarding')->insert([
-                'id' => (string) Str::uuid(),
                 'tenant_id' => $tenantId,
                 'status' => tenant('status') === 'active' ? 'completed' : 'in_progress',
                 'current_step' => tenant('status') === 'active' ? 'go_live' : 'business_setup',

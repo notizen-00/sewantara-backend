@@ -5,14 +5,15 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration {
+return new class extends Migration
+{
     public function up(): void
     {
         Schema::create('booking_unit_allocations', function (Blueprint $table): void {
-            $table->uuid('id')->primary();
+            $table->id();
             $table->string('tenant_id')->index();
-            $table->foreignUuid('booking_id')->constrained()->cascadeOnDelete();
-            $table->foreignUuid('booking_item_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('booking_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('booking_item_id')->constrained()->cascadeOnDelete();
             $table->foreignId('product_unit_id')->constrained()->restrictOnDelete();
             $table->timestampTz('start_at');
             $table->timestampTz('end_at');
@@ -29,5 +30,9 @@ return new class extends Migration {
         DB::statement('ALTER TABLE booking_unit_allocations ADD CONSTRAINT allocation_period_valid CHECK (start_at < end_at)');
         DB::statement("CREATE INDEX booking_allocations_active_idx ON booking_unit_allocations (tenant_id, product_unit_id, start_at, end_at) WHERE status IN ('reserved', 'checked_out')");
     }
-    public function down(): void { Schema::dropIfExists('booking_unit_allocations'); }
+
+    public function down(): void
+    {
+        Schema::dropIfExists('booking_unit_allocations');
+    }
 };

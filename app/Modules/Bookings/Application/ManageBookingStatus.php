@@ -5,7 +5,6 @@ namespace App\Modules\Bookings\Application;
 use App\Models\Booking;
 use App\Modules\Inventory\Application\InventoryBookingLifecycle;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 
 class ManageBookingStatus
@@ -14,7 +13,7 @@ class ManageBookingStatus
         private readonly InventoryBookingLifecycle $inventory,
     ) {}
 
-    public function checkOut(Booking $booking, ?string $actorId): Booking
+    public function checkOut(Booking $booking, ?int $actorId): Booking
     {
         $this->guardStatus(
             $booking,
@@ -41,7 +40,7 @@ class ManageBookingStatus
         });
     }
 
-    public function return(Booking $booking, ?string $actorId): Booking
+    public function return(Booking $booking, ?int $actorId): Booking
     {
         $this->guardStatus(
             $booking,
@@ -70,7 +69,7 @@ class ManageBookingStatus
 
     public function cancel(
         Booking $booking,
-        ?string $actorId,
+        ?int $actorId,
         ?string $notes,
     ): Booking {
         $this->guardStatus(
@@ -114,11 +113,10 @@ class ManageBookingStatus
         Booking $booking,
         string $fromStatus,
         string $toStatus,
-        ?string $actorId,
+        ?int $actorId,
         ?string $notes = null,
     ): void {
         DB::table('booking_status_histories')->insert([
-            'id' => (string) Str::uuid(),
             'tenant_id' => $booking->tenant_id,
             'booking_id' => $booking->getKey(),
             'from_status' => $fromStatus,

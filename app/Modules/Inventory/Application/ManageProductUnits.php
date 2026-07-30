@@ -26,7 +26,7 @@ class ManageProductUnits
             ->paginate($perPage);
     }
 
-    public function create(array $attributes, ?string $actorId = null): ProductUnit
+    public function create(array $attributes, ?int $actorId = null): ProductUnit
     {
         $attributes['status'] ??= 'available';
         $attributes['condition'] ??= 'good';

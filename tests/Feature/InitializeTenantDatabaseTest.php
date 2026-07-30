@@ -14,7 +14,7 @@ beforeEach(function () {
     DB::setDefaultConnection('sqlite');
 
     Schema::create('users', function (Blueprint $table): void {
-        $table->uuid('id')->primary();
+        $table->id();
         $table->string('tenant_id')->index();
         $table->string('name');
         $table->string('email');
@@ -40,14 +40,14 @@ beforeEach(function () {
 
     Schema::create('branch_users', function (Blueprint $table): void {
         $table->unsignedBigInteger('branch_id');
-        $table->uuid('user_id');
+        $table->unsignedBigInteger('user_id');
         $table->boolean('is_primary')->default(false);
         $table->timestamps();
         $table->primary(['branch_id', 'user_id']);
     });
 
     Schema::create('tenant_business_profiles', function (Blueprint $table): void {
-        $table->uuid('id')->primary();
+        $table->id();
         $table->string('tenant_id')->unique();
         $table->string('template_code');
         $table->integer('template_version');
@@ -59,7 +59,7 @@ beforeEach(function () {
     });
 
     Schema::create('rental_configurations', function (Blueprint $table): void {
-        $table->uuid('id')->primary();
+        $table->id();
         $table->string('tenant_id')->unique();
         $table->string('rental_model');
         $table->string('booking_strategy');
@@ -78,7 +78,7 @@ beforeEach(function () {
     });
 
     Schema::create('tenant_onboarding', function (Blueprint $table): void {
-        $table->uuid('id')->primary();
+        $table->id();
         $table->string('tenant_id')->unique();
         $table->string('status');
         $table->string('current_step');
@@ -88,7 +88,7 @@ beforeEach(function () {
     });
 
     Schema::create('tenant_payment_methods', function (Blueprint $table): void {
-        $table->uuid('id')->primary();
+        $table->id();
         $table->string('tenant_id');
         $table->string('method');
         $table->boolean('is_enabled');
@@ -161,7 +161,7 @@ test('registration creates a main branch from the business name for the owner', 
     $this->assertDatabaseCount('branches', 1);
     $this->assertDatabaseHas('branch_users', [
         'branch_id' => DB::table('branches')->value('id'),
-        'user_id' => $ownerId,
+        'user_id' => DB::table('users')->value('id'),
         'is_primary' => true,
     ]);
     $this->assertDatabaseCount('branch_users', 1);

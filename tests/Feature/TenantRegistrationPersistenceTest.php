@@ -4,8 +4,13 @@ use App\Models\Tenant;
 use App\Modules\TenantOnboarding\Contracts\TenantEnvironmentProvisioner;
 use Database\Seeders\BusinessTemplateSeeder;
 use Database\Seeders\PlanSeeder;
+use Illuminate\Routing\Middleware\ThrottleRequests;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
+
+beforeEach(function () {
+    $this->withoutMiddleware(ThrottleRequests::class);
+});
 
 test('registration stores the central owner and complete tenant hostname', function () {
     config()->set('database.default', 'sqlite');

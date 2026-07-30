@@ -5,7 +5,6 @@ namespace Database\Seeders;
 use Database\Seeders\Concerns\SeedsDemoTenant;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
 
 class TenantBookingSeeder extends Seeder
 {
@@ -23,7 +22,7 @@ class TenantBookingSeeder extends Seeder
                 'phone',
                 '081298765432',
             );
-            $ownerId = (string) DB::table('users')
+            $ownerId = (int) DB::table('users')
                 ->where('email', DemoTenantRegistrationSeeder::OWNER_EMAIL)
                 ->value('id');
             $cameraId = $this->tenantRowId(
@@ -136,7 +135,6 @@ class TenantBookingSeeder extends Seeder
                 ->where('to_status', 'confirmed')
                 ->exists()) {
                 DB::table('booking_status_histories')->insert([
-                    'id' => (string) Str::uuid(),
                     'tenant_id' => $tenantId,
                     'booking_id' => $bookingId,
                     'from_status' => 'draft',
@@ -151,7 +149,7 @@ class TenantBookingSeeder extends Seeder
 
     private function seedBookingItem(
         string $tenantId,
-        string $bookingId,
+        int $bookingId,
         int $productId,
         string $productName,
         string $sku,
@@ -161,7 +159,7 @@ class TenantBookingSeeder extends Seeder
         int $unitPrice,
         int $subtotal,
         int $deposit,
-    ): string {
+    ): int {
         return $this->upsertTenantRow(
             table: 'booking_items',
             tenantId: $tenantId,

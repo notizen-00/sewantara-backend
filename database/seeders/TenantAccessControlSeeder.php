@@ -39,7 +39,7 @@ class TenantAccessControlSeeder extends Seeder
                 ]);
             }
 
-            $ownerId = (string) DB::table('users')
+            $ownerId = (int) DB::table('users')
                 ->where('email', DemoTenantRegistrationSeeder::OWNER_EMAIL)
                 ->value('id');
 

@@ -13,7 +13,7 @@ return new class extends Migration
     {
 
         Schema::create('users', function (Blueprint $table) {
-            $table->uuid('id')->primary();
+            $table->id();
             $table->string('tenant_id')->nullable()->index();
             $table->string('name', 150);
             $table->string('email', 150);
@@ -36,7 +36,7 @@ return new class extends Migration
 
         Schema::create('sessions', function (Blueprint $table) {
             $table->string('id')->primary();
-            $table->uuid('user_id')->nullable()->index();
+            $table->unsignedBigInteger('user_id')->nullable()->index();
             $table->string('ip_address', 45)->nullable();
             $table->text('user_agent')->nullable();
             $table->longText('payload');

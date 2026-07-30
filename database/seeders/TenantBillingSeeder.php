@@ -5,7 +5,6 @@ namespace Database\Seeders;
 use Database\Seeders\Concerns\SeedsDemoTenant;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
 
 class TenantBillingSeeder extends Seeder
 {
@@ -20,7 +19,7 @@ class TenantBillingSeeder extends Seeder
                 'booking_number',
                 TenantBookingSeeder::BOOKING_NUMBER,
             );
-            $ownerId = (string) DB::table('users')
+            $ownerId = (int) DB::table('users')
                 ->where('email', DemoTenantRegistrationSeeder::OWNER_EMAIL)
                 ->value('id');
 
@@ -112,7 +111,6 @@ class TenantBillingSeeder extends Seeder
                 ->where('type', 'hold')
                 ->exists()) {
                 DB::table('deposit_transactions')->insert([
-                    'id' => (string) Str::uuid(),
                     'tenant_id' => $tenantId,
                     'deposit_id' => $depositId,
                     'type' => 'hold',

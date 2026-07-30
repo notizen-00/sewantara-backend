@@ -37,17 +37,33 @@ beforeEach(function () {
     app()->instance(PathTenantResolver::class, $resolver);
 
     $this->user = User::query()->create([
-        'id' => '019c0000-0000-7000-8000-000000000001',
         'tenant_id' => 'tenant-a',
         'name' => 'Tenant Owner',
         'email' => 'owner@example.com',
         'password' => 'unused',
         'is_active' => true,
     ]);
+    DB::table('branches')->insert([
+        'id' => 1,
+        'tenant_id' => 'tenant-a',
+        'name' => 'Cabang Utama',
+        'code' => 'MAIN',
+        'is_active' => true,
+        'created_at' => now(),
+        'updated_at' => now(),
+    ]);
+    DB::table('branch_users')->insert([
+        'branch_id' => 1,
+        'user_id' => $this->user->getKey(),
+        'is_primary' => true,
+        'created_at' => now(),
+        'updated_at' => now(),
+    ]);
     $this->headers = [
         'Authorization' => 'Bearer '.$this->user
             ->createToken('product-crud-test', ['tenant:access'])
             ->plainTextToken,
+        'X-Branch-Id' => '1',
     ];
 });
 
@@ -129,7 +145,7 @@ test('product master supports complete CRUD and tenant isolation', function () {
 function createProductCrudTestTables(): void
 {
     Schema::create('users', function (Blueprint $table): void {
-        $table->uuid('id')->primary();
+        $table->id();
         $table->string('tenant_id')->nullable()->index();
         $table->string('name');
         $table->string('email');
@@ -142,13 +158,31 @@ function createProductCrudTestTables(): void
 
     Schema::create('personal_access_tokens', function (Blueprint $table): void {
         $table->id();
-        $table->uuidMorphs('tokenable');
+        $table->morphs('tokenable');
         $table->string('name');
         $table->string('token', 64)->unique();
         $table->text('abilities')->nullable();
         $table->timestamp('last_used_at')->nullable();
         $table->timestamp('expires_at')->nullable();
         $table->timestamps();
+    });
+
+    Schema::create('branches', function (Blueprint $table): void {
+        $table->id();
+        $table->string('tenant_id');
+        $table->string('name');
+        $table->string('code');
+        $table->boolean('is_active')->default(true);
+        $table->timestamps();
+        $table->softDeletes();
+    });
+
+    Schema::create('branch_users', function (Blueprint $table): void {
+        $table->unsignedBigInteger('branch_id');
+        $table->unsignedBigInteger('user_id');
+        $table->boolean('is_primary')->default(false);
+        $table->timestamps();
+        $table->primary(['branch_id', 'user_id']);
     });
 
     Schema::create('categories', function (Blueprint $table): void {

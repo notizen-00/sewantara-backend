@@ -5,11 +5,12 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration {
+return new class extends Migration
+{
     public function up(): void
     {
         Schema::create('product_images', function (Blueprint $table): void {
-            $table->uuid('id')->primary();
+            $table->id();
             $table->string('tenant_id')->index();
             $table->foreignId('product_id')->constrained()->cascadeOnDelete();
             $table->string('image_path');
@@ -20,5 +21,9 @@ return new class extends Migration {
         });
         DB::statement('CREATE UNIQUE INDEX product_images_one_primary_per_product ON product_images (product_id) WHERE is_primary = true');
     }
-    public function down(): void { Schema::dropIfExists('product_images'); }
+
+    public function down(): void
+    {
+        Schema::dropIfExists('product_images');
+    }
 };

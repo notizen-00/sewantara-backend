@@ -2,13 +2,12 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 use Stancl\Tenancy\Database\Concerns\BelongsToTenant;
 
 class ProductMovement extends Model
 {
-    use BelongsToTenant, HasUuids;
+    use BelongsToTenant;
 
     public const UPDATED_AT = null;
 

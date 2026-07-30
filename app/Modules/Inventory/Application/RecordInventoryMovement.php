@@ -14,8 +14,8 @@ class RecordInventoryMovement
         string $type,
         ?string $fromStatus,
         ?string $toStatus,
-        ?string $bookingId,
-        ?string $createdBy,
+        ?int $bookingId,
+        ?int $createdBy,
         ?string $notes = null,
     ): ProductMovement {
         return ProductMovement::query()->create([
@@ -41,10 +41,10 @@ class RecordInventoryMovement
         int $quantity,
         int $balanceBefore,
         int $balanceAfter,
-        ?string $bookingId,
-        ?string $createdBy,
+        ?int $bookingId,
+        ?int $createdBy,
         ?string $referenceType = null,
-        int|string|null $referenceId = null,
+        ?int $referenceId = null,
         ?string $notes = null,
     ): InventoryStockMovement {
         return InventoryStockMovement::query()->create([

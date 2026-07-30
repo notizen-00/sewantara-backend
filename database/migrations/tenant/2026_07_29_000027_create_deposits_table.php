@@ -5,13 +5,14 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration {
+return new class extends Migration
+{
     public function up(): void
     {
         Schema::create('deposits', function (Blueprint $table): void {
-            $table->uuid('id')->primary();
+            $table->id();
             $table->string('tenant_id')->index();
-            $table->foreignUuid('booking_id')->constrained()->restrictOnDelete();
+            $table->foreignId('booking_id')->constrained()->restrictOnDelete();
             foreach (['amount', 'deducted_amount', 'refunded_amount', 'remaining_amount'] as $column) {
                 $table->decimal($column, 18, 2)->default(0);
             }
@@ -23,5 +24,9 @@ return new class extends Migration {
         });
         DB::statement('ALTER TABLE deposits ADD CONSTRAINT deposits_amounts_nonnegative CHECK (amount >= 0 AND deducted_amount >= 0 AND refunded_amount >= 0 AND remaining_amount >= 0)');
     }
-    public function down(): void { Schema::dropIfExists('deposits'); }
+
+    public function down(): void
+    {
+        Schema::dropIfExists('deposits');
+    }
 };

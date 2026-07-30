@@ -29,13 +29,13 @@ Route::prefix('tenant/{tenant}')
         Route::middleware([
             'auth:sanctum',
             'tenant.user',
+            'tenant.branch',
         ])->group(function () {
             Route::post('/auth/logout', [TenantAuthController::class, 'logout'])
                 ->name('auth.logout');
 
             Route::middleware([
                 'tenant.accessible',
-                'tenant.branch',
             ])->group(function () {
                 Route::get('/me', CurrentTenantController::class)->name('me');
 
@@ -60,10 +60,8 @@ Route::prefix('tenant/{tenant}')
                     Route::apiResource('branches', BranchController::class)->only(['index', 'store']);
                     Route::post('/branches/{branch}/sync-master-data', [BranchController::class, 'syncMasterData'])
                         ->name('branches.sync-master-data');
-                    Route::apiResource('categories', CategoryController::class)
-                        ->withoutMiddleware('tenant.branch');
-                    Route::apiResource('products', ProductController::class)
-                        ->withoutMiddleware('tenant.branch');
+                    Route::apiResource('categories', CategoryController::class);
+                    Route::apiResource('products', ProductController::class);
                     Route::apiResource('product-units', ProductUnitController::class)->only(['index', 'store']);
                     Route::apiResource('product-prices', ProductPriceController::class)
                         ->only(['index', 'store', 'update', 'destroy']);
@@ -77,7 +75,6 @@ Route::prefix('tenant/{tenant}')
             Route::middleware([
                 'tenant.active',
                 'tenant.subscription',
-                'tenant.branch',
             ])->group(function () {
                 Route::apiResource('customers', CustomerController::class)->only(['index', 'store', 'show', 'update']);
                 Route::apiResource('bookings', BookingController::class)->only(['index', 'store', 'show']);

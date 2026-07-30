@@ -16,9 +16,16 @@ class ResolveBranchContext
         $user = $request->user();
         $requestedBranchId = $request->header(self::HEADER);
 
-        if ($requestedBranchId !== null
-            && (! ctype_digit((string) $requestedBranchId)
-                || (int) $requestedBranchId < 1)) {
+        if ($requestedBranchId === null || trim((string) $requestedBranchId) === '') {
+            return $this->error(
+                'BRANCH_HEADER_REQUIRED',
+                'Header X-Branch-Id wajib disertakan pada setiap permintaan tenant.',
+                422,
+            );
+        }
+
+        if (! ctype_digit((string) $requestedBranchId)
+            || (int) $requestedBranchId < 1) {
             return $this->error(
                 'BRANCH_HEADER_INVALID',
                 'Header X-Branch-Id harus berisi ID cabang yang valid.',
@@ -28,24 +35,13 @@ class ResolveBranchContext
 
         $branch = $user->branches()
             ->where('is_active', true)
-            ->when(
-                $requestedBranchId !== null,
-                fn ($query) => $query->where('branches.id', (int) $requestedBranchId),
-            )
-            ->when(
-                $requestedBranchId === null,
-                fn ($query) => $query
-                    ->orderByDesc('branch_users.is_primary')
-                    ->orderBy('branches.id'),
-            )
+            ->where('branches.id', (int) $requestedBranchId)
             ->first();
 
         if (! $branch) {
             return $this->error(
                 'BRANCH_ACCESS_DENIED',
-                $requestedBranchId === null
-                    ? 'Anda belum memiliki akses ke cabang aktif.'
-                    : 'Anda tidak memiliki akses ke cabang yang dipilih.',
+                'Anda tidak memiliki akses ke cabang yang dipilih.',
                 403,
             );
         }

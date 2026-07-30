@@ -57,7 +57,7 @@ class TenantOrganizationSeeder extends Seeder
                 'code',
                 'JBR-01',
             );
-            $ownerId = (string) DB::table('users')
+            $ownerId = (int) DB::table('users')
                 ->where('email', DemoTenantRegistrationSeeder::OWNER_EMAIL)
                 ->value('id');
 

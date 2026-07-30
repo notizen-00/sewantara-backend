@@ -37,7 +37,7 @@ class ManageMaintenance
 
     public function create(
         string $tenantId,
-        ?string $actorId,
+        ?int $actorId,
         array $attributes,
         ?int $branchId = null,
     ): MaintenanceRecord {
@@ -81,7 +81,7 @@ class ManageMaintenance
 
     public function start(
         MaintenanceRecord $maintenance,
-        ?string $actorId,
+        ?int $actorId,
     ): MaintenanceRecord {
         if ($maintenance->status !== 'scheduled') {
             throw ValidationException::withMessages([
@@ -124,7 +124,7 @@ class ManageMaintenance
 
     public function complete(
         MaintenanceRecord $maintenance,
-        ?string $actorId,
+        ?int $actorId,
         array $attributes,
     ): MaintenanceRecord {
         if ($maintenance->status !== 'in_progress') {
@@ -168,7 +168,7 @@ class ManageMaintenance
 
     public function cancel(
         MaintenanceRecord $maintenance,
-        ?string $actorId,
+        ?int $actorId,
         ?string $notes,
     ): MaintenanceRecord {
         if (! in_array($maintenance->status, ['scheduled', 'in_progress'], true)) {

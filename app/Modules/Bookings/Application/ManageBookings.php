@@ -36,7 +36,7 @@ class ManageBookings
             ->paginate($perPage);
     }
 
-    public function create(string $tenantId, ?string $creatorId, array $attributes): Booking
+    public function create(string $tenantId, ?int $creatorId, array $attributes): Booking
     {
         $attributes = $this->engine->prepareBooking($attributes);
         $customer = Customer::query()->findOrFail($attributes['customer_id']);
@@ -213,10 +213,9 @@ class ManageBookings
         ]);
     }
 
-    private function recordInitialStatus(Booking $booking, string $tenantId, ?string $creatorId): void
+    private function recordInitialStatus(Booking $booking, string $tenantId, ?int $creatorId): void
     {
         DB::table('booking_status_histories')->insert([
-            'id' => (string) Str::uuid(),
             'tenant_id' => $tenantId,
             'booking_id' => $booking->id,
             'from_status' => null,

@@ -5,15 +5,16 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration {
+return new class extends Migration
+{
     public function up(): void
     {
         Schema::create('bookings', function (Blueprint $table): void {
-            $table->uuid('id')->primary();
+            $table->id();
             $table->string('tenant_id')->index();
             $table->foreignId('branch_id')->nullable()->constrained()->nullOnDelete();
             $table->foreignId('customer_id')->constrained()->restrictOnDelete();
-            $table->foreignUuid('created_by')->nullable()->constrained('users')->nullOnDelete();
+            $table->foreignId('created_by')->nullable()->constrained('users')->nullOnDelete();
             $table->string('booking_number', 100);
             $table->timestampTz('start_at');
             $table->timestampTz('end_at');
@@ -41,5 +42,9 @@ return new class extends Migration {
         DB::statement('ALTER TABLE bookings ADD CONSTRAINT bookings_period_valid CHECK (start_at < end_at)');
         DB::statement('ALTER TABLE bookings ADD CONSTRAINT bookings_amounts_nonnegative CHECK (subtotal >= 0 AND discount_amount >= 0 AND tax_amount >= 0 AND delivery_fee >= 0 AND deposit_amount >= 0 AND charge_amount >= 0 AND total_amount >= 0 AND paid_amount >= 0 AND remaining_amount >= 0)');
     }
-    public function down(): void { Schema::dropIfExists('bookings'); }
+
+    public function down(): void
+    {
+        Schema::dropIfExists('bookings');
+    }
 };

@@ -4,8 +4,8 @@ namespace App\Modules\TenantOnboarding\Infrastructure\Tenancy;
 
 use App\Models\Branch;
 use App\Models\User;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
 
 class InitializeTenantDatabase
 {
@@ -28,10 +28,15 @@ class InitializeTenantDatabase
             $timezone,
             $currency,
         ): void {
-            $user = User::query()->find($owner['id']);
+            $user = User::query()
+                ->where('tenant_id', $tenantId)
+                ->whereRaw('LOWER(email) = ?', [mb_strtolower($owner['email'])])
+                ->first();
 
             if ($user === null) {
-                $user = User::query()->forceCreate($owner);
+                $user = User::query()->forceCreate(
+                    Arr::except($owner, ['id']),
+                );
             }
 
             $mainBranch = Branch::query()->firstOrCreate(
@@ -62,9 +67,6 @@ class InitializeTenantDatabase
             DB::table('tenant_business_profiles')->updateOrInsert(
                 ['tenant_id' => $tenantId],
                 [
-                    'id' => DB::table('tenant_business_profiles')
-                        ->where('tenant_id', $tenantId)
-                        ->value('id') ?? (string) Str::uuid(),
                     'template_code' => $onboarding['template_code'],
                     'template_version' => $onboarding['template_version'],
                     'business_name' => $businessName,
@@ -79,9 +81,6 @@ class InitializeTenantDatabase
             DB::table('rental_configurations')->updateOrInsert(
                 ['tenant_id' => $tenantId],
                 [
-                    'id' => DB::table('rental_configurations')
-                        ->where('tenant_id', $tenantId)
-                        ->value('id') ?? (string) Str::uuid(),
                     ...$onboarding['configuration'],
                     'created_at' => now(),
                     'updated_at' => now(),
@@ -91,9 +90,6 @@ class InitializeTenantDatabase
             DB::table('tenant_onboarding')->updateOrInsert(
                 ['tenant_id' => $tenantId],
                 [
-                    'id' => DB::table('tenant_onboarding')
-                        ->where('tenant_id', $tenantId)
-                        ->value('id') ?? (string) Str::uuid(),
                     'status' => 'in_progress',
                     'current_step' => 'inventory_setup',
                     'completed_steps' => json_encode([
@@ -110,10 +106,6 @@ class InitializeTenantDatabase
             DB::table('tenant_payment_methods')->updateOrInsert(
                 ['tenant_id' => $tenantId, 'method' => 'cash'],
                 [
-                    'id' => DB::table('tenant_payment_methods')
-                        ->where('tenant_id', $tenantId)
-                        ->where('method', 'cash')
-                        ->value('id') ?? (string) Str::uuid(),
                     'is_enabled' => true,
                     'configuration' => null,
                     'created_at' => now(),

@@ -8,11 +8,19 @@ use App\Models\Category;
 use App\Models\Customer;
 use App\Models\Domain;
 use App\Models\InventoryStock;
+use App\Models\InventoryStockMovement;
 use App\Models\Invoice;
+use App\Models\MaintenanceRecord;
 use App\Models\Payment;
 use App\Models\Product;
+use App\Models\ProductMovement;
+use App\Models\ProductPrice;
 use App\Models\ProductUnit;
+use App\Models\RentalConfiguration;
 use App\Models\Tenant;
+use App\Models\TenantBusinessProfile;
+use App\Models\TenantOnboarding;
+use App\Models\TenantPaymentMethod;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Laravelcm\Subscriptions\Traits\HasPlanSubscriptions;
@@ -41,11 +49,19 @@ test('operational models are scoped to the active tenant', function () {
         Product::class,
         ProductUnit::class,
         InventoryStock::class,
+        InventoryStockMovement::class,
         Booking::class,
         BookingItem::class,
         BookingUnitAllocation::class,
         Payment::class,
         Invoice::class,
+        MaintenanceRecord::class,
+        ProductMovement::class,
+        ProductPrice::class,
+        RentalConfiguration::class,
+        TenantBusinessProfile::class,
+        TenantOnboarding::class,
+        TenantPaymentMethod::class,
     ];
 
     foreach ($models as $model) {
@@ -54,8 +70,8 @@ test('operational models are scoped to the active tenant', function () {
     }
 });
 
-test('master data models use incrementing integer identifiers', function () {
-    $masterModels = [
+test('tenant models use incrementing bigint identifiers', function () {
+    $tenantModels = [
         Branch::class,
         Customer::class,
         Category::class,
@@ -64,12 +80,23 @@ test('master data models use incrementing integer identifiers', function () {
         InventoryStock::class,
     ];
 
-    foreach ($masterModels as $modelClass) {
+    foreach ($tenantModels as $modelClass) {
         $model = new $modelClass;
 
         expect(class_uses_recursive($modelClass))
             ->not->toContain(HasUuids::class)
             ->and($model->getKeyType())->toBe('int')
             ->and($model->getIncrementing())->toBeTrue();
+    }
+});
+
+test('tenant migrations do not declare uuid identifiers', function () {
+    $migrationPath = dirname(__DIR__, 2).'/database/migrations/tenant/*.php';
+
+    foreach (glob($migrationPath) as $migration) {
+        expect(file_get_contents($migration))
+            ->not->toContain('->uuid(')
+            ->not->toContain('->foreignUuid(')
+            ->not->toContain('->uuidMorphs(');
     }
 });

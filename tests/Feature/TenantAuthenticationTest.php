@@ -4,6 +4,7 @@ use App\Models\Tenant;
 use App\Models\User;
 use App\Modules\TenantAuthentication\Application\ManageTenantAuthentication;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Routing\Middleware\ThrottleRequests;
 use Illuminate\Routing\Route;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -14,6 +15,8 @@ use Stancl\Tenancy\Resolvers\PathTenantResolver;
 use Stancl\Tenancy\Tenancy;
 
 beforeEach(function () {
+    $this->withoutMiddleware(ThrottleRequests::class);
+
     config()->set('database.default', 'sqlite');
     config()->set('database.connections.sqlite.database', ':memory:');
     config()->set('tenancy.database.central_connection', 'sqlite');
@@ -51,7 +54,6 @@ beforeEach(function () {
     ]);
 
     $this->user = User::query()->create([
-        'id' => '019c0000-0000-7000-8000-000000000001',
         'tenant_id' => 'tenant-a',
         'name' => 'Tenant Owner',
         'email' => 'owner@example.com',
@@ -165,12 +167,18 @@ test('protected tenant routes require a bearer token', function () {
         ->assertJsonPath('error.code', 'UNAUTHENTICATED');
 });
 
-test('branch context defaults to primary branch and can switch through header', function () {
+test('branch context requires a header and can switch through it', function () {
     $token = loginTenantUser($this)->json('data.access_token');
     $headers = ['Authorization' => 'Bearer '.$token];
 
     $this->getJson('/api/tenant/tenant-a/me', $headers)
-        ->assertOk()
+        ->assertUnprocessable()
+        ->assertJsonPath('error.code', 'BRANCH_HEADER_REQUIRED');
+
+    $this->getJson('/api/tenant/tenant-a/me', [
+        ...$headers,
+        'X-Branch-Id' => '1',
+    ])->assertOk()
         ->assertHeader('X-Branch-Id', '1')
         ->assertJsonPath('data.branch.id', 1);
 
@@ -178,7 +186,6 @@ test('branch context defaults to primary branch and can switch through header', 
         ...$headers,
         'X-Branch-Id' => '2',
     ])->assertOk()
-        ->assertHeader('X-Branch-Id', '2')
         ->assertJsonPath('data.branch.id', 2);
 });
 
@@ -194,7 +201,10 @@ test('branch context rejects branches outside the user access list', function ()
 
 test('logout revokes the current bearer token', function () {
     $token = loginTenantUser($this)->json('data.access_token');
-    $headers = ['Authorization' => 'Bearer '.$token];
+    $headers = [
+        'Authorization' => 'Bearer '.$token,
+        'X-Branch-Id' => '1',
+    ];
 
     $this->postJson('/api/tenant/tenant-a/auth/logout', [], $headers)
         ->assertOk()
@@ -228,7 +238,7 @@ function createTenantAuthenticationTestTables(): void
     });
 
     Schema::create('users', function (Blueprint $table): void {
-        $table->uuid('id')->primary();
+        $table->id();
         $table->string('tenant_id')->nullable()->index();
         $table->string('name');
         $table->string('email');
@@ -243,7 +253,7 @@ function createTenantAuthenticationTestTables(): void
 
     Schema::create('personal_access_tokens', function (Blueprint $table): void {
         $table->id();
-        $table->uuidMorphs('tokenable');
+        $table->morphs('tokenable');
         $table->string('name');
         $table->string('token', 64)->unique();
         $table->text('abilities')->nullable();
@@ -264,7 +274,7 @@ function createTenantAuthenticationTestTables(): void
 
     Schema::create('branch_users', function (Blueprint $table): void {
         $table->unsignedBigInteger('branch_id');
-        $table->uuid('user_id');
+        $table->unsignedBigInteger('user_id');
         $table->boolean('is_primary')->default(false);
         $table->timestamps();
         $table->primary(['branch_id', 'user_id']);

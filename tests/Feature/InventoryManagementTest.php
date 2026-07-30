@@ -249,7 +249,7 @@ function seedInventoryManagementData(): void
 
     DB::table('product_prices')->insert([
         [
-            'id' => '019c0000-0000-7000-8000-000000000011',
+            'id' => 1,
             'tenant_id' => 'tenant-a',
             'product_id' => 1,
             'branch_id' => 1,
@@ -259,7 +259,7 @@ function seedInventoryManagementData(): void
             'is_active' => true,
         ],
         [
-            'id' => '019c0000-0000-7000-8000-000000000012',
+            'id' => 2,
             'tenant_id' => 'tenant-a',
             'product_id' => 2,
             'branch_id' => 1,
@@ -298,7 +298,7 @@ function seedInventoryManagementData(): void
     ]);
 
     DB::table('rental_configurations')->insert([
-        'id' => '019c0000-0000-7000-8000-000000000013',
+        'id' => 1,
         'tenant_id' => 'tenant-a',
         'rental_model' => 'per_day',
         'booking_strategy' => 'date_range',
@@ -322,7 +322,7 @@ function createInventoryManagementTables(): void
     });
 
     Schema::create('rental_configurations', function (Blueprint $table): void {
-        $table->uuid('id')->primary();
+        $table->id();
         $table->string('tenant_id');
         $table->string('rental_model');
         $table->string('booking_strategy');
@@ -358,7 +358,7 @@ function createInventoryManagementTables(): void
     });
 
     Schema::create('product_prices', function (Blueprint $table): void {
-        $table->uuid('id')->primary();
+        $table->id();
         $table->string('tenant_id');
         $table->unsignedBigInteger('product_id');
         $table->unsignedBigInteger('branch_id')->nullable();
@@ -399,11 +399,11 @@ function createInventoryManagementTables(): void
     });
 
     Schema::create('bookings', function (Blueprint $table): void {
-        $table->uuid('id')->primary();
+        $table->id();
         $table->string('tenant_id');
         $table->unsignedBigInteger('branch_id')->nullable();
         $table->unsignedBigInteger('customer_id');
-        $table->uuid('created_by')->nullable();
+        $table->unsignedBigInteger('created_by')->nullable();
         $table->string('booking_number');
         $table->dateTime('start_at');
         $table->dateTime('end_at');
@@ -432,9 +432,9 @@ function createInventoryManagementTables(): void
     });
 
     Schema::create('booking_items', function (Blueprint $table): void {
-        $table->uuid('id')->primary();
+        $table->id();
         $table->string('tenant_id');
-        $table->uuid('booking_id');
+        $table->unsignedBigInteger('booking_id');
         $table->unsignedBigInteger('product_id');
         $table->string('product_name');
         $table->string('sku')->nullable();
@@ -452,10 +452,10 @@ function createInventoryManagementTables(): void
     });
 
     Schema::create('booking_unit_allocations', function (Blueprint $table): void {
-        $table->uuid('id')->primary();
+        $table->id();
         $table->string('tenant_id');
-        $table->uuid('booking_id');
-        $table->uuid('booking_item_id');
+        $table->unsignedBigInteger('booking_id');
+        $table->unsignedBigInteger('booking_item_id');
         $table->unsignedBigInteger('product_unit_id');
         $table->dateTime('start_at');
         $table->dateTime('end_at');
@@ -467,20 +467,20 @@ function createInventoryManagementTables(): void
     });
 
     Schema::create('booking_status_histories', function (Blueprint $table): void {
-        $table->uuid('id')->primary();
+        $table->id();
         $table->string('tenant_id');
-        $table->uuid('booking_id');
+        $table->unsignedBigInteger('booking_id');
         $table->string('from_status')->nullable();
         $table->string('to_status');
         $table->text('notes')->nullable();
-        $table->uuid('changed_by')->nullable();
+        $table->unsignedBigInteger('changed_by')->nullable();
         $table->dateTime('created_at');
     });
 
     Schema::create('invoices', function (Blueprint $table): void {
-        $table->uuid('id')->primary();
+        $table->id();
         $table->string('tenant_id');
-        $table->uuid('booking_id');
+        $table->unsignedBigInteger('booking_id');
         $table->string('invoice_number');
         $table->date('issue_date');
         $table->date('due_date')->nullable();
@@ -495,10 +495,10 @@ function createInventoryManagementTables(): void
     });
 
     Schema::create('product_movements', function (Blueprint $table): void {
-        $table->uuid('id')->primary();
+        $table->id();
         $table->string('tenant_id');
         $table->unsignedBigInteger('product_unit_id');
-        $table->uuid('booking_id')->nullable();
+        $table->unsignedBigInteger('booking_id')->nullable();
         $table->string('type');
         $table->string('from_status')->nullable();
         $table->string('to_status')->nullable();
@@ -506,30 +506,30 @@ function createInventoryManagementTables(): void
         $table->unsignedBigInteger('to_branch_id')->nullable();
         $table->text('notes')->nullable();
         $table->dateTime('occurred_at');
-        $table->uuid('created_by')->nullable();
+        $table->unsignedBigInteger('created_by')->nullable();
         $table->dateTime('created_at');
     });
 
     Schema::create('inventory_stock_movements', function (Blueprint $table): void {
-        $table->uuid('id')->primary();
+        $table->id();
         $table->string('tenant_id');
         $table->unsignedBigInteger('product_id');
         $table->unsignedBigInteger('branch_id');
-        $table->uuid('booking_id')->nullable();
+        $table->unsignedBigInteger('booking_id')->nullable();
         $table->string('type');
         $table->integer('quantity');
         $table->integer('balance_before');
         $table->integer('balance_after');
         $table->string('reference_type')->nullable();
-        $table->string('reference_id')->nullable();
+        $table->unsignedBigInteger('reference_id')->nullable();
         $table->text('notes')->nullable();
-        $table->uuid('created_by')->nullable();
+        $table->unsignedBigInteger('created_by')->nullable();
         $table->dateTime('occurred_at');
         $table->dateTime('created_at');
     });
 
     Schema::create('maintenance_records', function (Blueprint $table): void {
-        $table->uuid('id')->primary();
+        $table->id();
         $table->string('tenant_id');
         $table->unsignedBigInteger('product_unit_id');
         $table->string('type');
@@ -541,7 +541,7 @@ function createInventoryManagementTables(): void
         $table->dateTime('started_at')->nullable();
         $table->dateTime('completed_at')->nullable();
         $table->string('status');
-        $table->uuid('created_by')->nullable();
+        $table->unsignedBigInteger('created_by')->nullable();
         $table->timestamps();
     });
 }

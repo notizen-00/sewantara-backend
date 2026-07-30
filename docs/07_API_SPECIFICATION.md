@@ -58,18 +58,19 @@ secara otomatis melalui relasi akun pusat berdasarkan alamat email.
 
 ```http
 Authorization: Bearer {access_token}
+X-Branch-Id: {branch_id}
 Accept: application/json
 ```
 
-Endpoint operasional yang bergantung pada cabang menerima header:
+Seluruh endpoint tenant selain login wajib menerima header:
 
 ```http
 X-Branch-Id: 2
 ```
 
-Jika header tidak dikirim, sistem memakai cabang utama pengguna. Header hanya
-dapat menunjuk cabang aktif yang terhubung dengan pengguna. ID cabang aktif
-selalu dikembalikan melalui response header `X-Branch-Id`.
+Permintaan tanpa header ditolak dengan kode `BRANCH_HEADER_REQUIRED`. Header
+hanya dapat menunjuk cabang aktif yang terhubung dengan pengguna. ID cabang
+aktif selalu dikembalikan melalui response header `X-Branch-Id`.
 
 Logout dan revoke token aktif:
 

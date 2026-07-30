@@ -113,7 +113,7 @@ function seedTenantOnboardingFlowData(): void
     $now = now();
 
     DB::table('tenant_business_profiles')->insert([
-        'id' => '019c0000-0000-7000-8000-000000000101',
+        'id' => 1,
         'tenant_id' => 'tenant-a',
         'template_code' => 'camera_rental',
         'template_version' => 1,
@@ -125,7 +125,7 @@ function seedTenantOnboardingFlowData(): void
         'updated_at' => $now,
     ]);
     DB::table('rental_configurations')->insert([
-        'id' => '019c0000-0000-7000-8000-000000000102',
+        'id' => 1,
         'tenant_id' => 'tenant-a',
         'rental_model' => 'per_day',
         'booking_strategy' => 'date_range',
@@ -144,7 +144,7 @@ function seedTenantOnboardingFlowData(): void
         'updated_at' => $now,
     ]);
     DB::table('tenant_onboarding')->insert([
-        'id' => '019c0000-0000-7000-8000-000000000103',
+        'id' => 1,
         'tenant_id' => 'tenant-a',
         'status' => 'in_progress',
         'current_step' => 'inventory_setup',
@@ -157,7 +157,7 @@ function seedTenantOnboardingFlowData(): void
         'updated_at' => $now,
     ]);
     DB::table('tenant_payment_methods')->insert([
-        'id' => '019c0000-0000-7000-8000-000000000104',
+        'id' => 1,
         'tenant_id' => 'tenant-a',
         'method' => 'cash',
         'is_enabled' => true,
@@ -180,7 +180,7 @@ function seedTenantOnboardingFlowData(): void
         'deleted_at' => null,
     ]);
     DB::table('product_prices')->insert([
-        'id' => '019c0000-0000-7000-8000-000000000105',
+        'id' => 1,
         'tenant_id' => 'tenant-a',
         'pricing_type' => 'daily',
         'is_active' => true,
@@ -190,7 +190,7 @@ function seedTenantOnboardingFlowData(): void
 function createTenantOnboardingFlowTables(): void
 {
     Schema::create('tenant_business_profiles', function (Blueprint $table): void {
-        $table->uuid('id')->primary();
+        $table->id();
         $table->string('tenant_id');
         $table->string('template_code');
         $table->integer('template_version');
@@ -201,7 +201,7 @@ function createTenantOnboardingFlowTables(): void
         $table->timestamps();
     });
     Schema::create('rental_configurations', function (Blueprint $table): void {
-        $table->uuid('id')->primary();
+        $table->id();
         $table->string('tenant_id');
         $table->string('rental_model');
         $table->string('booking_strategy');
@@ -219,7 +219,7 @@ function createTenantOnboardingFlowTables(): void
         $table->timestamps();
     });
     Schema::create('tenant_onboarding', function (Blueprint $table): void {
-        $table->uuid('id')->primary();
+        $table->id();
         $table->string('tenant_id');
         $table->string('status');
         $table->string('current_step');
@@ -228,7 +228,7 @@ function createTenantOnboardingFlowTables(): void
         $table->timestamps();
     });
     Schema::create('tenant_payment_methods', function (Blueprint $table): void {
-        $table->uuid('id')->primary();
+        $table->id();
         $table->string('tenant_id');
         $table->string('method');
         $table->boolean('is_enabled');
@@ -255,7 +255,7 @@ function createTenantOnboardingFlowTables(): void
         $table->integer('quantity_total');
     });
     Schema::create('product_prices', function (Blueprint $table): void {
-        $table->uuid('id')->primary();
+        $table->id();
         $table->string('tenant_id');
         $table->string('pricing_type');
         $table->boolean('is_active');

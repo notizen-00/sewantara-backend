@@ -5,13 +5,14 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration {
+return new class extends Migration
+{
     public function up(): void
     {
         Schema::create('invoices', function (Blueprint $table): void {
-            $table->uuid('id')->primary();
+            $table->id();
             $table->string('tenant_id')->index();
-            $table->foreignUuid('booking_id')->constrained()->restrictOnDelete();
+            $table->foreignId('booking_id')->constrained()->restrictOnDelete();
             $table->string('invoice_number', 100);
             $table->date('issue_date');
             $table->date('due_date')->nullable();
@@ -25,5 +26,9 @@ return new class extends Migration {
         });
         DB::statement('ALTER TABLE invoices ADD CONSTRAINT invoices_amounts_nonnegative CHECK (subtotal >= 0 AND discount_amount >= 0 AND tax_amount >= 0 AND total_amount >= 0 AND paid_amount >= 0 AND remaining_amount >= 0)');
     }
-    public function down(): void { Schema::dropIfExists('invoices'); }
+
+    public function down(): void
+    {
+        Schema::dropIfExists('invoices');
+    }
 };

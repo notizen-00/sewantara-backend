@@ -5,13 +5,14 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration {
+return new class extends Migration
+{
     public function up(): void
     {
         Schema::create('payments', function (Blueprint $table): void {
-            $table->uuid('id')->primary();
+            $table->id();
             $table->string('tenant_id')->index();
-            $table->foreignUuid('booking_id')->constrained()->restrictOnDelete();
+            $table->foreignId('booking_id')->constrained()->restrictOnDelete();
             $table->string('payment_number', 100);
             $table->string('type', 30);
             $table->string('method', 30);
@@ -23,7 +24,7 @@ return new class extends Migration {
             $table->timestampTz('paid_at')->nullable();
             $table->timestampTz('expired_at')->nullable();
             $table->text('notes')->nullable();
-            $table->foreignUuid('created_by')->nullable()->constrained('users')->nullOnDelete();
+            $table->foreignId('created_by')->nullable()->constrained('users')->nullOnDelete();
             $table->timestampsTz();
             $table->unique(['tenant_id', 'payment_number']);
             $table->index(['tenant_id', 'booking_id']);
@@ -32,5 +33,9 @@ return new class extends Migration {
         });
         DB::statement('ALTER TABLE payments ADD CONSTRAINT payments_amount_nonnegative CHECK (amount >= 0)');
     }
-    public function down(): void { Schema::dropIfExists('payments'); }
+
+    public function down(): void
+    {
+        Schema::dropIfExists('payments');
+    }
 };

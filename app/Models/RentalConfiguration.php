@@ -5,13 +5,12 @@ namespace App\Models;
 use App\Modules\RentalEngine\Domain\AllocationStrategy;
 use App\Modules\RentalEngine\Domain\BookingStrategy;
 use App\Modules\RentalEngine\Domain\RentalModel;
-use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 use Stancl\Tenancy\Database\Concerns\BelongsToTenant;
 
 class RentalConfiguration extends Model
 {
-    use BelongsToTenant, HasUuids;
+    use BelongsToTenant;
 
     protected $fillable = [
         'tenant_id',

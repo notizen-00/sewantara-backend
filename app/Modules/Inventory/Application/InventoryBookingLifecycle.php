@@ -15,7 +15,7 @@ class InventoryBookingLifecycle
         private readonly RecordInventoryMovement $movements,
     ) {}
 
-    public function reserve(Booking $booking, ?string $actorId): void
+    public function reserve(Booking $booking, ?int $actorId): void
     {
         foreach ($booking->items()->get() as $item) {
             if ($item->inventory_type === 'serialized') {
@@ -51,7 +51,7 @@ class InventoryBookingLifecycle
         }
     }
 
-    public function checkOut(Booking $booking, ?string $actorId): void
+    public function checkOut(Booking $booking, ?int $actorId): void
     {
         foreach ($booking->items()->get() as $item) {
             if ($item->inventory_type === 'serialized') {
@@ -107,7 +107,7 @@ class InventoryBookingLifecycle
         }
     }
 
-    public function return(Booking $booking, ?string $actorId): void
+    public function return(Booking $booking, ?int $actorId): void
     {
         foreach ($booking->items()->get() as $item) {
             if ($item->inventory_type === 'serialized') {
@@ -164,7 +164,7 @@ class InventoryBookingLifecycle
         }
     }
 
-    public function releaseReservation(Booking $booking, ?string $actorId): void
+    public function releaseReservation(Booking $booking, ?int $actorId): void
     {
         foreach ($booking->items()->get() as $item) {
             if ($item->inventory_type === 'serialized') {
@@ -224,7 +224,7 @@ class InventoryBookingLifecycle
     private function reserveSerializedItem(
         Booking $booking,
         BookingItem $item,
-        ?string $actorId,
+        ?int $actorId,
     ): void {
         foreach ($this->allocations($booking, $item) as $allocation) {
             $unit = ProductUnit::query()->lockForUpdate()

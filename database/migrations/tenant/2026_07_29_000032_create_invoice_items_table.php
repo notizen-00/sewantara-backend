@@ -5,13 +5,14 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration {
+return new class extends Migration
+{
     public function up(): void
     {
         Schema::create('invoice_items', function (Blueprint $table): void {
-            $table->uuid('id')->primary();
+            $table->id();
             $table->string('tenant_id')->index();
-            $table->foreignUuid('invoice_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('invoice_id')->constrained()->cascadeOnDelete();
             $table->string('description', 255);
             $table->decimal('quantity', 12, 2);
             $table->decimal('unit_amount', 18, 2);
@@ -20,5 +21,9 @@ return new class extends Migration {
         });
         DB::statement('ALTER TABLE invoice_items ADD CONSTRAINT invoice_items_values_valid CHECK (quantity > 0 AND unit_amount >= 0 AND total_amount >= 0)');
     }
-    public function down(): void { Schema::dropIfExists('invoice_items'); }
+
+    public function down(): void
+    {
+        Schema::dropIfExists('invoice_items');
+    }
 };
