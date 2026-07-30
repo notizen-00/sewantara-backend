@@ -28,10 +28,10 @@ class PlanSeeder extends Seeder
         return [
             [
                 'slug' => 'starter',
-                'name' => ['en' => 'Starter', 'id' => 'Starter'],
+                'name' => ['en' => 'Starter', 'id' => 'Pemula'],
                 'description' => [
                     'en' => 'For early-stage rental businesses.',
-                    'id' => 'Untuk bisnis rental skala awal.',
+                    'id' => 'Untuk usaha penyewaan yang baru memulai.',
                 ],
                 'price' => '199000.00',
                 'features' => [
@@ -42,10 +42,10 @@ class PlanSeeder extends Seeder
             ],
             [
                 'slug' => 'growth',
-                'name' => ['en' => 'Growth', 'id' => 'Growth'],
+                'name' => ['en' => 'Growth', 'id' => 'Berkembang'],
                 'description' => [
                     'en' => 'For growing rental businesses.',
-                    'id' => 'Untuk bisnis rental yang sedang berkembang.',
+                    'id' => 'Untuk usaha penyewaan yang sedang berkembang.',
                 ],
                 'price' => '499000.00',
                 'features' => [
@@ -56,10 +56,10 @@ class PlanSeeder extends Seeder
             ],
             [
                 'slug' => 'scale',
-                'name' => ['en' => 'Scale', 'id' => 'Scale'],
+                'name' => ['en' => 'Scale', 'id' => 'Skala Besar'],
                 'description' => [
                     'en' => 'For large-scale rental operations.',
-                    'id' => 'Untuk operasional rental skala besar.',
+                    'id' => 'Untuk operasional penyewaan berskala besar.',
                 ],
                 'price' => '999000.00',
                 'features' => [

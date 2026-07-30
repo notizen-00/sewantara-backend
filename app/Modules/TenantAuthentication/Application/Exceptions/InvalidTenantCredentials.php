@@ -8,6 +8,6 @@ class InvalidTenantCredentials extends RuntimeException
 {
     public function __construct()
     {
-        parent::__construct('Email atau password tidak valid.');
+        parent::__construct('Alamat email atau kata sandi tidak valid.');
     }
 }

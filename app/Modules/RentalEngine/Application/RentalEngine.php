@@ -24,13 +24,13 @@ class RentalEngine
 
         if ($channel === 'online' && ! $configuration->allow_online_booking) {
             throw ValidationException::withMessages([
-                'booking_channel' => ['Online booking dinonaktifkan oleh tenant.'],
+                'booking_channel' => ['Pemesanan daring dinonaktifkan untuk usaha ini.'],
             ]);
         }
 
         if ($channel === 'walk_in' && ! $configuration->allow_walk_in) {
             throw ValidationException::withMessages([
-                'booking_channel' => ['Walk-in booking dinonaktifkan oleh tenant.'],
+                'booking_channel' => ['Pemesanan langsung di lokasi dinonaktifkan untuk usaha ini.'],
             ]);
         }
 
@@ -50,7 +50,7 @@ class RentalEngine
 
             if ($slot === null) {
                 throw ValidationException::withMessages([
-                    'slot_duration_minutes' => ['Durasi slot rental belum dikonfigurasi.'],
+                    'slot_duration_minutes' => ['Durasi waktu penyewaan belum dikonfigurasi.'],
                 ]);
             }
 
@@ -59,7 +59,7 @@ class RentalEngine
             if ($end <= $start
                 || $start->diffInMinutes($end) % $slot !== 0) {
                 throw ValidationException::withMessages([
-                    'end_at' => ["Durasi booking harus merupakan kelipatan {$slot} menit."],
+                    'end_at' => ["Durasi pemesanan harus merupakan kelipatan {$slot} menit."],
                 ]);
             }
         }

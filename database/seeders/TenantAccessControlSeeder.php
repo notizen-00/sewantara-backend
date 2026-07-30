@@ -60,7 +60,7 @@ class TenantAccessControlSeeder extends Seeder
             ['code' => 'branches.manage', 'name' => 'Kelola cabang', 'module' => 'organization'],
             ['code' => 'customers.manage', 'name' => 'Kelola pelanggan', 'module' => 'customer'],
             ['code' => 'inventory.manage', 'name' => 'Kelola inventaris', 'module' => 'inventory'],
-            ['code' => 'bookings.manage', 'name' => 'Kelola booking', 'module' => 'booking'],
+            ['code' => 'bookings.manage', 'name' => 'Kelola pemesanan', 'module' => 'booking'],
             ['code' => 'payments.manage', 'name' => 'Kelola pembayaran', 'module' => 'billing'],
             ['code' => 'reports.view', 'name' => 'Lihat laporan', 'module' => 'reporting'],
         ];

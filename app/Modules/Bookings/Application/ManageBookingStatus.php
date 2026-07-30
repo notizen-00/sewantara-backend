@@ -19,7 +19,7 @@ class ManageBookingStatus
         $this->guardStatus(
             $booking,
             ['pending', 'confirmed', 'preparing', 'ready'],
-            'Booking tidak dapat di-check-out dari status saat ini.',
+            'Pesanan tidak dapat diserahkan kepada pelanggan dari status saat ini.',
         );
 
         return DB::transaction(function () use ($booking, $actorId): Booking {
@@ -27,7 +27,7 @@ class ManageBookingStatus
             $this->guardStatus(
                 $locked,
                 ['pending', 'confirmed', 'preparing', 'ready'],
-                'Booking tidak dapat di-check-out dari status saat ini.',
+                'Pesanan tidak dapat diserahkan kepada pelanggan dari status saat ini.',
             );
             $this->inventory->checkOut($locked, $actorId);
             $fromStatus = $locked->status;
@@ -46,7 +46,7 @@ class ManageBookingStatus
         $this->guardStatus(
             $booking,
             ['ongoing'],
-            'Hanya booking ongoing yang dapat dikembalikan.',
+            'Hanya pesanan yang sedang berlangsung yang dapat dikembalikan.',
         );
 
         return DB::transaction(function () use ($booking, $actorId): Booking {
@@ -54,7 +54,7 @@ class ManageBookingStatus
             $this->guardStatus(
                 $locked,
                 ['ongoing'],
-                'Hanya booking ongoing yang dapat dikembalikan.',
+                'Hanya pesanan yang sedang berlangsung yang dapat dikembalikan.',
             );
             $this->inventory->return($locked, $actorId);
             $locked->update([
@@ -76,7 +76,7 @@ class ManageBookingStatus
         $this->guardStatus(
             $booking,
             ['draft', 'pending', 'confirmed', 'preparing', 'ready'],
-            'Booking tidak dapat dibatalkan dari status saat ini.',
+            'Pesanan tidak dapat dibatalkan dari status saat ini.',
         );
 
         return DB::transaction(function () use ($booking, $actorId, $notes): Booking {
@@ -84,7 +84,7 @@ class ManageBookingStatus
             $this->guardStatus(
                 $locked,
                 ['draft', 'pending', 'confirmed', 'preparing', 'ready'],
-                'Booking tidak dapat dibatalkan dari status saat ini.',
+                'Pesanan tidak dapat dibatalkan dari status saat ini.',
             );
             $fromStatus = $locked->status;
             $this->inventory->releaseReservation($locked, $actorId);

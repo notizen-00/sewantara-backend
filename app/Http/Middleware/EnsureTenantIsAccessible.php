@@ -16,7 +16,7 @@ class EnsureTenantIsAccessible
         $tenant = $this->tenancy->tenant;
 
         if (! $this->tenancy->initialized || ! $tenant) {
-            return $this->error('TENANT_NOT_FOUND', 'Tenant tidak ditemukan.', 404);
+            return $this->error('TENANT_NOT_FOUND', 'Akun usaha tidak ditemukan.', 404);
         }
 
         if (! in_array($tenant->status, ['onboarding', 'active'], true)) {
@@ -24,7 +24,7 @@ class EnsureTenantIsAccessible
                 ? 'TENANT_SUSPENDED'
                 : 'TENANT_INACCESSIBLE';
 
-            return $this->error($code, 'Tenant tidak dapat diakses.', 423);
+            return $this->error($code, 'Akun usaha tidak dapat diakses.', 423);
         }
 
         return $next($request);

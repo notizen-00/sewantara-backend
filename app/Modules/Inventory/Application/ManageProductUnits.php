@@ -36,7 +36,7 @@ class ManageProductUnits
                 $unit->status,
                 null,
                 $actorId,
-                'Unit inventory dibuat.',
+                'Unit persediaan dibuat.',
             );
 
             return $unit;

@@ -14,7 +14,7 @@ class DatabaseSeeder extends Seeder
         ]);
 
         if ($this->command?->confirm(
-            'Seed demo tenant beserta data operasional?',
+            'Apakah data contoh akun usaha beserta data operasional akan dibuat?',
             app()->environment('local'),
         )) {
             $this->call(DemoDataSeeder::class);

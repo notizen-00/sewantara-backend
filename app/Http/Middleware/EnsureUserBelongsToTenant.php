@@ -44,7 +44,7 @@ class EnsureUserBelongsToTenant
                 'success' => false,
                 'error' => [
                     'code' => 'TENANT_ACCESS_DENIED',
-                    'message' => 'Anda tidak memiliki akses ke tenant ini.',
+                    'message' => 'Anda tidak memiliki akses ke akun usaha ini.',
                 ],
             ], 403);
         }

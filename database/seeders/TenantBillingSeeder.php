@@ -117,7 +117,7 @@ class TenantBillingSeeder extends Seeder
                     'deposit_id' => $depositId,
                     'type' => 'hold',
                     'amount' => 500000,
-                    'reason' => 'Deposit booking demo.',
+                    'reason' => 'Uang jaminan pemesanan contoh.',
                     'reference_type' => 'payment',
                     'reference_id' => $paymentId,
                     'processed_by' => $ownerId,

@@ -255,7 +255,7 @@ class InventoryBookingLifecycle
     {
         if ($booking->branch_id === null) {
             throw ValidationException::withMessages([
-                'branch_id' => ['Branch wajib dipilih untuk produk quantity.'],
+                'branch_id' => ['Cabang wajib dipilih untuk produk yang dikelola berdasarkan jumlah stok.'],
             ]);
         }
 

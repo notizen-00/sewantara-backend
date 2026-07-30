@@ -45,7 +45,7 @@ class StanclTenantEnvironmentProvisioner implements TenantEnvironmentProvisioner
 
             if ($exitCode !== 0) {
                 throw new LogicException(
-                    'Tenant migration gagal: '.Artisan::output(),
+                    'Migrasi basis data akun usaha gagal: '.Artisan::output(),
                 );
             }
 
@@ -53,12 +53,12 @@ class StanclTenantEnvironmentProvisioner implements TenantEnvironmentProvisioner
             $onboarding = $tenant->getInternal('pending_onboarding');
 
             if (! is_array($owner) || empty($owner['id'])) {
-                throw new LogicException('Data owner tenant belum tersedia.');
+                throw new LogicException('Data pemilik akun usaha belum tersedia.');
             }
 
             if (! is_array($onboarding)
                 || ! is_array($onboarding['configuration'] ?? null)) {
-                throw new LogicException('Konfigurasi onboarding tenant belum tersedia.');
+                throw new LogicException('Konfigurasi penyiapan awal akun usaha belum tersedia.');
             }
 
             $tenant->run(

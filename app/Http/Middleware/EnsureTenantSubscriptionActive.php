@@ -17,7 +17,7 @@ class EnsureTenantSubscriptionActive
         $tenant = $this->tenancy->tenant;
 
         if (! $this->tenancy->initialized || ! $tenant instanceof Tenant) {
-            return $this->error('TENANT_NOT_FOUND', 'Tenant tidak ditemukan.', 404);
+            return $this->error('TENANT_NOT_FOUND', 'Akun usaha tidak ditemukan.', 404);
         }
 
         $subscription = $tenant->planSubscription('main');
@@ -25,7 +25,7 @@ class EnsureTenantSubscriptionActive
         if (! $subscription) {
             return $this->error(
                 'SUBSCRIPTION_REQUIRED',
-                'Subscription utama belum tersedia.',
+                'Langganan utama belum tersedia.',
                 403,
             );
         }
@@ -33,7 +33,7 @@ class EnsureTenantSubscriptionActive
         if ($subscription->inactive()) {
             return $this->error(
                 'SUBSCRIPTION_EXPIRED',
-                'Subscription sudah berakhir.',
+                'Masa langganan telah berakhir.',
                 423,
             );
         }

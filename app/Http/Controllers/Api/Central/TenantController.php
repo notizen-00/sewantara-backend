@@ -34,7 +34,7 @@ class TenantController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Tenant berhasil dibuat.',
+            'message' => 'Akun usaha berhasil dibuat.',
             'data' => $tenant,
         ], 201);
     }

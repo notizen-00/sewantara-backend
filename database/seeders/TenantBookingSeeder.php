@@ -67,7 +67,7 @@ class TenantBookingSeeder extends Seeder
                     'remaining_amount' => 600000,
                     'payment_status' => 'partial',
                     'customer_notes' => 'Pengambilan pagi hari.',
-                    'internal_notes' => 'Booking demo untuk pengujian alur rental.',
+                    'internal_notes' => 'Pemesanan contoh untuk pengujian alur penyewaan.',
                     'confirmed_at' => now(),
                     'cancelled_at' => null,
                     'completed_at' => null,
@@ -141,7 +141,7 @@ class TenantBookingSeeder extends Seeder
                     'booking_id' => $bookingId,
                     'from_status' => 'draft',
                     'to_status' => 'confirmed',
-                    'notes' => 'Booking demo dikonfirmasi.',
+                    'notes' => 'Pemesanan contoh telah dikonfirmasi.',
                     'changed_by' => $ownerId,
                     'created_at' => now(),
                 ]);
@@ -181,7 +181,7 @@ class TenantBookingSeeder extends Seeder
                 'discount_amount' => 0,
                 'deposit_amount' => $deposit,
                 'total_amount' => $subtotal,
-                'notes' => 'Item booking data demo.',
+                'notes' => 'Rincian produk pada data pemesanan contoh.',
             ],
         );
     }

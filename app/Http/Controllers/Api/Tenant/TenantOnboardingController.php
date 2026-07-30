@@ -34,7 +34,7 @@ class TenantOnboardingController extends Controller
         ]);
 
         return $this->updated(
-            'Business setup berhasil diperbarui.',
+            'Informasi usaha berhasil diperbarui.',
             $onboarding->business($this->tenantId(), $validated),
         );
     }
@@ -54,7 +54,7 @@ class TenantOnboardingController extends Controller
         ]);
 
         return $this->updated(
-            'Konfigurasi rental engine berhasil diperbarui.',
+            'Konfigurasi penyewaan berhasil diperbarui.',
             $onboarding->rental($this->tenantId(), $validated),
         );
     }
@@ -62,7 +62,7 @@ class TenantOnboardingController extends Controller
     public function inventory(ConfigureTenantOnboarding $onboarding): JsonResponse
     {
         return $this->updated(
-            'Inventory setup telah divalidasi.',
+            'Pengaturan persediaan telah berhasil diverifikasi.',
             $onboarding->inventoryCompleted($this->tenantId()),
         );
     }
@@ -70,7 +70,7 @@ class TenantOnboardingController extends Controller
     public function pricing(ConfigureTenantOnboarding $onboarding): JsonResponse
     {
         return $this->updated(
-            'Pricing telah divalidasi.',
+            'Pengaturan harga telah berhasil diverifikasi.',
             $onboarding->pricingCompleted($this->tenantId()),
         );
     }
@@ -95,7 +95,7 @@ class TenantOnboardingController extends Controller
         ]);
 
         return $this->updated(
-            'Booking configuration berhasil diperbarui.',
+            'Konfigurasi pemesanan berhasil diperbarui.',
             $onboarding->booking($this->tenantId(), $validated),
         );
     }
@@ -116,7 +116,7 @@ class TenantOnboardingController extends Controller
         ]);
 
         return $this->updated(
-            'Payment configuration berhasil diperbarui.',
+            'Konfigurasi pembayaran berhasil diperbarui.',
             $onboarding->payments($this->tenantId(), $validated['methods']),
         );
     }
@@ -124,7 +124,7 @@ class TenantOnboardingController extends Controller
     public function goLive(ConfigureTenantOnboarding $onboarding): JsonResponse
     {
         return $this->updated(
-            'Onboarding selesai. Tenant sudah Go Live.',
+            'Penyiapan awal selesai. Akun usaha kini aktif dan siap digunakan.',
             $onboarding->goLive($this->tenantId()),
         );
     }

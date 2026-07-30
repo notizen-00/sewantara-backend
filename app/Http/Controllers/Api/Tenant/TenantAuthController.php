@@ -39,7 +39,7 @@ class TenantAuthController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Login berhasil.',
+            'message' => 'Berhasil masuk.',
             'data' => [
                 'token_type' => 'Bearer',
                 'access_token' => $result['access_token'],
@@ -56,7 +56,7 @@ class TenantAuthController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Logout berhasil.',
+            'message' => 'Berhasil keluar.',
             'data' => null,
         ]);
     }

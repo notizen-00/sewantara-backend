@@ -17,7 +17,7 @@ class CheckAvailability
     {
         if (! $this->engine->usesRealtimeAvailability()) {
             throw ValidationException::withMessages([
-                'availability' => ['Realtime availability dinonaktifkan oleh tenant.'],
+                'availability' => ['Ketersediaan waktu nyata dinonaktifkan untuk usaha ini.'],
             ]);
         }
 

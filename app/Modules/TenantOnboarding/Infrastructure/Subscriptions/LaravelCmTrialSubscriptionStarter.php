@@ -18,7 +18,7 @@ class LaravelCmTrialSubscriptionStarter implements TrialSubscriptionStarter
         $tenant = Tenant::query()->findOrFail($tenantId);
 
         if ($tenant->planSubscription('main')) {
-            throw new LogicException('Tenant sudah memiliki subscription main.');
+            throw new LogicException('Akun usaha sudah memiliki langganan utama.');
         }
 
         /** @var Plan $planModel */

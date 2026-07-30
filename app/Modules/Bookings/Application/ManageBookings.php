@@ -39,7 +39,7 @@ class ManageBookings
 
         if ($customer->status === 'blacklisted') {
             throw ValidationException::withMessages([
-                'customer_id' => ['Customer blacklist tidak dapat membuat booking.'],
+                'customer_id' => ['Pelanggan yang masuk daftar hitam tidak dapat membuat pesanan.'],
             ]);
         }
 
@@ -121,14 +121,14 @@ class ManageBookings
 
                 if (! in_array($unit->status, ['available', 'reserved'], true)) {
                     throw ValidationException::withMessages([
-                        'items' => ["Unit {$unit->unit_code} berstatus {$unit->status} dan tidak dapat dibooking."],
+                        'items' => ["Unit {$unit->unit_code} berstatus {$unit->status} dan tidak dapat dipesan."],
                     ]);
                 }
 
                 if (($attributes['branch_id'] ?? null) !== null
                     && (int) $unit->branch_id !== (int) $attributes['branch_id']) {
                     throw ValidationException::withMessages([
-                        'items' => ["Unit {$unit->unit_code} tidak berada pada branch booking."],
+                        'items' => ["Unit {$unit->unit_code} tidak berada di cabang pemesanan."],
                     ]);
                 }
 
@@ -149,7 +149,7 @@ class ManageBookings
             if ($prepared['product']->inventory_type === 'serialized'
                 && count($prepared['item']['unit_ids'] ?? []) !== (int) $prepared['item']['quantity']) {
                 throw ValidationException::withMessages([
-                    'items' => ["Jumlah unit {$prepared['product']->name} harus sama dengan quantity."],
+                    'items' => ["Jumlah unit {$prepared['product']->name} harus sesuai dengan kuantitas yang dipesan."],
                 ]);
             }
         }

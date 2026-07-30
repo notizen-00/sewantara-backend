@@ -23,15 +23,15 @@ class BusinessTemplateSeeder extends Seeder
     public static function templates(): array
     {
         return [
-            self::template('car_rental', 'Rental Mobil', 'car', 'per_day', 'date_range', 'auto_assign', false, null, false, 10),
-            self::template('motorcycle_rental', 'Rental Motor', 'motorcycle', 'per_day', 'date_range', 'auto_assign', false, null, false, 20),
-            self::template('playstation_rental', 'Rental PlayStation', 'gamepad-2', 'per_hour', 'queue', 'auto_assign', true, 60, true, 30),
-            self::template('camera_rental', 'Rental Kamera', 'camera', 'per_day', 'date_range', 'auto_assign', false, null, false, 40),
-            self::template('camping_rental', 'Rental Camping', 'tent-tree', 'per_day', 'date_range', 'manual', false, null, true, 50),
-            self::template('building_rental', 'Rental Gedung', 'building-2', 'session', 'session', 'manual', false, 240, false, 60),
-            self::template('sports_field', 'Rental Lapangan', 'goal', 'session', 'session', 'manual', false, 120, true, 70),
+            self::template('car_rental', 'Penyewaan Mobil', 'car', 'per_day', 'date_range', 'auto_assign', false, null, false, 10),
+            self::template('motorcycle_rental', 'Penyewaan Sepeda Motor', 'motorcycle', 'per_day', 'date_range', 'auto_assign', false, null, false, 20),
+            self::template('playstation_rental', 'Penyewaan PlayStation', 'gamepad-2', 'per_hour', 'queue', 'auto_assign', true, 60, true, 30),
+            self::template('camera_rental', 'Penyewaan Kamera', 'camera', 'per_day', 'date_range', 'auto_assign', false, null, false, 40),
+            self::template('camping_rental', 'Penyewaan Peralatan Berkemah', 'tent-tree', 'per_day', 'date_range', 'manual', false, null, true, 50),
+            self::template('building_rental', 'Penyewaan Gedung', 'building-2', 'session', 'session', 'manual', false, 240, false, 60),
+            self::template('sports_field', 'Penyewaan Lapangan Olahraga', 'goal', 'session', 'session', 'manual', false, 120, true, 70),
             self::template('music_studio', 'Studio Musik', 'mic-2', 'per_hour', 'queue', 'manual', true, 60, true, 80),
-            self::template('custom', 'Custom', 'settings-2', 'per_day', 'date_range', 'manual', false, null, true, 999),
+            self::template('custom', 'Konfigurasi Khusus', 'settings-2', 'per_day', 'date_range', 'manual', false, null, true, 999),
         ];
     }
 
@@ -53,7 +53,7 @@ class BusinessTemplateSeeder extends Seeder
         return [
             'code' => $code,
             'name' => $name,
-            'description' => "Preset konfigurasi untuk {$name}.",
+            'description' => "Konfigurasi awal untuk usaha {$name}.",
             'icon' => $icon,
             'configuration' => [
                 'rental_model' => $rentalModel,

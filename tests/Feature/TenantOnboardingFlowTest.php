@@ -102,7 +102,7 @@ test('tenant cannot go live while required onboarding steps are incomplete', fun
     expect(fn () => app(ConfigureTenantOnboarding::class)->goLive('tenant-a'))
         ->toThrow(
             ValidationException::class,
-            'Onboarding belum lengkap',
+            'Penyiapan awal belum lengkap',
         );
 
     expect($this->tenant->status)->toBe('onboarding');

@@ -11,7 +11,7 @@ class HealthController extends Controller
     {
         return response()->json([
             'success' => true,
-            'message' => 'Sewantara API is running.',
+            'message' => 'Layanan API Sewantara berjalan dengan baik.',
         ]);
     }
 }

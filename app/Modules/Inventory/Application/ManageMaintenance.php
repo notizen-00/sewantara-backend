@@ -70,7 +70,7 @@ class ManageMaintenance
     ): MaintenanceRecord {
         if ($maintenance->status !== 'scheduled') {
             throw ValidationException::withMessages([
-                'status' => ['Hanya maintenance terjadwal yang dapat dimulai.'],
+                'status' => ['Hanya pemeliharaan terjadwal yang dapat dimulai.'],
             ]);
         }
 
@@ -114,7 +114,7 @@ class ManageMaintenance
     ): MaintenanceRecord {
         if ($maintenance->status !== 'in_progress') {
             throw ValidationException::withMessages([
-                'status' => ['Hanya maintenance berjalan yang dapat diselesaikan.'],
+                'status' => ['Hanya pemeliharaan yang sedang berlangsung yang dapat diselesaikan.'],
             ]);
         }
 
@@ -158,7 +158,7 @@ class ManageMaintenance
     ): MaintenanceRecord {
         if (! in_array($maintenance->status, ['scheduled', 'in_progress'], true)) {
             throw ValidationException::withMessages([
-                'status' => ['Maintenance ini tidak dapat dibatalkan.'],
+                'status' => ['Pemeliharaan ini tidak dapat dibatalkan.'],
             ]);
         }
 

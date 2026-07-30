@@ -22,7 +22,7 @@ class TenantCustomerSeeder extends Seeder
                     'birth_date' => '1995-05-20',
                     'gender' => 'male',
                     'status' => 'active',
-                    'notes' => 'Pelanggan demo dengan histori booking aktif.',
+                    'notes' => 'Pelanggan contoh dengan riwayat pemesanan aktif.',
                     'deleted_at' => null,
                 ],
             );

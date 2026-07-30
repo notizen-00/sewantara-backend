@@ -34,7 +34,7 @@ class CustomerController extends Controller
 
         $customer = $customers->create($validated);
 
-        return response()->json(['success' => true, 'message' => 'Customer berhasil dibuat.', 'data' => $customer], 201);
+        return response()->json(['success' => true, 'message' => 'Pelanggan berhasil dibuat.', 'data' => $customer], 201);
     }
 
     public function show(Customer $customer)
@@ -54,6 +54,6 @@ class CustomerController extends Controller
 
         $customer = $customers->update($customer, $validated);
 
-        return response()->json(['success' => true, 'message' => 'Customer berhasil diperbarui.', 'data' => $customer]);
+        return response()->json(['success' => true, 'message' => 'Pelanggan berhasil diperbarui.', 'data' => $customer]);
     }
 }

@@ -92,14 +92,14 @@ class EloquentTenantOnboardingWorkspace implements TenantOnboardingWorkspace
             || ($bookingStrategy === BookingStrategy::Session
                 && $rentalModel !== RentalModel::Session)) {
             throw ValidationException::withMessages([
-                'booking_strategy' => ['Booking strategy tidak kompatibel dengan rental model.'],
+                'booking_strategy' => ['Strategi pemesanan tidak sesuai dengan model penyewaan.'],
             ]);
         }
 
         if ($bookingStrategy !== BookingStrategy::DateRange
             && empty($attributes['slot_duration_minutes'])) {
             throw ValidationException::withMessages([
-                'slot_duration_minutes' => ['Durasi slot wajib untuk strategy queue atau session.'],
+                'slot_duration_minutes' => ['Durasi waktu wajib diisi untuk strategi antrean atau sesi.'],
             ]);
         }
 
@@ -166,7 +166,7 @@ class EloquentTenantOnboardingWorkspace implements TenantOnboardingWorkspace
     {
         if (! $this->hasCompatiblePricing()) {
             throw ValidationException::withMessages([
-                'pricing' => ['Buat harga aktif yang sesuai dengan rental model sebelum melanjutkan.'],
+                'pricing' => ['Buat harga aktif yang sesuai dengan model penyewaan sebelum melanjutkan.'],
             ]);
         }
 
@@ -188,7 +188,7 @@ class EloquentTenantOnboardingWorkspace implements TenantOnboardingWorkspace
         if ($incomplete !== []) {
             throw ValidationException::withMessages([
                 'checklist' => [
-                    'Onboarding belum lengkap: '.implode(', ', $incomplete).'.',
+                    'Penyiapan awal belum lengkap: '.implode(', ', $this->checklistLabels($incomplete)).'.',
                 ],
             ]);
         }
@@ -265,7 +265,7 @@ class EloquentTenantOnboardingWorkspace implements TenantOnboardingWorkspace
         if (! $tenant instanceof Tenant
             || (string) $tenant->getTenantKey() !== $tenantId) {
             throw ValidationException::withMessages([
-                'tenant' => ['Context tenant onboarding tidak valid.'],
+                'tenant' => ['Konteks penyiapan awal akun usaha tidak valid.'],
             ]);
         }
 
@@ -276,6 +276,30 @@ class EloquentTenantOnboardingWorkspace implements TenantOnboardingWorkspace
     {
         return DB::table('product_units')->whereNull('deleted_at')->exists()
             || DB::table('inventory_stocks')->where('quantity_total', '>', 0)->exists();
+    }
+
+    /**
+     * @param  array<int, string>  $items
+     * @return array<int, string>
+     */
+    private function checklistLabels(array $items): array
+    {
+        $labels = [
+            'business' => 'informasi usaha',
+            'template' => 'jenis usaha',
+            'rental_configuration' => 'konfigurasi penyewaan',
+            'inventory' => 'persediaan',
+            'pricing' => 'harga',
+            'booking' => 'pemesanan',
+            'payment' => 'pembayaran',
+            'branch' => 'cabang',
+            'subscription' => 'langganan',
+        ];
+
+        return array_map(
+            fn (string $item): string => $labels[$item] ?? $item,
+            $items,
+        );
     }
 
     private function hasCompatiblePricing(): bool

@@ -36,7 +36,7 @@ class MaintenanceController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Maintenance berhasil dijadwalkan.',
+            'message' => 'Pemeliharaan berhasil dijadwalkan.',
             'data' => $maintenance->create(
                 app('currentTenant')->id,
                 $request->user()?->id,
@@ -62,7 +62,7 @@ class MaintenanceController extends Controller
     ) {
         return response()->json([
             'success' => true,
-            'message' => 'Maintenance dimulai dan unit diblokir dari booking.',
+            'message' => 'Pemeliharaan dimulai dan unit tidak dapat dipesan untuk sementara.',
             'data' => $manager->start($maintenance, $request->user()?->id),
         ]);
     }
@@ -82,7 +82,7 @@ class MaintenanceController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Maintenance selesai dan status unit diperbarui.',
+            'message' => 'Pemeliharaan selesai dan status unit telah diperbarui.',
             'data' => $manager->complete(
                 $maintenance,
                 $request->user()?->id,
@@ -102,7 +102,7 @@ class MaintenanceController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Maintenance dibatalkan.',
+            'message' => 'Pemeliharaan dibatalkan.',
             'data' => $manager->cancel(
                 $maintenance,
                 $request->user()?->id,

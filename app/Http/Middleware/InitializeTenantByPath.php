@@ -42,7 +42,7 @@ class InitializeTenantByPath
             'success' => false,
             'error' => [
                 'code' => 'TENANT_NOT_FOUND',
-                'message' => 'Tenant tidak ditemukan.',
+                'message' => 'Akun usaha tidak ditemukan.',
             ],
         ], 404);
     }

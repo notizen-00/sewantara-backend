@@ -17,7 +17,7 @@ class MidtransSubscriptionWebhookController extends Controller
     ): JsonResponse {
         $payload = $request->all();
 
-        abort_unless($signature->verify($payload), 403, 'Signature tidak valid.');
+        abort_unless($signature->verify($payload), 403, 'Tanda tangan digital tidak valid.');
 
         $transactionStatus = (string) ($payload['transaction_status'] ?? '');
         $fraudStatus = (string) ($payload['fraud_status'] ?? 'accept');
@@ -37,7 +37,7 @@ class MidtransSubscriptionWebhookController extends Controller
         return response()->json([
             'success' => true,
             'message' => $isPaid
-                ? 'Pembayaran subscription berhasil dikonfirmasi.'
+                ? 'Pembayaran langganan berhasil dikonfirmasi.'
                 : 'Notifikasi pembayaran diterima.',
         ]);
     }

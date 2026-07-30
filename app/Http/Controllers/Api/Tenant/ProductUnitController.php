@@ -40,7 +40,7 @@ class ProductUnitController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Product unit berhasil dibuat.',
+            'message' => 'Unit produk berhasil dibuat.',
             'data' => $productUnits->create(
                 $validated,
                 $request->user()?->id,

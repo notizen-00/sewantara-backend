@@ -47,7 +47,7 @@ class BookingController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Booking berhasil dibuat tanpa overlap.',
+            'message' => 'Pemesanan berhasil dibuat tanpa benturan jadwal.',
             'data' => $booking,
         ], 201);
     }
@@ -67,7 +67,7 @@ class BookingController extends Controller
     ) {
         return response()->json([
             'success' => true,
-            'message' => 'Booking berhasil di-check-out.',
+            'message' => 'Barang pesanan berhasil diserahkan kepada pelanggan.',
             'data' => $statuses->checkOut($booking, $request->user()?->id),
         ]);
     }
@@ -79,7 +79,7 @@ class BookingController extends Controller
     ) {
         return response()->json([
             'success' => true,
-            'message' => 'Barang booking berhasil dikembalikan.',
+            'message' => 'Barang pesanan berhasil dikembalikan.',
             'data' => $statuses->return($booking, $request->user()?->id),
         ]);
     }
@@ -95,7 +95,7 @@ class BookingController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Booking berhasil dibatalkan dan stok dilepas.',
+            'message' => 'Pemesanan berhasil dibatalkan dan stok telah tersedia kembali.',
             'data' => $statuses->cancel(
                 $booking,
                 $request->user()?->id,

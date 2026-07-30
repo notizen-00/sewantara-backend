@@ -16,14 +16,14 @@ class EnsureTenantIsActive
         $tenant = $this->tenancy->tenant;
 
         if (! $this->tenancy->initialized || ! $tenant) {
-            return $this->error('TENANT_NOT_FOUND', 'Tenant tidak ditemukan.', 404);
+            return $this->error('TENANT_NOT_FOUND', 'Akun usaha tidak ditemukan.', 404);
         }
 
         if ($tenant->status !== 'active') {
             if ($tenant->status === 'onboarding') {
                 return $this->error(
                     'TENANT_ONBOARDING_REQUIRED',
-                    'Selesaikan onboarding sebelum menggunakan fitur operasional.',
+                    'Selesaikan penyiapan awal sebelum menggunakan fitur operasional.',
                     423,
                 );
             }
@@ -32,7 +32,7 @@ class EnsureTenantIsActive
                 ? 'TENANT_SUSPENDED'
                 : 'TENANT_INACTIVE';
 
-            return $this->error($code, 'Tenant sedang tidak aktif.', 423);
+            return $this->error($code, 'Akun usaha sedang tidak aktif.', 423);
         }
 
         return $next($request);

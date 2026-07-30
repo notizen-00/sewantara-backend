@@ -30,7 +30,7 @@ class BranchController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Branch berhasil dibuat.',
+            'message' => 'Cabang berhasil dibuat.',
             'data' => $branches->create($validated),
         ], 201);
     }

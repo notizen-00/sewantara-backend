@@ -23,11 +23,11 @@ class MidtransSubscriptionPaymentGateway implements SubscriptionPaymentGateway
     ): CheckoutSession {
         if (strlen($orderId) > 50
             || ! preg_match('/^[A-Za-z0-9_~.-]+$/', $orderId)) {
-            throw new InvalidArgumentException('Order ID Midtrans tidak valid.');
+            throw new InvalidArgumentException('Nomor pesanan Midtrans tidak valid.');
         }
 
         if ($grossAmount < 1) {
-            throw new InvalidArgumentException('Nominal checkout harus lebih besar dari nol.');
+            throw new InvalidArgumentException('Nominal pembayaran harus lebih besar dari nol.');
         }
 
         $itemTotal = collect($items)->sum(
@@ -37,7 +37,7 @@ class MidtransSubscriptionPaymentGateway implements SubscriptionPaymentGateway
 
         if ($items === [] || $itemTotal !== $grossAmount) {
             throw new InvalidArgumentException(
-                'Total item checkout harus sama dengan gross amount.',
+                'Total rincian pembayaran harus sama dengan jumlah keseluruhan.',
             );
         }
 
@@ -60,7 +60,7 @@ class MidtransSubscriptionPaymentGateway implements SubscriptionPaymentGateway
 
         if (! is_string($response->token ?? null)
             || ! is_string($response->redirect_url ?? null)) {
-            throw new UnexpectedValueException('Respons checkout Midtrans tidak valid.');
+            throw new UnexpectedValueException('Respons pembayaran Midtrans tidak valid.');
         }
 
         return new CheckoutSession(

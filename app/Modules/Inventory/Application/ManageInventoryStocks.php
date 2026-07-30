@@ -37,7 +37,7 @@ class ManageInventoryStocks
 
         if ($product->inventory_type !== 'quantity') {
             throw ValidationException::withMessages([
-                'product_id' => ['Penyesuaian stok hanya berlaku untuk produk quantity.'],
+                'product_id' => ['Penyesuaian stok hanya berlaku untuk produk yang dikelola berdasarkan jumlah stok.'],
             ]);
         }
 

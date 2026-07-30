@@ -22,7 +22,7 @@ class RegisterController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Akun bisnis berhasil dibuat. Selesaikan onboarding untuk Go Live.',
+            'message' => 'Akun usaha berhasil dibuat. Selesaikan penyiapan awal agar akun dapat digunakan.',
             'data' => [
                 'tenant' => [
                     'id' => $result->tenantId,
