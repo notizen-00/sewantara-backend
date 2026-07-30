@@ -20,4 +20,16 @@ class InventoryStock extends Model
         'quantity_damaged',
         'quantity_lost',
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'quantity_total' => 'integer',
+            'quantity_reserved' => 'integer',
+            'quantity_rented' => 'integer',
+            'quantity_maintenance' => 'integer',
+            'quantity_damaged' => 'integer',
+            'quantity_lost' => 'integer',
+        ];
+    }
 }

@@ -86,6 +86,80 @@ Contoh request create:
 `slug` dibuat otomatis jika tidak dikirim. Parent wajib berasal dari tenant
 yang sama dan kategori tidak dapat menjadi parent bagi dirinya sendiri.
 
+## Inventory Lifecycle
+
+Stok `quantity` dikelola per produk dan branch:
+
+```text
+GET  /api/tenant/{tenant}/inventory/stocks
+POST /api/tenant/{tenant}/inventory/stocks/adjust
+GET  /api/tenant/{tenant}/inventory/movements/stocks
+GET  /api/tenant/{tenant}/inventory/movements/units
+```
+
+Contoh penyesuaian stok:
+
+```json
+{
+  "product_id": 10,
+  "branch_id": 1,
+  "quantity": 5,
+  "notes": "Stok awal gudang"
+}
+```
+
+Nilai `quantity` positif menambah stok dan nilai negatif mengurangi stok.
+Total tidak dapat dikurangi melewati jumlah yang sedang reserved, rented,
+maintenance, damaged, atau lost.
+
+Pembuatan booking otomatis:
+
+- mengubah unit serialized menjadi `reserved`;
+- menambah `quantity_reserved` untuk produk quantity;
+- membuat histori pada `product_movements` atau
+  `inventory_stock_movements`.
+
+Lifecycle booking:
+
+```text
+POST /api/tenant/{tenant}/bookings/{booking}/check-out
+POST /api/tenant/{tenant}/bookings/{booking}/return
+POST /api/tenant/{tenant}/bookings/{booking}/cancel
+```
+
+Check-out memindahkan inventory dari reserved ke rented. Return mengembalikan
+inventory ke available, sedangkan cancel melepas reservasi. Seluruh perubahan
+direkam sebagai movement.
+
+## Maintenance
+
+```text
+GET  /api/tenant/{tenant}/maintenance
+POST /api/tenant/{tenant}/maintenance
+GET  /api/tenant/{tenant}/maintenance/{maintenance}
+POST /api/tenant/{tenant}/maintenance/{maintenance}/start
+POST /api/tenant/{tenant}/maintenance/{maintenance}/complete
+POST /api/tenant/{tenant}/maintenance/{maintenance}/cancel
+```
+
+Contoh penjadwalan:
+
+```json
+{
+  "product_unit_id": 25,
+  "type": "service",
+  "title": "Service sensor kamera",
+  "vendor": "Service Center",
+  "cost": 250000,
+  "scheduled_at": "2026-08-05T09:00:00+07:00"
+}
+```
+
+Tipe yang tersedia adalah `service`, `repair`, `cleaning`, `inspection`, dan
+`calibration`. Ketika maintenance dimulai, status unit menjadi `maintenance`
+sehingga tidak dapat dibooking. Penyelesaian maintenance mengembalikan unit ke
+`available`, `damaged`, atau `inactive` sesuai hasil pemeriksaan.
+
 ## Product Master
 
 ```text

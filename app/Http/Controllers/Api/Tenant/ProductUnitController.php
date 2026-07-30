@@ -31,14 +31,20 @@ class ProductUnitController extends Controller
             'serial_number' => ['nullable', 'string', 'max:150'],
             'status' => ['nullable', Rule::in(['available', 'reserved', 'rented', 'cleaning', 'maintenance', 'damaged', 'lost', 'inactive'])],
             'condition' => ['nullable', 'string', 'max:30'],
-            'purchased_at' => ['nullable', 'date'],
+            'purchase_date' => ['nullable', 'date'],
             'purchase_price' => ['nullable', 'numeric', 'min:0'],
+            'current_meter' => ['nullable', 'integer', 'min:0'],
+            'meter_unit' => ['nullable', 'string', 'max:30'],
+            'notes' => ['nullable', 'string'],
         ]);
 
         return response()->json([
             'success' => true,
             'message' => 'Product unit berhasil dibuat.',
-            'data' => $productUnits->create($validated),
+            'data' => $productUnits->create(
+                $validated,
+                $request->user()?->id,
+            ),
         ], 201);
     }
 }

@@ -9,6 +9,8 @@ use App\Models\Customer;
 use App\Models\Invoice;
 use App\Models\Product;
 use App\Models\ProductUnit;
+use App\Modules\Inventory\Application\InventoryBookingLifecycle;
+use Carbon\CarbonImmutable;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -16,6 +18,10 @@ use Illuminate\Validation\ValidationException;
 
 class ManageBookings
 {
+    public function __construct(
+        private readonly InventoryBookingLifecycle $inventory,
+    ) {}
+
     public function paginate(?string $status, int $perPage = 20): LengthAwarePaginator
     {
         return Booking::query()
@@ -42,10 +48,22 @@ class ManageBookings
 
             foreach ($attributes['items'] as $item) {
                 $product = Product::query()->findOrFail($item['product_id']);
-                $lineTotal = (float) $product->base_price * (int) $item['quantity'];
+                [$unitPrice, $duration, $pricingType] = $this->resolvePricing(
+                    $product,
+                    $attributes,
+                );
+                $lineTotal = $unitPrice * $duration * (int) $item['quantity'];
                 $lineDeposit = (float) $product->deposit_amount * (int) $item['quantity'];
 
-                $preparedItems[] = compact('product', 'item', 'lineTotal', 'lineDeposit');
+                $preparedItems[] = compact(
+                    'product',
+                    'item',
+                    'unitPrice',
+                    'duration',
+                    'pricingType',
+                    'lineTotal',
+                    'lineDeposit',
+                );
                 $subtotal += $lineTotal;
                 $deposit += $lineDeposit;
             }
@@ -61,24 +79,28 @@ class ManageBookings
                 'start_at' => $attributes['start_at'],
                 'end_at' => $attributes['end_at'],
                 'status' => 'pending',
-                'subtotal_amount' => $subtotal,
+                'fulfillment_type' => $attributes['fulfillment_type'] ?? 'pickup',
+                'subtotal' => $subtotal,
                 'deposit_amount' => $deposit,
                 'total_amount' => $subtotal,
                 'remaining_amount' => $subtotal,
-                'notes' => $attributes['notes'] ?? null,
+                'payment_status' => 'unpaid',
+                'customer_notes' => $attributes['customer_notes'] ?? null,
+                'internal_notes' => $attributes['notes'] ?? null,
             ]);
 
             $this->createItemsAndAllocations($booking, $preparedItems, $attributes, $tenantId);
+            $this->inventory->reserve($booking, $creatorId);
             $this->createInvoice($booking, $tenantId);
             $this->recordInitialStatus($booking, $tenantId, $creatorId);
 
-            return $booking->load('items');
+            return $booking->load(['items', 'allocations']);
         });
     }
 
     public function detail(Booking $booking): Booking
     {
-        return $booking->load('items');
+        return $booking->load(['items', 'allocations']);
     }
 
     private function guardUnitAvailability(array $preparedItems, array $attributes): void
@@ -90,9 +112,16 @@ class ManageBookings
                     ->lockForUpdate()
                     ->findOrFail($unitId);
 
-                if ($unit->status === 'maintenance') {
+                if (! in_array($unit->status, ['available', 'reserved'], true)) {
                     throw ValidationException::withMessages([
-                        'items' => ["Unit {$unit->unit_code} sedang maintenance dan tidak dapat dibooking."],
+                        'items' => ["Unit {$unit->unit_code} berstatus {$unit->status} dan tidak dapat dibooking."],
+                    ]);
+                }
+
+                if (($attributes['branch_id'] ?? null) !== null
+                    && (int) $unit->branch_id !== (int) $attributes['branch_id']) {
+                    throw ValidationException::withMessages([
+                        'items' => ["Unit {$unit->unit_code} tidak berada pada branch booking."],
                     ]);
                 }
 
@@ -109,6 +138,13 @@ class ManageBookings
                     ]);
                 }
             }
+
+            if ($prepared['product']->inventory_type === 'serialized'
+                && count($prepared['item']['unit_ids'] ?? []) !== (int) $prepared['item']['quantity']) {
+                throw ValidationException::withMessages([
+                    'items' => ["Jumlah unit {$prepared['product']->name} harus sama dengan quantity."],
+                ]);
+            }
         }
     }
 
@@ -124,10 +160,16 @@ class ManageBookings
                 'booking_id' => $booking->id,
                 'product_id' => $prepared['product']->id,
                 'product_name' => $prepared['product']->name,
+                'sku' => $prepared['product']->sku,
+                'inventory_type' => $prepared['product']->inventory_type,
+                'pricing_type' => $prepared['pricingType'],
                 'quantity' => $prepared['item']['quantity'],
-                'unit_price' => $prepared['product']->base_price,
+                'duration' => $prepared['duration'],
+                'unit_price' => $prepared['unitPrice'],
+                'subtotal' => $prepared['lineTotal'],
                 'deposit_amount' => $prepared['lineDeposit'],
                 'total_amount' => $prepared['lineTotal'],
+                'notes' => $prepared['item']['notes'] ?? null,
             ]);
 
             foreach ($prepared['item']['unit_ids'] ?? [] as $unitId) {
@@ -139,6 +181,7 @@ class ManageBookings
                     'start_at' => $attributes['start_at'],
                     'end_at' => $attributes['end_at'],
                     'status' => 'reserved',
+                    'allocated_at' => now(),
                 ]);
             }
         }
@@ -150,8 +193,12 @@ class ManageBookings
             'tenant_id' => $tenantId,
             'booking_id' => $booking->id,
             'invoice_number' => 'INV-'.now()->format('ymd').'-'.strtoupper(Str::random(6)),
+            'issue_date' => today(),
+            'due_date' => today(),
             'status' => 'draft',
+            'subtotal' => $booking->subtotal,
             'total_amount' => $booking->total_amount,
+            'remaining_amount' => $booking->remaining_amount,
         ]);
     }
 
@@ -163,8 +210,44 @@ class ManageBookings
             'booking_id' => $booking->id,
             'from_status' => null,
             'to_status' => 'pending',
-            'created_by' => $creatorId,
+            'notes' => null,
+            'changed_by' => $creatorId,
             'created_at' => now(),
         ]);
+    }
+
+    /**
+     * @return array{0: float, 1: int, 2: string}
+     */
+    private function resolvePricing(Product $product, array $attributes): array
+    {
+        $pricingType = $product->default_pricing_type;
+        $price = DB::table('product_prices')
+            ->where('product_id', $product->getKey())
+            ->where('pricing_type', $pricingType)
+            ->where('is_active', true)
+            ->where(function ($query) use ($attributes): void {
+                $query->where('branch_id', $attributes['branch_id'] ?? null)
+                    ->orWhereNull('branch_id');
+            })
+            ->orderByRaw('branch_id IS NULL')
+            ->value('price');
+
+        if ($price === null) {
+            throw ValidationException::withMessages([
+                'items' => ["Harga aktif {$product->name} belum tersedia."],
+            ]);
+        }
+
+        $start = CarbonImmutable::parse($attributes['start_at']);
+        $end = CarbonImmutable::parse($attributes['end_at']);
+        $duration = match ($pricingType) {
+            'hourly' => max(1, (int) ceil($start->diffInMinutes($end) / 60)),
+            'weekly' => max(1, (int) ceil($start->diffInMinutes($end) / 10080)),
+            'monthly' => max(1, (int) ceil($start->diffInMinutes($end) / 43200)),
+            default => max(1, (int) ceil($start->diffInMinutes($end) / 1440)),
+        };
+
+        return [(float) $price, $duration, $pricingType];
     }
 }

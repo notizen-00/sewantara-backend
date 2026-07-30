@@ -4,9 +4,14 @@ namespace App\Modules\Inventory\Application;
 
 use App\Models\ProductUnit;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\DB;
 
 class ManageProductUnits
 {
+    public function __construct(
+        private readonly RecordInventoryMovement $movements,
+    ) {}
+
     public function paginate(?int $productId, ?string $status, int $perPage = 20): LengthAwarePaginator
     {
         return ProductUnit::query()
@@ -16,11 +21,25 @@ class ManageProductUnits
             ->paginate($perPage);
     }
 
-    public function create(array $attributes): ProductUnit
+    public function create(array $attributes, ?string $actorId = null): ProductUnit
     {
         $attributes['status'] ??= 'available';
         $attributes['condition'] ??= 'good';
 
-        return ProductUnit::create($attributes);
+        return DB::transaction(function () use ($attributes, $actorId): ProductUnit {
+            $unit = ProductUnit::query()->create($attributes);
+            $this->movements->unit(
+                $unit->tenant_id,
+                $unit,
+                'unit_created',
+                null,
+                $unit->status,
+                null,
+                $actorId,
+                'Unit inventory dibuat.',
+            );
+
+            return $unit;
+        });
     }
 }

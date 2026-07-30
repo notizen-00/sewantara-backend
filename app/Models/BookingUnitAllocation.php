@@ -18,5 +18,19 @@ class BookingUnitAllocation extends Model
         'start_at',
         'end_at',
         'status',
+        'allocated_at',
+        'checked_out_at',
+        'returned_at',
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'start_at' => 'datetime',
+            'end_at' => 'datetime',
+            'allocated_at' => 'datetime',
+            'checked_out_at' => 'datetime',
+            'returned_at' => 'datetime',
+        ];
+    }
 }

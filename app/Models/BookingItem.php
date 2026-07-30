@@ -15,11 +15,16 @@ class BookingItem extends Model
         'booking_id',
         'product_id',
         'product_name',
+        'sku',
+        'inventory_type',
         'pricing_type',
         'quantity',
+        'duration',
         'unit_price',
+        'subtotal',
         'deposit_amount',
         'discount_amount',
         'total_amount',
+        'notes',
     ];
 }

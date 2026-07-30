@@ -16,6 +16,7 @@ Sewantara adalah backend SaaS multi-tenant untuk pengelolaan berbagai jenis bisn
 | Billing subscription | Sebagian selesai | Webhook pembayaran terverifikasi; checkout, reconciliation, dan renewal belum dibuat |
 | Authentication token | Selesai | Login tenant menggunakan Laravel Sanctum Bearer token |
 | Master produk | Selesai | CRUD kategori dan produk, hierarchy, filter, soft delete, dan tenant isolation |
+| Inventory lifecycle | Selesai | Reservasi booking, check-out, return, cancel, movement stok/unit, dan maintenance dasar |
 | Role dan permission | Belum selesai | Authorization berbasis permission masih dalam roadmap |
 | Migration modul rental | Selesai | Migration central dan schema tenant dipisahkan |
 
@@ -202,9 +203,21 @@ Semua endpoint berikut memakai prefix `/api/tenant/{tenant}`:
 - `GET|POST /products`
 - `GET|PATCH|DELETE /products/{product}`
 - `/product-units`
+- `GET /inventory/stocks`
+- `POST /inventory/stocks/adjust`
+- `GET /inventory/movements/stocks`
+- `GET /inventory/movements/units`
 - `/customers`
 - `/bookings`
+- `POST /bookings/{booking}/check-out`
+- `POST /bookings/{booking}/return`
+- `POST /bookings/{booking}/cancel`
 - `/bookings/{booking}/payments`
+- `GET|POST /maintenance`
+- `GET /maintenance/{maintenance}`
+- `POST /maintenance/{maintenance}/start`
+- `POST /maintenance/{maintenance}/complete`
+- `POST /maintenance/{maintenance}/cancel`
 - `/availability/check`
 - `/reports/dashboard`
 
