@@ -1,5 +1,6 @@
 <?php
 
+use App\Modules\Payments\PaymentsServiceProvider;
 use App\Modules\SubscriptionBilling\SubscriptionBillingServiceProvider;
 use App\Modules\Tenancy\TenancyServiceProvider;
 use App\Modules\TenantOnboarding\TenantOnboardingServiceProvider;
@@ -9,5 +10,6 @@ return [
     AppServiceProvider::class,
     TenancyServiceProvider::class,
     TenantOnboardingServiceProvider::class,
+    PaymentsServiceProvider::class,
     SubscriptionBillingServiceProvider::class,
 ];

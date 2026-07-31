@@ -11,6 +11,7 @@ use App\Http\Controllers\Api\Tenant\InventoryMovementController;
 use App\Http\Controllers\Api\Tenant\InventoryStockController;
 use App\Http\Controllers\Api\Tenant\MaintenanceController;
 use App\Http\Controllers\Api\Tenant\PaymentController;
+use App\Http\Controllers\Api\Tenant\PaymentWebhookController;
 use App\Http\Controllers\Api\Tenant\ProductController;
 use App\Http\Controllers\Api\Tenant\ProductImageController;
 use App\Http\Controllers\Api\Tenant\ProductPriceController;
@@ -29,6 +30,10 @@ Route::prefix('tenant/{tenant}')
     ->name('tenant.')
     ->middleware('tenant.path')
     ->group(function () {
+        Route::post('/payments/webhooks/{gateway}', PaymentWebhookController::class)
+            ->middleware('throttle:120,1')
+            ->name('payments.webhooks.handle');
+
         Route::middleware([
             'auth:sanctum',
             'tenant.user',
@@ -116,6 +121,8 @@ Route::prefix('tenant/{tenant}')
                     ->name('bookings.cancel');
                 Route::post('/bookings/{booking}/payments', [PaymentController::class, 'store'])
                     ->name('bookings.payments.store');
+                Route::post('/bookings/{booking}/payments/checkout', [PaymentController::class, 'checkout'])
+                    ->name('bookings.payments.checkout');
                 Route::get('/inventory/movements/stocks', [InventoryMovementController::class, 'stocks'])
                     ->name('inventory.movements.stocks');
                 Route::get('/inventory/movements/units', [InventoryMovementController::class, 'units'])

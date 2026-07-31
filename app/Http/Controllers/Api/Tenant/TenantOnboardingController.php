@@ -108,11 +108,21 @@ class TenantOnboardingController extends Controller
             'methods' => ['required', 'array', 'min:1'],
             'methods.*.method' => [
                 'required',
-                Rule::in(['cash', 'transfer', 'midtrans', 'deposit', 'pay_later']),
+                Rule::in([
+                    'cash',
+                    'transfer',
+                    'deposit',
+                    'pay_later',
+                    ...array_keys(config('payments.drivers', [])),
+                ]),
                 'distinct',
             ],
             'methods.*.is_enabled' => ['required', 'boolean'],
             'methods.*.configuration' => ['nullable', 'array'],
+            'methods.*.configuration.server_key' => ['nullable', 'string', 'max:255'],
+            'methods.*.configuration.client_key' => ['nullable', 'string', 'max:255'],
+            'methods.*.configuration.is_production' => ['nullable', 'boolean'],
+            'methods.*.configuration.is_3ds' => ['nullable', 'boolean'],
         ]);
 
         return $this->updated(

@@ -13,6 +13,15 @@ use Stancl\Tenancy\TenantDatabaseManagers\PostgreSQLSchemaManager;
 use Stancl\Tenancy\TenantDatabaseManagers\SQLiteDatabaseManager;
 use Stancl\Tenancy\UUIDGenerator;
 
+$configuredCentralDomains = env('CENTRAL_DOMAINS');
+$centralDomains = $configuredCentralDomains
+    ? explode(',', $configuredCentralDomains)
+    : [
+        'localhost',
+        '127.0.0.1',
+        parse_url((string) env('APP_URL', ''), PHP_URL_HOST),
+    ];
+
 return [
     'tenant_model' => Tenant::class,
     'id_generator' => UUIDGenerator::class,
@@ -24,10 +33,10 @@ return [
      *
      * Only relevant if you're using the domain or subdomain identification middleware.
      */
-    'central_domains' => [
-        '127.0.0.1',
-        'api.sewantara.id',
-    ],
+    'central_domains' => array_values(array_unique(array_filter(array_map(
+        fn (mixed $domain): string => trim((string) $domain),
+        $centralDomains,
+    )))),
 
     'tenant_base_domain' => env('TENANT_BASE_DOMAIN', 'localhost'),
 
@@ -91,7 +100,7 @@ return [
             'mariadb' => MySQLDatabaseManager::class,
             'pgsql' => PostgreSQLSchemaManager::class,
 
-            /**
+        /**
          * Use this database manager for MySQL to have a DB user created for each tenant database.
          * You can customize the grants given to these users by changing the $grants property.
          */
