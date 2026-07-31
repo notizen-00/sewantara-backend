@@ -19,7 +19,7 @@ Compose, PostgreSQL, Redis, Nginx, queue worker, scheduler, dan Laravel Reverb.
 PostgreSQL, Redis, PHP-FPM, dan Reverb hanya tersedia di jaringan internal
 Docker. Port internal `9000` dan `8080` tidak menimbulkan konflik dengan
 container lain karena tidak dipublikasikan ke host. Nginx Sewantara secara
-default hanya diikat ke `127.0.0.1:8090`.
+default diikat ke `0.0.0.0:8090` agar dapat dijangkau Nginx Proxy Manager.
 
 ## Persiapan Server
 
@@ -28,8 +28,8 @@ Server harus menyediakan Docker Engine dan Docker Compose plugin. Siapkan DNS:
 - `api.example.com` menuju alamat IP server.
 - `*.example.com` menuju alamat IP server untuk domain tenant.
 
-Gunakan reverse proxy atau load balancer yang menangani TLS di depan port
-Nginx `127.0.0.1:8090`. Sertifikat harus mencakup domain API dan wildcard
+Gunakan Nginx Proxy Manager atau load balancer yang menangani TLS di depan
+port Nginx server `8090`. Sertifikat harus mencakup domain API dan wildcard
 domain tenant.
 
 ## Konfigurasi Environment
@@ -83,12 +83,14 @@ REVERB_SCHEME=http
 Port host Nginx dapat diubah tanpa menyentuh port internal container:
 
 ```dotenv
-APP_BIND_IP=127.0.0.1
+APP_BIND_IP=0.0.0.0
 APP_HTTP_PORT=8090
 ```
 
 Jika port `8090` juga digunakan aplikasi lain, pilih port host kosong seperti
 `8092` atau `8093`, kemudian arahkan reverse proxy ke port tersebut.
+Batasi akses port tersebut melalui firewall agar hanya Nginx Proxy Manager
+atau jaringan tepercaya yang dapat mengaksesnya.
 
 Nilai `REVERB_PUBLIC_*` dipakai saat build aset frontend dan harus menunjuk
 domain publik yang dilindungi TLS:
