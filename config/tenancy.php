@@ -26,7 +26,7 @@ return [
      */
     'central_domains' => [
         '127.0.0.1',
-        'localhost',
+        'api.sewantara.id',
     ],
 
     'tenant_base_domain' => env('TENANT_BASE_DOMAIN', 'localhost'),
@@ -91,7 +91,7 @@ return [
             'mariadb' => MySQLDatabaseManager::class,
             'pgsql' => PostgreSQLSchemaManager::class,
 
-        /**
+            /**
          * Use this database manager for MySQL to have a DB user created for each tenant database.
          * You can customize the grants given to these users by changing the $grants property.
          */
