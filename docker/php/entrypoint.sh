@@ -19,4 +19,8 @@ if [ "${LARAVEL_CACHE_CONFIG:-true}" = "true" ]; then
     gosu www-data php artisan view:cache --no-interaction
 fi
 
+if [ "${1:-}" = "php-fpm" ]; then
+    exec "$@"
+fi
+
 exec gosu www-data "$@"
