@@ -33,10 +33,13 @@ test('API endpoints are grouped without URL versioning', function () {
 });
 
 test('generated collection provides reusable tenant and branch variables', function () {
+    $outputPath = storage_path('framework/testing/postman');
+    config()->set('postman.output.path', $outputPath);
+
     Artisan::call('postman:generate');
 
     $collection = json_decode(
-        file_get_contents(storage_path('postman/api_collection.json')),
+        file_get_contents($outputPath.'/api_collection.json'),
         true,
         flags: JSON_THROW_ON_ERROR,
     );

@@ -78,6 +78,11 @@ Logout dan revoke token aktif:
 POST /api/tenant/{tenant}/auth/logout
 ```
 
+Endpoint `GET /api/tenant/{tenant}/me` mengembalikan konteks tenant, cabang,
+pengguna, dan langganan utama. Objek `subscription` mencakup status langganan,
+periode trial/tagihan, paket aktif, harga, interval tagihan, serta feature
+limit yang dapat langsung dikonsumsi aplikasi klien.
+
 ## Guided Tenant Onboarding
 
 ```text

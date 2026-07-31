@@ -3,6 +3,7 @@
 use App\Models\Tenant;
 use App\Models\User;
 use App\Modules\TenantAuthentication\Application\ManageTenantAuthentication;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Routing\Middleware\ThrottleRequests;
 use Illuminate\Routing\Route;
@@ -10,6 +11,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Testing\TestResponse;
+use Laravelcm\Subscriptions\Models\Feature;
+use Laravelcm\Subscriptions\Models\Plan;
 use Laravelcm\Subscriptions\Models\Subscription;
 use Stancl\Tenancy\Resolvers\PathTenantResolver;
 use Stancl\Tenancy\Tenancy;
@@ -28,7 +31,38 @@ beforeEach(function () {
     $this->tenancy = app(Tenancy::class);
     $this->tenancy->getBootstrappersUsing = fn () => [];
 
-    $subscription = new Subscription(['ends_at' => now()->addDay()]);
+    $feature = new Feature;
+    $feature->forceFill([
+        'id' => 1,
+        'slug' => 'branches.limit',
+        'name' => ['id' => 'Batas Cabang'],
+        'value' => '3',
+        'sort_order' => 1,
+    ]);
+
+    $plan = new Plan;
+    $plan->forceFill([
+        'id' => 1,
+        'name' => ['id' => 'Berkembang'],
+        'slug' => 'growth',
+        'description' => ['id' => 'Untuk usaha berkembang.'],
+        'price' => 499000,
+        'signup_fee' => 0,
+        'currency' => 'IDR',
+        'invoice_period' => 1,
+        'invoice_interval' => 'month',
+    ]);
+    $plan->setRelation('features', new Collection([$feature]));
+
+    $subscription = new Subscription([
+        'name' => ['id' => 'Langganan Utama'],
+        'slug' => 'main',
+        'trial_ends_at' => now()->addDay(),
+        'starts_at' => now(),
+        'ends_at' => now()->addMonth(),
+    ]);
+    $subscription->forceFill(['id' => 1]);
+    $subscription->setRelation('plan', $plan);
     $this->tenant = Mockery::mock(Tenant::class)->makePartial();
     $this->tenant->forceFill([
         'id' => 'tenant-a',
@@ -207,7 +241,12 @@ test('branch context requires a header and can switch through it', function () {
         'X-Branch-Id' => '1',
     ])->assertOk()
         ->assertHeader('X-Branch-Id', '1')
-        ->assertJsonPath('data.branch.id', 1);
+        ->assertJsonPath('data.branch.id', 1)
+        ->assertJsonPath('data.subscription.status', 'trial')
+        ->assertJsonPath('data.subscription.plan.slug', 'growth')
+        ->assertJsonPath('data.subscription.plan.price', '499000.00')
+        ->assertJsonPath('data.subscription.plan.features.0.slug', 'branches.limit')
+        ->assertJsonPath('data.subscription.plan.features.0.value', '3');
 
     $this->getJson('/api/tenant/tenant-a/me', [
         ...$headers,
