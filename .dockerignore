@@ -5,7 +5,6 @@
 .codex
 .cursor
 .env
-.env.*
 !.env.example
 !.env.local.example
 !.env.development.example
