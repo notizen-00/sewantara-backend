@@ -78,6 +78,10 @@ Sewantara menggunakan satu database PostgreSQL dengan schema terpisah untuk seti
 - Tenant merupakan subscriber subscription, bukan User.
 - Subscription utama selalu menggunakan nama `main`.
 
+Deployment production menggunakan Docker Compose, PostgreSQL, Redis, Nginx,
+queue worker, scheduler, dan Laravel Reverb dijelaskan pada
+[`docs/15_DOCKER_DEPLOYMENT.md`](docs/15_DOCKER_DEPLOYMENT.md).
+
 Urutan middleware tenant API:
 
 ```text
