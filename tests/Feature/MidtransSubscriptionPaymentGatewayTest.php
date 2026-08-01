@@ -8,6 +8,7 @@ use Midtrans\Config;
 
 beforeEach(function () {
     config()->set([
+        'subscription-billing.default' => 'midtrans',
         'services.midtrans.server_key' => 'SB-Mid-server-test',
         'services.midtrans.client_key' => 'SB-Mid-client-test',
         'services.midtrans.is_production' => false,

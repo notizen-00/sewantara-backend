@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\Central\BusinessTemplateController;
 use App\Http\Controllers\Api\Central\MidtransSubscriptionWebhookController;
 use App\Http\Controllers\Api\Central\PlanController;
 use App\Http\Controllers\Api\Central\TenantController;
+use App\Http\Controllers\Api\Central\XenditSubscriptionWebhookController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('central')->name('central.')->group(function () {
@@ -15,6 +16,10 @@ Route::prefix('central')->name('central.')->group(function () {
         '/billing/midtrans/webhook',
         MidtransSubscriptionWebhookController::class,
     )->name('billing.midtrans.webhook');
+    Route::post(
+        '/billing/xendit/webhook',
+        XenditSubscriptionWebhookController::class,
+    )->name('billing.xendit.webhook');
     Route::post('/auth/register', RegisterController::class)
         ->middleware('throttle:5,1')
         ->name('auth.register');

@@ -329,7 +329,30 @@ mengelola status tenant berdasarkan provisioning dan progress onboarding.
 
 Tidak ada transaksi Midtrans saat registrasi. Checkout baru akan dibuat saat invoice subscription perlu dibayar.
 
-## Midtrans
+## Payment gateway
+
+Xendit Payment Sessions digunakan untuk billing langganan antara tenant dan Sewantara.
+Pembayaran booking milik tenant tetap memakai gateway pada modul `Payments`.
+Konfigurasi Xendit development:
+
+```dotenv
+XENDIT_PUBLIC_KEY=xnd_public_development_xxxxx
+XENDIT_SECRET_KEY=xnd_development_xxxxx
+XENDIT_WEBHOOK_TOKEN=token-dari-webhook-settings-xendit
+XENDIT_BASE_URL=https://api.xendit.co
+SUBSCRIPTION_PAYMENT_GATEWAY=xendit
+```
+
+Atur webhook **Payment Session** di dashboard Xendit ke satu endpoint pusat:
+`POST /api/central/billing/xendit/webhook`. URL ini tidak memuat tenant karena aplikasi
+menentukan tenant dan tagihan dari `reference_id`. Aplikasi memverifikasi header
+`x-callback-token`, mencocokkan nominal, dan menangani event
+`payment_session.completed` serta `payment_session.expired` secara idempotent.
+
+Public key hanya digunakan di sisi klien untuk tokenisasi kartu. Pembuatan Hosted
+Checkout dilakukan oleh backend memakai secret key, yang tidak boleh dikomit.
+
+### Midtrans
 
 Integrasi Midtrans dibungkus oleh `SubscriptionPaymentGateway`. Implementasi SDK berada di:
 
