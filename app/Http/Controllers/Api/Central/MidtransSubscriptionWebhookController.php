@@ -27,9 +27,11 @@ class MidtransSubscriptionWebhookController extends Controller
         if ($isPaid) {
             $confirmPayment->execute(
                 paymentNumber: (string) $payload['order_id'],
+                gateway: 'midtrans',
                 gatewayReference: isset($payload['transaction_id'])
                     ? (string) $payload['transaction_id']
                     : null,
+                gatewaySessionReference: null,
                 metadata: $payload,
             );
         }

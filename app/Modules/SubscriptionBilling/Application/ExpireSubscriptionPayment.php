@@ -3,35 +3,25 @@
 namespace App\Modules\SubscriptionBilling\Application;
 
 use App\Models\SubscriptionPayment;
-use App\Modules\SubscriptionBilling\Events\SubscriptionPaymentPaid;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use UnexpectedValueException;
 
-class ConfirmSubscriptionPayment
+class ExpireSubscriptionPayment
 {
-    public function __construct(
-        private readonly ActivateSubscriptionForPaidPayment $activateSubscription,
-    ) {}
-
-    /**
-     * @param  array<string, mixed>  $metadata
-     */
+    /** @param array<string, mixed> $metadata */
     public function execute(
         string $paymentNumber,
         string $gateway,
-        ?string $gatewayReference,
         ?string $gatewaySessionReference,
         array $metadata,
     ): SubscriptionPayment {
         $connection = (new SubscriptionPayment)->getConnection();
-        $transitionedToPaid = false;
-        $payment = $connection->transaction(function () use (
+
+        return $connection->transaction(function () use (
             $paymentNumber,
             $gateway,
-            $gatewayReference,
             $gatewaySessionReference,
             $metadata,
-            &$transitionedToPaid,
         ): SubscriptionPayment {
             $payment = SubscriptionPayment::query()
                 ->where('payment_number', $paymentNumber)
@@ -65,38 +55,24 @@ class ConfirmSubscriptionPayment
                 );
             }
 
-            if (is_string($notifiedCurrency)
-                && strtoupper($notifiedCurrency) !== strtoupper($payment->currency)) {
+            if (! is_string($notifiedCurrency)
+                || strtoupper($notifiedCurrency) !== strtoupper($payment->currency)) {
                 throw new UnexpectedValueException(
                     'Mata uang notifikasi tidak sesuai dengan tagihan.',
                 );
             }
 
-            if ($payment->status !== 'paid') {
+            if ($payment->status === 'pending') {
                 $payment->forceFill([
-                    'status' => 'paid',
-                    'gateway_reference' => $gatewayReference,
-                    'paid_at' => now(),
+                    'status' => 'expired',
                     'metadata' => array_merge(
                         $payment->metadata ?? [],
-                        ['payment_notification' => $metadata],
+                        ['payment_expiration_notification' => $metadata],
                     ),
                 ])->save();
-
-                $this->activateSubscription->execute($payment);
-                $transitionedToPaid = true;
             }
 
             return $payment;
         }, attempts: 3);
-
-        if ($transitionedToPaid) {
-            SubscriptionPaymentPaid::dispatch(
-                $payment->getKey(),
-                $payment->tenant_id,
-            );
-        }
-
-        return $payment;
     }
 }

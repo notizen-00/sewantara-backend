@@ -6,6 +6,7 @@ use App\Http\Middleware\EnsureTenantSubscriptionActive;
 use App\Http\Middleware\EnsureUserBelongsToTenant;
 use App\Http\Middleware\InitializeTenantByPath;
 use App\Http\Middleware\ResolveBranchContext;
+use App\Modules\SubscriptionBilling\Application\Exceptions\SubscriptionGatewayAuthenticationFailed;
 use App\Modules\TenantOnboarding\Application\Exceptions\BillingIntervalUnavailable;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Application;
@@ -33,6 +34,17 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
+        $exceptions->render(
+            fn (SubscriptionGatewayAuthenticationFailed $exception, Request $request) => response()->json([
+                'success' => false,
+                'error' => [
+                    'code' => 'SUBSCRIPTION_GATEWAY_AUTH_FAILED',
+                    'message' => 'Konfigurasi autentikasi Xendit tidak valid. Hubungi administrator.',
+                    'details' => null,
+                ],
+            ], 502),
+        );
+
         $exceptions->render(
             fn (AuthenticationException $exception, Request $request) => response()->json([
                 'success' => false,

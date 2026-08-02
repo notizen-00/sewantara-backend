@@ -311,7 +311,8 @@ Kemungkinan error:
 | `422` | Header cabang tidak valid, subscription tidak ada, plan tidak aktif, atau plan gratis |
 | `423` | Tenant suspended atau tidak dapat diakses |
 | `429` | Melebihi batas checkout |
-| `500` | Konfigurasi Xendit tidak tersedia atau Xendit gagal membuat session |
+| `500` | Secret key Xendit belum dikonfigurasi atau terjadi kegagalan internal |
+| `502` | Secret key ditolak Xendit (`SUBSCRIPTION_GATEWAY_AUTH_FAILED`) |
 
 ## 5. Membaca Status Pembayaran
 
@@ -357,6 +358,7 @@ Status transaksi saat ini:
 | `pending` | Menunggu pembayaran atau webhook Xendit |
 | `paid` | Pembayaran telah diverifikasi backend |
 | `failed` | Backend gagal membuat Payment Session |
+| `expired` | Payment Session berakhir sebelum pembayaran berhasil |
 
 Polling disarankan setiap 2-3 detik dan dihentikan setelah menerima status
 final atau mencapai batas waktu halaman. `paid` adalah satu-satunya status
@@ -372,8 +374,8 @@ X-Callback-Token: {xendit_webhook_token}
 Endpoint ini hanya untuk server Xendit. Frontend tidak boleh memanggil,
 meniru, atau mengetahui callback token-nya.
 
-Event pembayaran final yang diproses backend adalah
-`payment_session.completed`. Contoh payload dari Xendit:
+Event final yang diproses backend adalah `payment_session.completed` dan
+`payment_session.expired`. Contoh payload pembayaran berhasil dari Xendit:
 
 ```json
 {
@@ -382,7 +384,10 @@ Event pembayaran final yang diproses backend adalah
     "reference_id": "SUB-INV-XENDIT-1",
     "payment_session_id": "ps-661f87c614802d6c402cd82d",
     "payment_id": "py-ac1fcd3e-21c5-4c70-bb06-fa3c34e19e0c",
-    "amount": 199000
+    "amount": 199000,
+    "currency": "IDR",
+    "session_type": "PAY",
+    "status": "COMPLETED"
   }
 }
 ```
@@ -392,9 +397,27 @@ Backend akan:
 1. membandingkan `X-Callback-Token` secara aman;
 2. mencari pembayaran berdasarkan `data.reference_id`;
 3. memastikan `data.amount` sama dengan nominal tagihan;
-4. mengubah pembayaran menjadi `paid` secara idempoten;
-5. menyimpan `payment_id` sebagai referensi gateway; dan
-6. menerbitkan event internal `SubscriptionPaymentPaid`.
+4. memastikan `payment_session_id` cocok dengan sesi checkout yang tersimpan;
+5. mengubah pembayaran menjadi `paid` secara idempoten;
+6. menyimpan `payment_id` sebagai referensi gateway;
+7. mengaktifkan atau memperpanjang subscription; dan
+8. menerbitkan event internal `SubscriptionPaymentPaid` satu kali.
+
+Aturan perubahan subscription setelah pembayaran berhasil:
+
+| Kondisi sebelumnya | Perubahan |
+|---|---|
+| `trial` | Trial diakhiri, subscription langsung `active`, akhir periode yang sudah dijadwalkan tetap dipertahankan |
+| `active` | `ends_at` diperpanjang satu periode plan dari tanggal berakhir saat ini |
+| `expired` | Periode baru dimulai saat pembayaran dan `ends_at` dihitung dari waktu tersebut |
+| `canceled` | `canceled_at` dibersihkan dan subscription diaktifkan kembali |
+
+Callback `payment_session.completed` yang dikirim ulang tidak memperpanjang
+subscription untuk kedua kalinya. Callback expired yang datang setelah paid
+juga tidak dapat menurunkan status pembayaran.
+
+Untuk `payment_session.expired`, payment yang masih `pending` diubah menjadi
+`expired`. Subscription tidak diaktifkan atau diperpanjang.
 
 Response webhook `200`:
 

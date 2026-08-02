@@ -1,9 +1,11 @@
 <?php
 
 use App\Models\SubscriptionPayment;
+use App\Modules\SubscriptionBilling\Application\ActivateSubscriptionForPaidPayment;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
+use Laravelcm\Subscriptions\Models\Subscription;
 use Stancl\Tenancy\Bootstrappers\DatabaseTenancyBootstrapper;
 use Stancl\Tenancy\TenantDatabaseManagers\PostgreSQLSchemaManager;
 
@@ -24,6 +26,12 @@ beforeEach(function () {
     DB::setDefaultConnection('sqlite');
 
     config()->set('services.midtrans.server_key', 'SB-Mid-server-test');
+
+    $activation = Mockery::mock(ActivateSubscriptionForPaidPayment::class);
+    $activation->shouldReceive('execute')
+        ->zeroOrMoreTimes()
+        ->andReturn(new Subscription);
+    app()->instance(ActivateSubscriptionForPaidPayment::class, $activation);
 
     Schema::create('subscription_payments', function (Blueprint $table): void {
         $table->uuid('id')->primary();

@@ -2,6 +2,7 @@
 
 namespace App\Modules\SubscriptionBilling\Infrastructure\Xendit;
 
+use App\Modules\SubscriptionBilling\Application\Exceptions\SubscriptionGatewayAuthenticationFailed;
 use Illuminate\Support\Facades\Http;
 
 class XenditPaymentSessionClient
@@ -17,13 +18,17 @@ class XenditPaymentSessionClient
             '/',
         );
 
-        return Http::acceptJson()
+        $response = Http::acceptJson()
             ->asJson()
             ->withBasicAuth($secretKey, '')
             ->connectTimeout(5)
             ->timeout(15)
-            ->post($baseUrl.'/sessions', $payload)
-            ->throw()
-            ->json();
+            ->post($baseUrl.'/sessions', $payload);
+
+        if ($response->unauthorized()) {
+            throw new SubscriptionGatewayAuthenticationFailed;
+        }
+
+        return $response->throw()->json();
     }
 }
