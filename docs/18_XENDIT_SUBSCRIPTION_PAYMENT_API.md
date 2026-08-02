@@ -416,6 +416,13 @@ Callback `payment_session.completed` yang dikirim ulang tidak memperpanjang
 subscription untuk kedua kalinya. Callback expired yang datang setelah paid
 juga tidak dapat menurunkan status pembayaran.
 
+Idempotensi aktivasi dicatat pada
+`subscription_payments.metadata.subscription_activation`. Payment lama yang
+sudah berstatus `paid` tetapi subscription masih `trial`, `expired`, atau
+`canceled` akan direkonsiliasi satu kali ketika callback completed dikirim
+ulang. Payment lama dengan subscription yang sudah aktif tidak diperpanjang
+ulang secara otomatis.
+
 Untuk `payment_session.expired`, payment yang masih `pending` diubah menjadi
 `expired`. Subscription tidak diaktifkan atau diperpanjang.
 
@@ -434,7 +441,7 @@ Kemungkinan error webhook:
 |---|---|
 | `403` | Callback token tidak valid |
 | `404` | `reference_id` tidak cocok dengan pembayaran |
-| `422` | Struktur payload tidak valid atau data pembayaran tidak lengkap |
+| `422` | Event bukan Payment Session Completed/Expired atau data pembayaran tidak lengkap |
 | `500` | Nominal notifikasi tidak cocok atau terjadi kegagalan internal |
 
 ## 7. Error Subscription pada Endpoint Tenant

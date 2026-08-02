@@ -31,52 +31,50 @@ class XenditSubscriptionWebhookController extends Controller
 
         $isPaid = $event === 'payment_session.completed';
         $isExpired = $event === 'payment_session.expired';
+        abort_unless($isPaid || $isExpired, 422, 'Event Xendit tidak didukung.');
 
-        if ($isPaid || $isExpired) {
-            $expectedStatus = $isPaid ? 'COMPLETED' : 'EXPIRED';
-            abort_unless(
-                is_string($data['reference_id'] ?? null)
-                    && is_string($data['payment_session_id'] ?? null)
-                    && is_numeric($data['amount'] ?? null)
-                    && is_string($data['currency'] ?? null)
-                    && ($data['session_type'] ?? null) === 'PAY'
-                    && ($data['status'] ?? null) === $expectedStatus,
-                422,
-                'Data pembayaran Xendit tidak lengkap.',
+        $expectedStatus = $isPaid ? 'COMPLETED' : 'EXPIRED';
+        abort_unless(
+            is_string($data['reference_id'] ?? null)
+                && is_string($data['payment_session_id'] ?? null)
+                && is_numeric($data['amount'] ?? null)
+                && is_string($data['currency'] ?? null)
+                && ($data['session_type'] ?? null) === 'PAY'
+                && ($data['status'] ?? null) === $expectedStatus,
+            422,
+            'Data pembayaran Xendit tidak lengkap.',
+        );
+
+        $metadata = [
+            'gross_amount' => (string) $data['amount'],
+            'currency' => strtoupper((string) $data['currency']),
+            'xendit' => $payload,
+        ];
+
+        if ($isPaid) {
+            $confirmPayment->execute(
+                paymentNumber: $data['reference_id'],
+                gateway: 'xendit',
+                gatewayReference: isset($data['payment_id'])
+                    ? (string) $data['payment_id']
+                    : (string) $data['payment_session_id'],
+                gatewaySessionReference: (string) $data['payment_session_id'],
+                metadata: $metadata,
             );
-
-            $metadata = [
-                'gross_amount' => (string) $data['amount'],
-                'currency' => strtoupper((string) $data['currency']),
-                'xendit' => $payload,
-            ];
-
-            if ($isPaid) {
-                $confirmPayment->execute(
-                    paymentNumber: $data['reference_id'],
-                    gateway: 'xendit',
-                    gatewayReference: isset($data['payment_id'])
-                        ? (string) $data['payment_id']
-                        : (string) $data['payment_session_id'],
-                    gatewaySessionReference: (string) $data['payment_session_id'],
-                    metadata: $metadata,
-                );
-            } else {
-                $expirePayment->execute(
-                    paymentNumber: $data['reference_id'],
-                    gateway: 'xendit',
-                    gatewaySessionReference: (string) $data['payment_session_id'],
-                    metadata: $metadata,
-                );
-            }
+        } else {
+            $expirePayment->execute(
+                paymentNumber: $data['reference_id'],
+                gateway: 'xendit',
+                gatewaySessionReference: (string) $data['payment_session_id'],
+                metadata: $metadata,
+            );
         }
 
         return response()->json([
             'success' => true,
             'message' => match (true) {
                 $isPaid => 'Pembayaran langganan berhasil dikonfirmasi.',
-                $isExpired => 'Pembayaran langganan kedaluwarsa.',
-                default => 'Notifikasi pembayaran diterima.',
+                default => 'Pembayaran langganan kedaluwarsa.',
             },
         ]);
     }

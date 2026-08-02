@@ -72,7 +72,9 @@ class ConfirmSubscriptionPayment
                 );
             }
 
-            if ($payment->status !== 'paid') {
+            $wasPaid = $payment->status === 'paid';
+
+            if (! $wasPaid) {
                 $payment->forceFill([
                     'status' => 'paid',
                     'gateway_reference' => $gatewayReference,
@@ -83,8 +85,36 @@ class ConfirmSubscriptionPayment
                     ),
                 ])->save();
 
-                $this->activateSubscription->execute($payment);
                 $transitionedToPaid = true;
+            }
+
+            $activationStatus = $payment->metadata['subscription_activation']['status'] ?? null;
+
+            if (! is_string($activationStatus)) {
+                $subscription = $this->activateSubscription->execute(
+                    $payment,
+                    extendActive: ! $wasPaid,
+                );
+                $payment->forceFill([
+                    'metadata' => array_merge($payment->metadata ?? [], [
+                        'subscription_activation' => $subscription === null
+                            ? [
+                                'status' => 'skipped_already_active',
+                                'processed_at' => now()->toIso8601String(),
+                            ]
+                            : [
+                                'status' => 'applied',
+                                'processed_at' => now()->toIso8601String(),
+                                'subscription_id' => $subscription->getKey(),
+                                'starts_at' => $subscription->starts_at?->toIso8601String(),
+                                'ends_at' => $subscription->ends_at?->toIso8601String(),
+                            ],
+                    ]),
+                ])->save();
+
+                if ($subscription !== null) {
+                    $transitionedToPaid = true;
+                }
             }
 
             return $payment;

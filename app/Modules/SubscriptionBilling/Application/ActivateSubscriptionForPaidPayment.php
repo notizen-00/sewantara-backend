@@ -9,8 +9,10 @@ use Laravelcm\Subscriptions\Services\Period;
 
 class ActivateSubscriptionForPaidPayment
 {
-    public function execute(SubscriptionPayment $payment): Subscription
-    {
+    public function execute(
+        SubscriptionPayment $payment,
+        bool $extendActive = true,
+    ): ?Subscription {
         $subscriptionClass = config('laravel-subscriptions.models.subscription');
         /** @var Subscription $subscriptionModel */
         $subscriptionModel = new $subscriptionClass;
@@ -23,6 +25,13 @@ class ActivateSubscriptionForPaidPayment
             ->lockForUpdate()
             ->firstOrFail();
         $subscription->loadMissing('plan');
+
+        if (! $extendActive
+            && ! $subscription->onTrial()
+            && ! $subscription->inactive()
+            && ! $subscription->canceled()) {
+            return null;
+        }
 
         $now = Carbon::now();
 

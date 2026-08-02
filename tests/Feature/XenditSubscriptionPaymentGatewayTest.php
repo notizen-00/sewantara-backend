@@ -215,6 +215,63 @@ test('a paid checkout converts a trial into an active subscription', function ()
         ->and($subscription->ends_at->equalTo($originalEnd))->toBeTrue();
 });
 
+test('a legacy paid payment repairs a subscription that is still on trial once', function () {
+    createXenditSubscriptionPaymentsTable();
+    Event::fake([SubscriptionPaymentPaid::class]);
+    $originalEnd = now()->addMonth()->startOfSecond();
+    DB::table(config('laravel-subscriptions.tables.subscriptions'))
+        ->where('id', 1)
+        ->update([
+            'trial_ends_at' => now()->addDays(14),
+            'starts_at' => now()->addDays(14),
+            'ends_at' => $originalEnd,
+            'canceled_at' => null,
+        ]);
+    SubscriptionPayment::query()->create([
+        'tenant_id' => 'tenant-paid',
+        'plan_subscription_id' => 1,
+        'payment_number' => 'SUB-LEGACY-PAID-TRIAL',
+        'gateway' => 'xendit',
+        'gateway_reference' => 'py-legacy-paid',
+        'amount' => 199000,
+        'currency' => 'IDR',
+        'status' => 'paid',
+        'paid_at' => now()->subMinute(),
+        'metadata' => [
+            'checkout' => ['token' => 'ps-legacy-paid-session-00001'],
+        ],
+    ]);
+    $payload = [
+        'event' => 'payment_session.completed',
+        'data' => [
+            'reference_id' => 'SUB-LEGACY-PAID-TRIAL',
+            'payment_session_id' => 'ps-legacy-paid-session-00001',
+            'payment_id' => 'py-legacy-paid',
+            'amount' => 199000,
+            'currency' => 'IDR',
+            'session_type' => 'PAY',
+            'status' => 'COMPLETED',
+        ],
+    ];
+
+    $this->withHeader('x-callback-token', 'xendit-webhook-token')
+        ->postJson('/api/central/billing/xendit/webhook', $payload)
+        ->assertOk();
+    $this->withHeader('x-callback-token', 'xendit-webhook-token')
+        ->postJson('/api/central/billing/xendit/webhook', $payload)
+        ->assertOk();
+
+    $payment = SubscriptionPayment::query()->sole();
+    $subscription = DB::table(config('laravel-subscriptions.tables.subscriptions'))
+        ->where('id', 1)
+        ->first();
+
+    expect($payment->metadata['subscription_activation']['status'])->toBe('applied')
+        ->and($subscription->trial_ends_at)->toBeNull()
+        ->and($subscription->ends_at)->toBe($originalEnd->format('Y-m-d H:i:s'));
+    Event::assertDispatchedTimes(SubscriptionPaymentPaid::class, 1);
+});
+
 test('a paid checkout extends an active subscription from its current end date', function () {
     createXenditSubscriptionPaymentsTable();
     $originalEnd = now()->addDays(10)->startOfSecond();
@@ -280,6 +337,15 @@ test('the public Xendit webhook rejects an invalid callback token', function () 
             'data' => [],
         ])
         ->assertForbidden();
+});
+
+test('the public Xendit webhook rejects an unsupported event instead of silently acknowledging it', function () {
+    $this->withHeader('x-callback-token', 'xendit-webhook-token')
+        ->postJson('/api/central/billing/xendit/webhook', [
+            'event' => 'payment.succeeded',
+            'data' => [],
+        ])
+        ->assertUnprocessable();
 });
 
 function createXenditSubscriptionPaymentsTable(): void
