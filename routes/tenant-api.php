@@ -16,6 +16,7 @@ use App\Http\Controllers\Api\Tenant\ProductController;
 use App\Http\Controllers\Api\Tenant\ProductImageController;
 use App\Http\Controllers\Api\Tenant\ProductPriceController;
 use App\Http\Controllers\Api\Tenant\ProductUnitController;
+use App\Http\Controllers\Api\Tenant\SubscriptionPaymentController;
 use App\Http\Controllers\Api\Tenant\TenantAuthController;
 use App\Http\Controllers\Api\Tenant\TenantMediaController;
 use App\Http\Controllers\Api\Tenant\TenantOnboardingController;
@@ -46,6 +47,12 @@ Route::prefix('tenant/{tenant}')
                 'tenant.accessible',
             ])->group(function () {
                 Route::get('/me', CurrentTenantController::class)->name('me');
+                Route::post('/subscription/payments/checkout', [SubscriptionPaymentController::class, 'checkout'])
+                    ->middleware('throttle:10,1')
+                    ->name('subscription.payments.checkout');
+                Route::get('/subscription/payments/{payment}', [SubscriptionPaymentController::class, 'show'])
+                    ->whereUuid('payment')
+                    ->name('subscription.payments.show');
 
                 Route::middleware('tenant.subscription')->group(function () {
                     Route::get('/onboarding', [TenantOnboardingController::class, 'show'])

@@ -19,6 +19,7 @@ test('PostgreSQL tenant schemas use the tenant migration directory', function ()
 beforeEach(function () {
     config()->set('database.default', 'sqlite');
     config()->set('database.connections.sqlite.database', ':memory:');
+    config()->set('tenancy.database.central_connection', 'sqlite');
     DB::purge('sqlite');
     DB::setDefaultConnection('sqlite');
 

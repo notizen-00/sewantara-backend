@@ -27,7 +27,7 @@ class XenditSubscriptionPaymentGateway implements SubscriptionPaymentGateway
             throw new LogicException('XENDIT_SECRET_KEY belum dikonfigurasi.');
         }
 
-        $response = $this->client->create($secretKey, [
+        $payload = [
             'reference_id' => $orderId,
             'session_type' => 'PAY',
             'mode' => 'PAYMENT_LINK',
@@ -48,7 +48,33 @@ class XenditSubscriptionPaymentGateway implements SubscriptionPaymentGateway
                 ],
                 $items,
             ),
-        ]);
+        ];
+
+        $customerName = trim((string) ($customer['name'] ?? $customer['first_name'] ?? ''));
+        $customerEmail = trim((string) ($customer['email'] ?? ''));
+
+        if ($customerName !== '' || $customerEmail !== '') {
+            $payload['customer'] = [
+                'reference_id' => 'customer-'.$orderId,
+                'type' => 'INDIVIDUAL',
+                ...($customerEmail === '' ? [] : ['email' => $customerEmail]),
+                'individual_detail' => [
+                    'given_names' => $customerName === '' ? 'Pelanggan Sewantara' : $customerName,
+                ],
+            ];
+        }
+
+        $returnUrls = (array) config('subscription-billing.return_urls', []);
+
+        if (is_string($returnUrls['success'] ?? null) && $returnUrls['success'] !== '') {
+            $payload['success_return_url'] = $returnUrls['success'];
+        }
+
+        if (is_string($returnUrls['cancel'] ?? null) && $returnUrls['cancel'] !== '') {
+            $payload['cancel_return_url'] = $returnUrls['cancel'];
+        }
+
+        $response = $this->client->create($secretKey, $payload);
 
         $sessionId = $response['payment_session_id'] ?? null;
         $redirectUrl = $response['payment_link_url'] ?? null;

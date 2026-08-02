@@ -341,6 +341,8 @@ XENDIT_SECRET_KEY=xnd_development_xxxxx
 XENDIT_WEBHOOK_TOKEN=token-dari-webhook-settings-xendit
 XENDIT_BASE_URL=https://api.xendit.co
 SUBSCRIPTION_PAYMENT_GATEWAY=xendit
+SUBSCRIPTION_PAYMENT_SUCCESS_URL=https://dashboard.example.com/billing/success
+SUBSCRIPTION_PAYMENT_CANCEL_URL=https://dashboard.example.com/billing/cancel
 ```
 
 Atur webhook **Payment Session** di dashboard Xendit ke satu endpoint pusat:

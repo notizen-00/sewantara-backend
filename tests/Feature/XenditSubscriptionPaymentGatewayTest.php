@@ -10,12 +10,19 @@ use Illuminate\Support\Facades\Schema;
 
 beforeEach(function () {
     config()->set([
+        'database.default' => 'sqlite',
+        'database.connections.sqlite.database' => ':memory:',
+        'tenancy.database.central_connection' => 'sqlite',
         'subscription-billing.default' => 'xendit',
+        'subscription-billing.return_urls.success' => 'https://dashboard.example.test/billing/success',
+        'subscription-billing.return_urls.cancel' => 'https://dashboard.example.test/billing/cancel',
         'services.xendit.secret_key' => 'xnd_development_secret',
         'services.xendit.public_key' => 'xnd_public_development',
         'services.xendit.webhook_token' => 'xendit-webhook-token',
         'services.xendit.base_url' => 'https://api.xendit.co',
     ]);
+    DB::purge('sqlite');
+    DB::setDefaultConnection('sqlite');
 });
 
 afterEach(function () {
@@ -38,7 +45,10 @@ test('it creates a Xendit Payment Session for a subscription invoice', function 
                 && $payload['session_type'] === 'PAY'
                 && $payload['mode'] === 'PAYMENT_LINK'
                 && $payload['amount'] === 199000
-                && $payload['items'][0]['type'] === 'DIGITAL_SERVICE'),
+                && $payload['items'][0]['type'] === 'DIGITAL_SERVICE'
+                && $payload['customer']['email'] === 'owner@example.com'
+                && $payload['success_return_url'] === 'https://dashboard.example.test/billing/success'
+                && $payload['cancel_return_url'] === 'https://dashboard.example.test/billing/cancel'),
         )
         ->andReturn([
             'payment_session_id' => 'ps-661f87c614802d6c402cd82d',
