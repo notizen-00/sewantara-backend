@@ -92,6 +92,48 @@ Jika port `8090` juga digunakan aplikasi lain, pilih port host kosong seperti
 Batasi akses port tersebut melalui firewall agar hanya Nginx Proxy Manager
 atau jaringan tepercaya yang dapat mengaksesnya.
 
+## Akses PostgreSQL dari pgAdmin
+
+Service PostgreSQL dapat dipublikasikan ke host melalui konfigurasi berikut:
+
+```dotenv
+POSTGRES_BIND_IP=0.0.0.0
+POSTGRES_PUBLIC_PORT=5432
+```
+
+`0.0.0.0` membuat port dapat dijangkau melalui seluruh interface server.
+Untuk akses lokal atau SSH tunnel saja, gunakan `127.0.0.1`.
+
+Terapkan perubahan dengan membuat ulang container PostgreSQL:
+
+```bash
+docker compose --env-file .env.production up -d --force-recreate postgres
+docker compose --env-file .env.production ps postgres
+```
+
+Konfigurasi koneksi pgAdmin:
+
+| Field | Nilai |
+|---|---|
+| Host | IP publik atau domain server |
+| Port | Nilai `POSTGRES_PUBLIC_PORT` |
+| Maintenance database | Nilai `POSTGRES_DB` |
+| Username | Nilai `POSTGRES_USER` |
+| Password | Nilai `POSTGRES_PASSWORD` |
+
+Jangan membuka port PostgreSQL untuk seluruh internet tanpa pembatasan. Batasi
+inbound TCP `5432` pada firewall provider atau firewall server hanya ke IP
+publik perangkat yang menjalankan pgAdmin. Contoh UFW:
+
+```bash
+sudo ufw allow from <IP_PUBLIK_PGADMIN>/32 to any port 5432 proto tcp
+sudo ufw deny 5432/tcp
+sudo ufw status
+```
+
+Jika IP administrator sering berubah, gunakan VPN atau SSH tunnel dan set
+`POSTGRES_BIND_IP=127.0.0.1`.
+
 Nilai `REVERB_PUBLIC_*` dipakai saat build aset frontend dan harus menunjuk
 domain publik yang dilindungi TLS:
 
@@ -180,8 +222,9 @@ berkas upload tenant.
 
 ## Catatan Keamanan
 
-- Jangan mempublikasikan port PostgreSQL `5432`, Redis `6379`, Reverb `8080`,
-  atau PHP-FPM `9000`.
+- Jangan membuka PostgreSQL `5432` untuk semua sumber; jika dipublikasikan,
+  batasi hanya IP administrator atau jaringan VPN.
+- Jangan mempublikasikan Redis `6379`, Reverb `8080`, atau PHP-FPM `9000`.
 - Ganti seluruh nilai contoh pada `.env.production`.
 - Batasi `REVERB_ALLOWED_ORIGINS` dan `CORS_ALLOWED_ORIGINS` ke domain resmi.
 - Aktifkan firewall server dan hanya buka port yang digunakan reverse proxy.

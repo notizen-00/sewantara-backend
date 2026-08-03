@@ -25,6 +25,8 @@ services:
     image: postgres:17-alpine
     env_file:
       - ${APP_ENV_FILE:-.env.production}
+    ports:
+      - "${POSTGRES_BIND_IP:-127.0.0.1}:${POSTGRES_PUBLIC_PORT:-5432}:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     networks:
