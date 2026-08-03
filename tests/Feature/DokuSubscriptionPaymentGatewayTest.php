@@ -41,6 +41,8 @@ test('it creates a DOKU Checkout session using the gateway contract', function (
                 && $payload['order']['line_items'][0]['price'] === 199000
                 && $payload['customer']['email'] === 'owner@example.test'
                 && $payload['order']['callback_url'] === 'https://app.example.test/billing/success'
+                && $payload['order']['auto_redirect'] === true
+                && ! isset($payload['payment']['auto_redirect'])
                 && $payload['additional_info']['override_notification_url'] === 'https://api.example.test/api/central/billing/doku/webhook'),
         )
         ->andReturn([
@@ -107,6 +109,23 @@ test('DOKU client normalizes rejected credentials', function () {
         'https://api-sandbox.doku.com/checkout/v1/payment' => Http::response([
             'error' => ['message' => 'Unauthorized'],
         ], 401),
+    ]);
+
+    expect(fn () => app(DokuCheckoutClient::class)->create(
+        'BRN-TEST',
+        'invalid-secret',
+        ['order' => ['amount' => 10000]],
+    ))->toThrow(SubscriptionGatewayAuthenticationFailed::class);
+});
+
+test('DOKU client normalizes an invalid signature response', function () {
+    Http::fake([
+        'https://api-sandbox.doku.com/checkout/v1/payment' => Http::response([
+            'error' => [
+                'code' => 'invalid_signature',
+                'message' => 'Invalid Header Signature',
+            ],
+        ], 400),
     ]);
 
     expect(fn () => app(DokuCheckoutClient::class)->create(

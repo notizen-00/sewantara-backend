@@ -68,7 +68,7 @@ class DokuSubscriptionPaymentGateway implements SubscriptionPaymentGateway
         if (is_string($successUrl) && $successUrl !== '') {
             $payload['order']['callback_url'] = $successUrl;
             $payload['order']['callback_url_result'] = $successUrl;
-            $payload['payment']['auto_redirect'] = true;
+            $payload['order']['auto_redirect'] = true;
         }
 
         if (is_string($cancelUrl) && $cancelUrl !== '') {

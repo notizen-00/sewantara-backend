@@ -49,7 +49,9 @@ class DokuCheckoutClient
             ->timeout(15)
             ->post($baseUrl.$requestTarget);
 
-        if (in_array($response->status(), [401, 403], true)) {
+        if (in_array($response->status(), [401, 403], true)
+            || ($response->status() === 400
+                && $response->json('error.code') === 'invalid_signature')) {
             throw new SubscriptionGatewayAuthenticationFailed;
         }
 
