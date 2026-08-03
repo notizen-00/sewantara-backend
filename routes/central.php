@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\Auth\GoogleAuthController;
 use App\Http\Controllers\Api\Auth\RegisterController;
 use App\Http\Controllers\Api\Central\BusinessTemplateController;
 use App\Http\Controllers\Api\Central\DokuSubscriptionWebhookController;
@@ -28,5 +29,11 @@ Route::prefix('central')->name('central.')->group(function () {
     Route::post('/auth/register', RegisterController::class)
         ->middleware('throttle:5,1')
         ->name('auth.register');
+    Route::middleware(['web', 'throttle:20,1'])->group(function (): void {
+        Route::get('/auth/google/redirect', [GoogleAuthController::class, 'redirect'])
+            ->name('auth.google.redirect');
+        Route::get('/auth/google/callback', [GoogleAuthController::class, 'callback'])
+            ->name('auth.google.callback');
+    });
     Route::apiResource('tenants', TenantController::class)->only(['index', 'store', 'show']);
 });

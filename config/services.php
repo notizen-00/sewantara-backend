@@ -58,4 +58,14 @@ return [
         'notification_url' => env('DOKU_NOTIFICATION_URL'),
     ],
 
+    'google' => [
+        'client_id' => env('GOOGLE_CLIENT_ID'),
+        'client_secret' => env('GOOGLE_CLIENT_SECRET'),
+        'redirect' => env(
+            'GOOGLE_REDIRECT_URI',
+            rtrim((string) env('APP_URL', 'http://localhost'), '/')
+                .'/api/central/auth/google/callback',
+        ),
+    ],
+
 ];
