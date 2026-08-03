@@ -1,5 +1,6 @@
 <?php
 
+use App\Modules\SubscriptionBilling\Infrastructure\Doku\DokuSubscriptionPaymentGateway;
 use App\Modules\SubscriptionBilling\Infrastructure\Midtrans\MidtransSubscriptionPaymentGateway;
 use App\Modules\SubscriptionBilling\Infrastructure\Xendit\XenditSubscriptionPaymentGateway;
 
@@ -12,6 +13,7 @@ return [
     ],
 
     'drivers' => [
+        'doku' => DokuSubscriptionPaymentGateway::class,
         'midtrans' => MidtransSubscriptionPaymentGateway::class,
         'xendit' => XenditSubscriptionPaymentGateway::class,
     ],

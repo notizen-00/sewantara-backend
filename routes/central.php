@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\Auth\RegisterController;
 use App\Http\Controllers\Api\Central\BusinessTemplateController;
+use App\Http\Controllers\Api\Central\DokuSubscriptionWebhookController;
 use App\Http\Controllers\Api\Central\MidtransSubscriptionWebhookController;
 use App\Http\Controllers\Api\Central\PlanController;
 use App\Http\Controllers\Api\Central\TenantController;
@@ -12,6 +13,10 @@ Route::prefix('central')->name('central.')->group(function () {
     Route::get('/business-templates', [BusinessTemplateController::class, 'index'])
         ->name('business-templates.index');
     Route::get('/plans', PlanController::class)->name('plans.index');
+    Route::post(
+        '/billing/doku/webhook',
+        DokuSubscriptionWebhookController::class,
+    )->name('billing.doku.webhook');
     Route::post(
         '/billing/midtrans/webhook',
         MidtransSubscriptionWebhookController::class,

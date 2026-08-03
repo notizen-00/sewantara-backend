@@ -49,4 +49,13 @@ return [
         'base_url' => env('XENDIT_BASE_URL', 'https://api.xendit.co'),
     ],
 
+    'doku' => [
+        'client_id' => env('DOKU_CLIENT_ID'),
+        'secret_key' => env('DOKU_SECRET_KEY'),
+        'public_key' => env('DOKU_PUBLIC_KEY'),
+        'base_url' => env('DOKU_BASE_URL', 'https://api-sandbox.doku.com'),
+        'payment_due_minutes' => (int) env('DOKU_PAYMENT_DUE_MINUTES', 60),
+        'notification_url' => env('DOKU_NOTIFICATION_URL'),
+    ],
+
 ];

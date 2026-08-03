@@ -39,7 +39,7 @@ return Application::configure(basePath: dirname(__DIR__))
                 'success' => false,
                 'error' => [
                     'code' => 'SUBSCRIPTION_GATEWAY_AUTH_FAILED',
-                    'message' => 'Konfigurasi autentikasi Xendit tidak valid. Hubungi administrator.',
+                    'message' => 'Konfigurasi autentikasi payment gateway tidak valid. Hubungi administrator.',
                     'details' => null,
                 ],
             ], 502),
