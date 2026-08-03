@@ -44,6 +44,12 @@ export default defineNuxtConfig({
 })
 ```
 
+API client Nuxt dapat menambahkan prefix `/api` secara otomatis. Untuk request
+melalui API client tersebut gunakan path `/central/auth/google/exchange`.
+Contoh `$fetch` langsung pada dokumen ini tidak menggunakan API client, sehingga
+URL-nya mencantumkan `/api` secara eksplisit. Jangan sampai menghasilkan path
+ganda `/api/api/...`.
+
 ## Tombol login Google
 
 Login Google harus dimulai menggunakan browser navigation, bukan `$fetch`,
@@ -242,6 +248,9 @@ GOOGLE_CLIENT_SECRET=your-google-client-secret
 GOOGLE_REDIRECT_URI=https://api.sewantara.id/api/central/auth/google/callback
 GOOGLE_AUTH_FRONTEND_CALLBACK_URL=https://app.sewantara.id/auth/google/callback
 GOOGLE_AUTH_EXCHANGE_TTL=60
+SESSION_DOMAIN=.sewantara.id
+SESSION_SECURE_COOKIE=true
+SESSION_SAME_SITE=lax
 ```
 
 Setelah mengubah environment backend, bersihkan dan buat ulang config cache:
@@ -250,6 +259,24 @@ Setelah mengubah environment backend, bersihkan dan buat ulang config cache:
 php artisan optimize:clear
 php artisan config:cache
 ```
+
+## CORS production
+
+Backend harus mengizinkan origin Nuxt secara eksplisit karena endpoint exchange
+dipanggil dari origin yang berbeda:
+
+```env
+CORS_ALLOWED_ORIGINS=https://app.sewantara.id
+CORS_SUPPORTS_CREDENTIALS=true
+```
+
+Konfigurasi CORS harus mencakup path `api/*`, method `OPTIONS` dan `POST`, serta
+header `Content-Type` dan `Accept`. Jangan gunakan origin `*` ketika credentials
+diaktifkan.
+
+Route redirect, callback, dan exchange mengirim `Cache-Control: no-store` agar
+kode OAuth, kode exchange, dan bearer token tidak disimpan oleh browser atau
+reverse proxy.
 
 ## Checklist deployment
 

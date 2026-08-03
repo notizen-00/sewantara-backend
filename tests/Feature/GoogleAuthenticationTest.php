@@ -39,7 +39,8 @@ test('Google redirect starts the OAuth flow and remembers the device name', func
         ->andReturn($provider);
 
     $this->get('/api/central/auth/google/redirect?device_name=dashboard-web')
-        ->assertRedirect('https://accounts.google.test/oauth');
+        ->assertRedirect('https://accounts.google.test/oauth')
+        ->assertHeader('Cache-Control', 'no-store, private');
 
     expect(session('google_auth_device_name'))->toBe('dashboard-web');
 });
@@ -103,7 +104,7 @@ test('Google callback returns to Nuxt with a one-time token exchange code', func
 
     $response->assertRedirectContains(
         'https://app.sewantara.id/auth/google/callback?code=',
-    );
+    )->assertHeader('Cache-Control', 'no-store, private');
 
     expect($query['code'] ?? null)->toBeString()->toHaveLength(64);
 
@@ -114,7 +115,8 @@ test('Google callback returns to Nuxt with a one-time token exchange code', func
         ->assertJsonPath('success', true)
         ->assertJsonPath('data.token_type', 'Bearer')
         ->assertJsonPath('data.access_token', 'tenant-token')
-        ->assertJsonPath('data.user.tenant_id', 'tenant-a');
+        ->assertJsonPath('data.user.tenant_id', 'tenant-a')
+        ->assertHeader('Cache-Control', 'no-store, private');
 
     $this->postJson('/api/central/auth/google/exchange', [
         'code' => $query['code'],
@@ -122,7 +124,29 @@ test('Google callback returns to Nuxt with a one-time token exchange code', func
         ->assertUnauthorized()
         ->assertJsonPath('error.code', 'GOOGLE_AUTH_CODE_INVALID');
 
+    $this->postJson('/api/central/auth/google/exchange', [
+        'code' => 'malformed-code',
+    ])
+        ->assertUnauthorized()
+        ->assertJsonPath('error.code', 'GOOGLE_AUTH_CODE_INVALID');
+
     expect(app()->bound('currentTenant'))->toBeFalse();
+});
+
+test('Nuxt production origin can preflight the Google exchange endpoint', function () {
+    config()->set('cors.allowed_origins', ['https://app.sewantara.id']);
+    config()->set('cors.allowed_origins_patterns', []);
+    config()->set('cors.supports_credentials', true);
+
+    $this->withHeaders([
+        'Origin' => 'https://app.sewantara.id',
+        'Access-Control-Request-Method' => 'POST',
+        'Access-Control-Request-Headers' => 'content-type',
+    ])->options('/api/central/auth/google/exchange')
+        ->assertNoContent()
+        ->assertHeader('Access-Control-Allow-Origin', 'https://app.sewantara.id')
+        ->assertHeader('Access-Control-Allow-Credentials', 'true')
+        ->assertHeaderContains('Access-Control-Allow-Headers', 'content-type');
 });
 
 test('Google callback rejects an unverified email', function () {

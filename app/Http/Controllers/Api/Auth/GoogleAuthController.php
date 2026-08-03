@@ -17,6 +17,7 @@ use Laravel\Socialite\Facades\Socialite;
 use Laravel\Socialite\Two\InvalidStateException;
 use Laravel\Socialite\Two\User as SocialiteUser;
 use Stancl\Tenancy\Tenancy;
+use Symfony\Component\HttpFoundation\Response;
 
 class GoogleAuthController extends Controller
 {
@@ -29,7 +30,10 @@ class GoogleAuthController extends Controller
             mb_substr($deviceName !== '' ? $deviceName : 'web', 0, 100),
         );
 
-        return Socialite::driver('google')->redirect();
+        $response = Socialite::driver('google')->redirect();
+        $this->preventCaching($response);
+
+        return $response;
     }
 
     public function callback(
@@ -126,7 +130,10 @@ class GoogleAuthController extends Controller
         ));
 
         if ($frontendCallback === '') {
-            return response()->json($payload);
+            $response = response()->json($payload);
+            $this->preventCaching($response);
+
+            return $response;
         }
 
         $exchangeCode = Str::random(64);
@@ -140,37 +147,42 @@ class GoogleAuthController extends Controller
             )),
         );
 
-        return redirect()->away(
+        $response = redirect()->away(
             $frontendCallback
             .(str_contains($frontendCallback, '?') ? '&' : '?')
             .http_build_query(['code' => $exchangeCode]),
         );
+        $this->preventCaching($response);
+
+        return $response;
     }
 
     public function exchange(Request $request): JsonResponse
     {
-        $validated = $request->validate([
-            'code' => ['required', 'string', 'size:64'],
-        ]);
+        $code = $request->input('code');
 
-        $payload = Cache::pull(
-            $this->exchangeCacheKey($validated['code']),
+        if (! is_string($code) || strlen($code) !== 64) {
+            return $this->invalidExchangeCode();
+        }
+
+        $cacheKey = $this->exchangeCacheKey($code);
+        $payload = Cache::lock($cacheKey.':lock', 5)->get(
+            fn () => Cache::pull($cacheKey),
         );
 
         if (! is_array($payload)) {
-            return $this->error(
-                'GOOGLE_AUTH_CODE_INVALID',
-                'Kode autentikasi Google tidak valid atau sudah kedaluwarsa.',
-                401,
-            );
+            return $this->invalidExchangeCode();
         }
 
-        return response()->json($payload);
+        $response = response()->json($payload);
+        $this->preventCaching($response);
+
+        return $response;
     }
 
     private function error(string $code, string $message, int $status): JsonResponse
     {
-        return response()->json([
+        $response = response()->json([
             'success' => false,
             'error' => [
                 'code' => $code,
@@ -178,10 +190,28 @@ class GoogleAuthController extends Controller
                 'details' => null,
             ],
         ], $status);
+        $this->preventCaching($response);
+
+        return $response;
     }
 
     private function exchangeCacheKey(string $code): string
     {
         return 'google_auth_exchange:'.hash('sha256', $code);
+    }
+
+    private function invalidExchangeCode(): JsonResponse
+    {
+        return $this->error(
+            'GOOGLE_AUTH_CODE_INVALID',
+            'Kode autentikasi Google tidak valid atau sudah kedaluwarsa.',
+            401,
+        );
+    }
+
+    private function preventCaching(Response $response): void
+    {
+        $response->headers->set('Cache-Control', 'no-store, private');
+        $response->headers->set('Pragma', 'no-cache');
     }
 }
