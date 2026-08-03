@@ -13,13 +13,18 @@ test('central tenant Google auth routes are publicly available', function () {
         ->getByName('central.auth.google.redirect');
     $callbackRoute = app('router')->getRoutes()
         ->getByName('central.auth.google.callback');
+    $exchangeRoute = app('router')->getRoutes()
+        ->getByName('central.auth.google.exchange');
 
     expect($redirectRoute)->not->toBeNull()
         ->and($redirectRoute->uri())->toBe('api/central/auth/google/redirect')
         ->and($redirectRoute->methods())->toContain('GET')
         ->and($callbackRoute)->not->toBeNull()
         ->and($callbackRoute->uri())->toBe('api/central/auth/google/callback')
-        ->and($callbackRoute->methods())->toContain('GET');
+        ->and($callbackRoute->methods())->toContain('GET')
+        ->and($exchangeRoute)->not->toBeNull()
+        ->and($exchangeRoute->uri())->toBe('api/central/auth/google/exchange')
+        ->and($exchangeRoute->methods())->toContain('POST');
 });
 
 test('Google redirect starts the OAuth flow and remembers the device name', function () {
@@ -39,7 +44,13 @@ test('Google redirect starts the OAuth flow and remembers the device name', func
     expect(session('google_auth_device_name'))->toBe('dashboard-web');
 });
 
-test('Google callback issues a tenant token for a verified registered email', function () {
+test('Google callback returns to Nuxt with a one-time token exchange code', function () {
+    config()->set(
+        'services.google.frontend_callback',
+        'https://app.sewantara.id/auth/google/callback',
+    );
+    config()->set('services.google.exchange_ttl', 60);
+
     $googleUser = SocialiteUser::fake([
         'email' => 'owner@example.test',
         'verified_email' => true,
@@ -81,13 +92,35 @@ test('Google callback issues a tenant token for a verified registered email', fu
     $tenancy->shouldReceive('end')->once();
     app()->instance(Tenancy::class, $tenancy);
 
-    $this->withSession(['google_auth_device_name' => 'dashboard-web'])
-        ->get('/api/central/auth/google/callback?code=google-code&state=valid-state')
+    $response = $this->withSession([
+        'google_auth_device_name' => 'dashboard-web',
+    ])->get(
+        '/api/central/auth/google/callback?code=google-code&state=valid-state',
+    );
+
+    $location = (string) $response->headers->get('Location');
+    parse_str((string) parse_url($location, PHP_URL_QUERY), $query);
+
+    $response->assertRedirectContains(
+        'https://app.sewantara.id/auth/google/callback?code=',
+    );
+
+    expect($query['code'] ?? null)->toBeString()->toHaveLength(64);
+
+    $this->postJson('/api/central/auth/google/exchange', [
+        'code' => $query['code'],
+    ])
         ->assertOk()
         ->assertJsonPath('success', true)
         ->assertJsonPath('data.token_type', 'Bearer')
         ->assertJsonPath('data.access_token', 'tenant-token')
         ->assertJsonPath('data.user.tenant_id', 'tenant-a');
+
+    $this->postJson('/api/central/auth/google/exchange', [
+        'code' => $query['code'],
+    ])
+        ->assertUnauthorized()
+        ->assertJsonPath('error.code', 'GOOGLE_AUTH_CODE_INVALID');
 
     expect(app()->bound('currentTenant'))->toBeFalse();
 });

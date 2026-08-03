@@ -35,5 +35,8 @@ Route::prefix('central')->name('central.')->group(function () {
         Route::get('/auth/google/callback', [GoogleAuthController::class, 'callback'])
             ->name('auth.google.callback');
     });
+    Route::post('/auth/google/exchange', [GoogleAuthController::class, 'exchange'])
+        ->middleware('throttle:20,1')
+        ->name('auth.google.exchange');
     Route::apiResource('tenants', TenantController::class)->only(['index', 'store', 'show']);
 });

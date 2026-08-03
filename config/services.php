@@ -66,6 +66,8 @@ return [
             rtrim((string) env('APP_URL', 'http://localhost'), '/')
                 .'/api/central/auth/google/callback',
         ),
+        'frontend_callback' => env('GOOGLE_AUTH_FRONTEND_CALLBACK_URL'),
+        'exchange_ttl' => (int) env('GOOGLE_AUTH_EXCHANGE_TTL', 60),
     ],
 
 ];

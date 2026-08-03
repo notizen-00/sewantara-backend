@@ -11,6 +11,8 @@ use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Str;
 use Laravel\Socialite\Facades\Socialite;
 use Laravel\Socialite\Two\InvalidStateException;
 use Laravel\Socialite\Two\User as SocialiteUser;
@@ -35,7 +37,7 @@ class GoogleAuthController extends Controller
         ResolveTenantFromCentralAccount $tenantResolver,
         ManageTenantAuthentication $authentication,
         Tenancy $tenancy,
-    ): JsonResponse {
+    ): JsonResponse|RedirectResponse {
         try {
             /** @var SocialiteUser $googleUser */
             $googleUser = Socialite::driver('google')->user();
@@ -109,7 +111,7 @@ class GoogleAuthController extends Controller
             );
         }
 
-        return response()->json([
+        $payload = [
             'success' => true,
             'message' => 'Berhasil masuk dengan Google.',
             'data' => [
@@ -117,7 +119,53 @@ class GoogleAuthController extends Controller
                 'access_token' => $result['access_token'],
                 'user' => $result['user'],
             ],
+        ];
+
+        $frontendCallback = trim((string) config(
+            'services.google.frontend_callback',
+        ));
+
+        if ($frontendCallback === '') {
+            return response()->json($payload);
+        }
+
+        $exchangeCode = Str::random(64);
+
+        Cache::put(
+            $this->exchangeCacheKey($exchangeCode),
+            $payload,
+            now()->addSeconds((int) config(
+                'services.google.exchange_ttl',
+                60,
+            )),
+        );
+
+        return redirect()->away(
+            $frontendCallback
+            .(str_contains($frontendCallback, '?') ? '&' : '?')
+            .http_build_query(['code' => $exchangeCode]),
+        );
+    }
+
+    public function exchange(Request $request): JsonResponse
+    {
+        $validated = $request->validate([
+            'code' => ['required', 'string', 'size:64'],
         ]);
+
+        $payload = Cache::pull(
+            $this->exchangeCacheKey($validated['code']),
+        );
+
+        if (! is_array($payload)) {
+            return $this->error(
+                'GOOGLE_AUTH_CODE_INVALID',
+                'Kode autentikasi Google tidak valid atau sudah kedaluwarsa.',
+                401,
+            );
+        }
+
+        return response()->json($payload);
     }
 
     private function error(string $code, string $message, int $status): JsonResponse
@@ -130,5 +178,10 @@ class GoogleAuthController extends Controller
                 'details' => null,
             ],
         ], $status);
+    }
+
+    private function exchangeCacheKey(string $code): string
+    {
+        return 'google_auth_exchange:'.hash('sha256', $code);
     }
 }
