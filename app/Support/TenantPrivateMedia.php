@@ -2,6 +2,7 @@
 
 namespace App\Support;
 
+use Illuminate\Filesystem\FilesystemAdapter;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use RuntimeException;
@@ -17,15 +18,21 @@ class TenantPrivateMedia
         'categories/',
         'products/',
         'articles/',
-        'articles/',
     ];
 
-    public function store(UploadedFile $file, string $directory): string
-    {
-        $path = $file->store(trim($directory, '/'), self::DISK);
+    public function store(
+        UploadedFile $file,
+        string $directory,
+    ): string {
+        $path = $file->store(
+            trim($directory, '/'),
+            self::DISK,
+        );
 
         if ($path === false) {
-            throw new RuntimeException('File gambar gagal disimpan.');
+            throw new RuntimeException(
+                'File gambar gagal disimpan.',
+            );
         }
 
         return $path;
@@ -33,49 +40,84 @@ class TenantPrivateMedia
 
     public function delete(?string $path): void
     {
-        if ($path !== null && $path !== '') {
-            Storage::disk(self::DISK)->delete($path);
+        if ($path === null || $path === '') {
+            return;
         }
+
+        $this->disk()->delete($path);
     }
 
     public function url(?string $path): ?string
     {
-        if ($path === null || $path === '' || ! app()->bound('currentTenant')) {
+        if (
+            $path === null
+            || $path === ''
+            || ! app()->bound('currentTenant')
+        ) {
             return null;
         }
 
-        return route('tenant.media.show', [
-            'tenant' => app('currentTenant')->getTenantKey(),
-            'path' => $path,
-        ]);
+        $relativeUrl = route(
+            'tenant.media.show',
+            [
+                'tenant' => app('currentTenant')
+                    ->getTenantKey(),
+                'path' => $path,
+            ],
+            false,
+        );
+
+        return rtrim(
+            (string) config('app.url'),
+            '/',
+        ) . $relativeUrl;
     }
 
     public function response(string $path): StreamedResponse
     {
-        $path = str_replace('\\', '/', trim($path, '/'));
+        $path = str_replace(
+            '\\',
+            '/',
+            trim($path, '/'),
+        );
+
+        $disk = $this->disk();
 
         abort_if(
             $path === ''
                 || str_contains($path, '..')
-                || ! preg_match('/^[A-Za-z0-9._\/-]+$/', $path)
+                || ! preg_match(
+                    '/^[A-Za-z0-9._\/-]+$/',
+                    $path,
+                )
                 || ! $this->isAllowedPath($path)
-                || ! Storage::disk(self::DISK)->exists($path),
+                || ! $disk->exists($path),
             404,
         );
 
-        return Storage::disk(self::DISK)->response(
+        return $disk->response(
             $path,
             basename($path),
             [
-                'Cache-Control' => 'private, max-age=3600',
+                'Cache-Control' => 'public, max-age=3600',
                 'Content-Disposition' => 'inline',
             ],
         );
     }
 
+    private function disk(): FilesystemAdapter
+    {
+        /** @var FilesystemAdapter $disk */
+        $disk = Storage::disk(self::DISK);
+
+        return $disk;
+    }
+
     private function isAllowedPath(string $path): bool
     {
-        foreach (self::ALLOWED_DIRECTORIES as $directory) {
+        foreach (
+            self::ALLOWED_DIRECTORIES as $directory
+        ) {
             if (str_starts_with($path, $directory)) {
                 return true;
             }

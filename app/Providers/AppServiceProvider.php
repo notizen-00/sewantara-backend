@@ -24,6 +24,7 @@ use App\Modules\PublicApi\Domain\Category\Contracts\PublicCategoryRepositoryCont
 use App\Modules\PublicApi\Infrastructure\Category\EloquentPublicCategoryRepository;
 use App\Modules\PublicApi\Domain\Catalog\Contracts\PublicProductRepositoryContract;
 use App\Modules\PublicApi\Infrastructure\Catalog\EloquentPublicProductRepository;
+use Illuminate\Support\Facades\URL;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -61,6 +62,10 @@ class AppServiceProvider extends ServiceProvider
     {
         // `php artisan migrate` must only discover central migrations.
         $this->loadMigrationsFrom(database_path('migrations/central'));
+
+        if ($this->app->environment('production')) {
+            URL::forceScheme('https');
+        }
 
         foreach (
             [
