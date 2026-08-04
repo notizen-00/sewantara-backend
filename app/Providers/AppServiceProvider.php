@@ -20,6 +20,10 @@ use Illuminate\Support\ServiceProvider;
 use YasinTgh\LaravelPostman\Collections\Builder;
 use App\Modules\PublicApi\Domain\Home\Contracts\PublicHomeRepositoryContract;
 use App\Modules\PublicApi\Infrastructure\Home\EloquentPublicHomeRepository;
+use App\Modules\PublicApi\Domain\Category\Contracts\PublicCategoryRepositoryContract;
+use App\Modules\PublicApi\Infrastructure\Category\EloquentPublicCategoryRepository;
+use App\Modules\PublicApi\Domain\Catalog\Contracts\PublicProductRepositoryContract;
+use App\Modules\PublicApi\Infrastructure\Catalog\EloquentPublicProductRepository;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -36,6 +40,17 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(
             PublicHomeRepositoryContract::class,
             EloquentPublicHomeRepository::class,
+        );
+
+        $this->app->bind(
+            PublicCategoryRepositoryContract::class,
+            EloquentPublicCategoryRepository::class,
+        );
+
+
+        $this->app->bind(
+            PublicProductRepositoryContract::class,
+            EloquentPublicProductRepository::class,
         );
     }
 
