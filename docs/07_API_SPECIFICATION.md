@@ -152,6 +152,133 @@ Rental engine mendukung:
 kategori. Queue dan session menggunakan `slot_duration_minutes`; jika
 `end_at` tidak dikirim, engine membentuk waktu selesai dari durasi slot.
 
+## Product Engine (Rental/Booking/Membership/Sales)
+
+Tenant dapat mengaktifkan lebih dari satu engine sekaligus (mis. tenant rental
+PlayStation menjalankan Booking sekaligus Sales). Rental dan Booking adalah
+engine `is_core` (selalu aktif, tidak dapat dinonaktifkan). Membership dan
+Sales adalah engine tambahan berbayar yang harus diaktifkan eksplisit; harga
+langganan tenant terkomposisi dari setiap engine berbayar yang aktif.
+
+```text
+GET  /api/tenant/{tenant}/engines
+POST /api/tenant/{tenant}/engines/enable
+POST /api/tenant/{tenant}/engines/disable
+```
+
+```json
+{
+  "engine_code": "membership"
+}
+```
+
+`engine_code` menerima `rental`, `booking`, `membership`, atau `sales`.
+Response `GET /engines` berupa array katalog seluruh engine aktif di sistem:
+
+```json
+{
+  "success": true,
+  "data": [
+    {
+      "code": "membership",
+      "name": "Membership",
+      "description": "...",
+      "is_core": false,
+      "monthly_price": "50000.00",
+      "is_enabled": true,
+      "price_snapshot": "50000.00",
+      "enabled_at": "2026-08-04T10:00:00+00:00"
+    }
+  ]
+}
+```
+
+Menonaktifkan engine `is_core` (rental/booking) ditolak dengan validation
+error pada field `engine_code`. Menonaktifkan engine yang belum aktif juga
+ditolak dengan pesan serupa.
+
+Endpoint Membership (`/memberships`) dan Sales Order (`/sales-orders`)
+dilindungi middleware `tenant.engine:{code}`; permintaan ke tenant yang belum
+mengaktifkan engine terkait ditolak `403` dengan kode `ENGINE_NOT_ENABLED`:
+
+```json
+{
+  "success": false,
+  "error": {
+    "code": "ENGINE_NOT_ENABLED",
+    "message": "Engine membership belum diaktifkan untuk akun usaha ini.",
+    "details": null
+  }
+}
+```
+
+Setiap engine hanya mengizinkan `product_type` tertentu pada produk:
+
+| Engine | Product type yang diizinkan |
+|---|---|
+| `rental` | `vehicle`, `equipment`, `accommodation` |
+| `booking` | `space`, `service` |
+| `membership` | `membership`, `package` |
+| `sales` | `goods` |
+
+## Membership
+
+```text
+GET   /api/tenant/{tenant}/memberships
+POST  /api/tenant/{tenant}/memberships
+GET   /api/tenant/{tenant}/memberships/{membership}
+PATCH /api/tenant/{tenant}/memberships/{membership}
+```
+
+Membutuhkan engine `membership` aktif. `product_id` wajib merujuk produk
+bertipe `engine_code = membership` milik tenant yang sama.
+
+Contoh request create:
+
+```json
+{
+  "product_id": 40,
+  "customer_id": 12,
+  "starts_on": "2026-08-05",
+  "ends_on": "2026-09-04",
+  "price_amount": 150000,
+  "notes": "Paket bulanan gym"
+}
+```
+
+`branch_id` opsional, default ke cabang aktif pada `X-Branch-Id`.
+`membership_number` dan `status` (`pending`) dibuat otomatis saat create.
+Query list mendukung `status` dan `per_page`. Status yang tersedia untuk
+update: `pending`, `active`, `frozen`, `expired`, `renewed`, `cancelled`.
+
+## Sales Order
+
+```text
+GET   /api/tenant/{tenant}/sales-orders
+POST  /api/tenant/{tenant}/sales-orders
+GET   /api/tenant/{tenant}/sales-orders/{salesOrder}
+PATCH /api/tenant/{tenant}/sales-orders/{salesOrder}
+```
+
+Membutuhkan engine `sales` aktif. Setiap item wajib merujuk produk bertipe
+`engine_code = sales` milik tenant yang sama.
+
+Contoh request create:
+
+```json
+{
+  "customer_id": 12,
+  "notes": "Pembelian aksesoris",
+  "items": [
+    { "product_id": 55, "quantity": 2, "unit_price": 75000 }
+  ]
+}
+```
+
+`order_number`, `status` (`draft`), dan `total_amount` (dihitung dari
+`quantity * unit_price` seluruh item) dibuat otomatis saat create. Status
+yang tersedia untuk update: `draft`, `pending`, `completed`, `cancelled`.
+
 ## Product Category Master
 
 ID category, parent, product, branch, customer, dan product unit menggunakan
@@ -302,6 +429,8 @@ Contoh request create:
   "sku": "CAM-SONY-A7IV",
   "brand": "Sony",
   "model": "A7 IV",
+  "engine_code": "rental",
+  "product_type": "equipment",
   "inventory_type": "serialized",
   "default_pricing_type": "daily",
   "minimum_rental_duration": 1,
@@ -311,3 +440,8 @@ Contoh request create:
   "is_active": true
 }
 ```
+
+`engine_code` wajib dan menentukan engine pemilik produk (`rental`,
+`booking`, `membership`, `sales`). `product_type` wajib dan harus termasuk
+dalam daftar tipe yang diizinkan engine tersebut, lihat tabel pada
+[Product Engine](#product-engine-rentalbookingmembershipsales).

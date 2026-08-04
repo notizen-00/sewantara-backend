@@ -16,6 +16,7 @@ pull request ke master          push ke master
   - Pest/PHPUnit (test suite)   - git fetch + reset ke origin/master
   - Build aset frontend (Vite)  - docker compose build && up -d
                                  - php artisan tenants:migrate --force
+                                 - php artisan db:seed --class=EngineSeeder --force
 ```
 
 `CI` dan `Deploy` berjalan independen. `Deploy` terpicu langsung oleh setiap
@@ -57,12 +58,18 @@ git reset --hard origin/master
 docker compose --env-file .env.production build
 docker compose --env-file .env.production up -d --remove-orphans
 docker compose --env-file .env.production exec -T app php artisan tenants:migrate --force
+docker compose --env-file .env.production exec -T app php artisan db:seed --class=EngineSeeder --force
 docker image prune -f
 ```
 
 `git reset --hard` dipakai (bukan `git pull`) agar working directory di
 server selalu identik dengan `origin/master`, menghindari konflik akibat
 perubahan lokal yang tidak sengaja tertinggal di server.
+
+`db:seed --class=EngineSeeder` memastikan katalog engine (`rental`,
+`booking`, `membership`, `sales`) selalu terisi di database central setelah
+migration. Seeder ini idempotent (`updateOrCreate` keyed by `code`), jadi
+aman dijalankan berulang setiap deploy.
 
 ### Prasyarat Server
 
