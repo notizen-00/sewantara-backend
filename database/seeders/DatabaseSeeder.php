@@ -11,6 +11,7 @@ class DatabaseSeeder extends Seeder
         $this->call([
             BusinessTemplateSeeder::class,
             PlanSeeder::class,
+            EngineSeeder::class,
         ]);
 
         if ($this->command?->confirm(

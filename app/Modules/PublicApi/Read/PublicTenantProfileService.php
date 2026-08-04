@@ -26,7 +26,7 @@ final class PublicTenantProfileService
     {
         $profile = TenantBusinessProfile::query()->first();
         $branch = $this->branches->resolve();
-        $rental = RentalConfiguration::query()->first();
+        $onlineBookingEnabled = RentalConfiguration::query()->where('allow_online_booking', true)->exists();
         $methods = TenantPaymentMethod::query()
             ->where('is_enabled', true)
             ->orderBy('method')
@@ -135,7 +135,7 @@ final class PublicTenantProfileService
                     'guest_checkout',
                     true,
                 ),
-                'online_booking' => (bool) ($rental?->allow_online_booking ?? false),
+                'online_booking' => $onlineBookingEnabled,
                 'online_payment' => $this->featureSetting('online_payment', true)
                     && array_intersect($enabledMethods, $gatewayMethods) !== [],
                 'blog' => $this->featureSetting('blog', true)

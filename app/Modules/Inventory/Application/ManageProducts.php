@@ -6,13 +6,19 @@ use App\Models\Branch;
 use App\Models\InventoryStock;
 use App\Models\Product;
 use App\Models\ProductUnit;
+use App\Modules\ProductEngine\Contracts\TenantEngineGate;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
+use Illuminate\Validation\ValidationException;
 
 class ManageProducts
 {
+    public function __construct(
+        private readonly TenantEngineGate $engines,
+    ) {}
+
     public function paginate(
         ?string $search,
         ?int $categoryId,
@@ -39,6 +45,8 @@ class ManageProducts
 
     public function create(array $attributes): Product
     {
+        $this->assertEngineEnabled($attributes['engine_code']);
+
         $attributes['slug'] ??= Str::slug($attributes['name']);
         $attributes['slug'] = $this->uniqueSlug($attributes['slug']);
         $attributes['minimum_rental_duration'] ??= 1;
@@ -71,6 +79,10 @@ class ManageProducts
 
     public function update(Product $product, array $attributes): Product
     {
+        if (array_key_exists('engine_code', $attributes)) {
+            $this->assertEngineEnabled($attributes['engine_code']);
+        }
+
         if (array_key_exists('is_public', $attributes)
             && Schema::hasColumn('products', 'published_at')) {
             $attributes['published_at'] = $attributes['is_public']
@@ -86,6 +98,17 @@ class ManageProducts
     public function delete(Product $product): void
     {
         $product->delete();
+    }
+
+    private function assertEngineEnabled(string $engineCode): void
+    {
+        $tenantId = (string) app('currentTenant')->getTenantKey();
+
+        if (! $this->engines->isEnabled($tenantId, $engineCode)) {
+            throw ValidationException::withMessages([
+                'engine_code' => ["Engine {$engineCode} belum diaktifkan untuk akun usaha ini."],
+            ]);
+        }
     }
 
     private function uniqueSlug(string $value): string

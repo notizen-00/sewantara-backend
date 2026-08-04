@@ -5,6 +5,7 @@ use App\Http\Middleware\AssignPublicRequestId;
 use App\Http\Middleware\AuthenticateBffService;
 use App\Http\Middleware\AuthenticateInternalService;
 use App\Http\Middleware\EnforcePublicTenantRateLimit;
+use App\Http\Middleware\EnsureTenantEngineEnabled;
 use App\Http\Middleware\EnsureTenantIsAccessible;
 use App\Http\Middleware\EnsureTenantIsActive;
 use App\Http\Middleware\EnsureTenantSubscriptionActive;
@@ -98,6 +99,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'tenant.active' => EnsureTenantIsActive::class,
             'tenant.accessible' => EnsureTenantIsAccessible::class,
             'tenant.subscription' => EnsureTenantSubscriptionActive::class,
+            'tenant.engine' => EnsureTenantEngineEnabled::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

@@ -10,16 +10,19 @@ use Illuminate\Validation\ValidationException;
 
 class RentalEngine
 {
-    private ?RentalConfiguration $configuration = null;
+    /** @var array<string, RentalConfiguration> */
+    private array $configurations = [];
 
-    public function configuration(): RentalConfiguration
+    public function configuration(string $engineCode): RentalConfiguration
     {
-        return $this->configuration ??= RentalConfiguration::query()->firstOrFail();
+        return $this->configurations[$engineCode] ??= RentalConfiguration::query()
+            ->where('engine_code', $engineCode)
+            ->firstOrFail();
     }
 
-    public function prepareBooking(array $attributes): array
+    public function prepareBooking(string $engineCode, array $attributes): array
     {
-        $configuration = $this->configuration();
+        $configuration = $this->configuration($engineCode);
         $channel = $attributes['booking_channel'] ?? 'walk_in';
 
         if ($channel === 'online' && ! $configuration->allow_online_booking) {
@@ -71,23 +74,24 @@ class RentalEngine
         return $attributes;
     }
 
-    public function pricingType(): string
+    public function pricingType(string $engineCode): string
     {
-        return $this->configuration()->rental_model->pricingType();
+        return $this->configuration($engineCode)->rental_model->pricingType();
     }
 
-    public function usesAutoAssignment(): bool
+    public function usesAutoAssignment(string $engineCode): bool
     {
-        return $this->configuration()->allocation_strategy
+        return $this->configuration($engineCode)->allocation_strategy
             === AllocationStrategy::AutoAssign;
     }
 
-    public function usesRealtimeAvailability(): bool
+    public function usesRealtimeAvailability(string $engineCode): bool
     {
-        return $this->configuration()->realtime_availability;
+        return $this->configuration($engineCode)->realtime_availability;
     }
 
     public function billableDuration(
+        string $engineCode,
         mixed $startAt,
         mixed $endAt,
         int $priceDuration,
@@ -95,10 +99,10 @@ class RentalEngine
         $start = CarbonImmutable::parse($startAt);
         $end = CarbonImmutable::parse($endAt);
         $minutes = max(1, (int) ceil($start->diffInMinutes($end)));
-        $baseMinutes = match ($this->configuration()->rental_model->value) {
+        $baseMinutes = match ($this->configuration($engineCode)->rental_model->value) {
             'per_hour' => 60,
             'per_day' => 1440,
-            'session' => $this->configuration()->slot_duration_minutes ?? $minutes,
+            'session' => $this->configuration($engineCode)->slot_duration_minutes ?? $minutes,
         };
 
         return max(

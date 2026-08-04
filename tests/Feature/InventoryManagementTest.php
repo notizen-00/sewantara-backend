@@ -442,6 +442,7 @@ function seedInventoryManagementData(): void
     DB::table('rental_configurations')->insert([
         'id' => 1,
         'tenant_id' => 'tenant-a',
+        'engine_code' => 'rental',
         'rental_model' => 'per_day',
         'booking_strategy' => 'date_range',
         'allocation_strategy' => 'manual',
@@ -466,6 +467,7 @@ function createInventoryManagementTables(): void
     Schema::create('rental_configurations', function (Blueprint $table): void {
         $table->id();
         $table->string('tenant_id');
+        $table->string('engine_code')->default('rental');
         $table->string('rental_model');
         $table->string('booking_strategy');
         $table->string('allocation_strategy');
@@ -488,6 +490,8 @@ function createInventoryManagementTables(): void
     Schema::create('products', function (Blueprint $table): void {
         $table->id();
         $table->string('tenant_id');
+        $table->string('engine_code')->default('rental');
+        $table->string('product_type')->nullable();
         $table->string('name');
         $table->string('slug');
         $table->string('sku')->nullable();

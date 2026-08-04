@@ -184,6 +184,8 @@ class TenantInventorySeeder extends Seeder
             identity: ['sku' => $sku],
             attributes: [
                 'category_id' => $categoryId,
+                'engine_code' => 'rental',
+                'product_type' => 'equipment',
                 'name' => $name,
                 'slug' => $slug,
                 'brand' => $brand,

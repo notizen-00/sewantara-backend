@@ -14,6 +14,7 @@ class RentalConfiguration extends Model
 
     protected $fillable = [
         'tenant_id',
+        'engine_code',
         'rental_model',
         'booking_strategy',
         'allocation_strategy',

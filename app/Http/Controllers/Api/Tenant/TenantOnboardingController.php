@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\Tenant;
 
 use App\Http\Controllers\Controller;
+use App\Modules\ProductEngine\Domain\EngineCode;
 use App\Modules\RentalEngine\Domain\AllocationStrategy;
 use App\Modules\RentalEngine\Domain\BookingStrategy;
 use App\Modules\RentalEngine\Domain\RentalModel;
@@ -44,6 +45,7 @@ class TenantOnboardingController extends Controller
         ConfigureTenantOnboarding $onboarding,
     ): JsonResponse {
         $validated = $request->validate([
+            'engine_code' => ['required', Rule::enum(EngineCode::class)],
             'rental_model' => ['required', Rule::enum(RentalModel::class)],
             'booking_strategy' => ['required', Rule::enum(BookingStrategy::class)],
             'allocation_strategy' => ['required', Rule::enum(AllocationStrategy::class)],
@@ -80,6 +82,7 @@ class TenantOnboardingController extends Controller
         ConfigureTenantOnboarding $onboarding,
     ): JsonResponse {
         $validated = $request->validate([
+            'engine_code' => ['nullable', Rule::enum(EngineCode::class)],
             'allow_online_booking' => ['required', 'boolean'],
             'allow_walk_in' => ['required', 'boolean'],
             'enable_waiting_list' => ['required', 'boolean'],

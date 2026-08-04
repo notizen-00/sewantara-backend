@@ -261,6 +261,7 @@ function createTenantSettingEndpointTables(): void
     Schema::create('tenant_business_profiles', function (Blueprint $table): void {
         $table->id();
         $table->string('tenant_id')->unique();
+        $table->string('primary_engine_code')->default('rental');
         $table->string('template_code');
         $table->integer('template_version');
         $table->string('business_name');
@@ -272,7 +273,8 @@ function createTenantSettingEndpointTables(): void
 
     Schema::create('rental_configurations', function (Blueprint $table): void {
         $table->id();
-        $table->string('tenant_id')->unique();
+        $table->string('tenant_id');
+        $table->string('engine_code')->default('rental');
         $table->string('rental_model');
         $table->string('booking_strategy');
         $table->string('allocation_strategy');

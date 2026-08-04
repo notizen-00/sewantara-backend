@@ -416,6 +416,7 @@ function createPublicTransactionTables(): void
     Schema::create('rental_configurations', function (Blueprint $table): void {
         $table->id();
         $table->string('tenant_id');
+        $table->string('engine_code');
         $table->string('rental_model');
         $table->string('booking_strategy');
         $table->string('allocation_strategy');
@@ -442,6 +443,7 @@ function createPublicTransactionTables(): void
         $table->uuid('public_id');
         $table->string('name');
         $table->string('slug');
+        $table->string('engine_code')->default('rental');
         $table->string('inventory_type');
         $table->string('default_pricing_type');
         $table->decimal('deposit_amount', 18, 2);
@@ -650,6 +652,7 @@ function seedPublicTransactionProduct(): void
     ]);
     DB::table('rental_configurations')->insert([
         'tenant_id' => 'tenant-a',
+        'engine_code' => 'rental',
         'rental_model' => 'per_day',
         'booking_strategy' => 'date_range',
         'allocation_strategy' => 'auto_assign',

@@ -3,6 +3,7 @@
 namespace App\Modules\TenantOnboarding\Infrastructure\Tenancy;
 
 use App\Models\Tenant;
+use App\Modules\ProductEngine\Contracts\TenantEngineProvisioner;
 use App\Modules\TenantOnboarding\Contracts\TenantEnvironmentProvisioner;
 use Illuminate\Support\Facades\Artisan;
 use LogicException;
@@ -15,6 +16,7 @@ class StanclTenantEnvironmentProvisioner implements TenantEnvironmentProvisioner
     public function __construct(
         private readonly DatabaseManager $databaseManager,
         private readonly InitializeTenantDatabase $initializeTenantDatabase,
+        private readonly TenantEngineProvisioner $engines,
     ) {}
 
     public function provision(string $tenantId): void
@@ -71,6 +73,8 @@ class StanclTenantEnvironmentProvisioner implements TenantEnvironmentProvisioner
                     (string) $tenant->currency,
                 ),
             );
+
+            $this->engines->enableDefaults((string) $tenant->getTenantKey());
 
             $tenant->setInternal('pending_owner', null);
             $tenant->setInternal('pending_onboarding', null);

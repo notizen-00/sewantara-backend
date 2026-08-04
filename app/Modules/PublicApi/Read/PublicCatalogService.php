@@ -16,7 +16,8 @@ use Illuminate\Support\Facades\DB;
 
 final class PublicCatalogService
 {
-    private ?RentalConfiguration $configuration = null;
+    /** @var Collection<string, RentalConfiguration>|null */
+    private ?Collection $configurations = null;
 
     public function __construct(
         private readonly PublicBranchResolver $branches,
@@ -137,9 +138,17 @@ final class PublicCatalogService
             ->get();
     }
 
-    public function configuration(): ?RentalConfiguration
+    public function configurationFor(string $engineCode): ?RentalConfiguration
     {
-        return $this->configuration ??= RentalConfiguration::query()->first();
+        return $this->configurations()->get($engineCode);
+    }
+
+    /**
+     * @return Collection<string, RentalConfiguration>
+     */
+    private function configurations(): Collection
+    {
+        return $this->configurations ??= RentalConfiguration::query()->get()->keyBy('engine_code');
     }
 
     private function cardQuery(int|string|null $branchId): Builder
@@ -398,9 +407,18 @@ final class PublicCatalogService
             return;
         }
 
-        if ($mode !== $this->bookingMode->resolve($this->configuration())) {
+        $matchingEngineCodes = $this->configurations()
+            ->filter(fn (RentalConfiguration $configuration): bool => $this->bookingMode->resolve($configuration) === $mode)
+            ->keys()
+            ->all();
+
+        if ($matchingEngineCodes === []) {
             $products->whereRaw('1 = 0');
+
+            return;
         }
+
+        $products->whereIn('products.engine_code', $matchingEngineCodes);
     }
 
     private function applyAvailability(
@@ -564,17 +582,19 @@ SQL;
 
     private function decorate(Collection $products): void
     {
-        $mode = $this->bookingMode->resolve($this->configuration());
-
-        $products->each(function (Product $product) use ($mode): void {
-            $product->setAttribute('public_booking_mode', $mode);
+        $products->each(function (Product $product): void {
+            $configuration = $this->configurationFor($product->engine_code);
+            $product->setAttribute(
+                'public_booking_mode',
+                $this->bookingMode->resolve($configuration),
+            );
             $product->setAttribute(
                 'public_inventory_type',
                 $this->bookingMode->inventoryType($product->inventory_type),
             );
             $product->setAttribute(
                 'public_realtime_availability',
-                (bool) ($this->configuration()?->realtime_availability ?? false),
+                (bool) ($configuration?->realtime_availability ?? false),
             );
         });
     }

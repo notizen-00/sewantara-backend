@@ -18,6 +18,8 @@ class Product extends Model
     protected $fillable = [
         'tenant_id',
         'category_id',
+        'engine_code',
+        'product_type',
         'name',
         'slug',
         'sku',

@@ -2,6 +2,7 @@
 
 namespace App\Modules\Bookings\Application;
 
+use App\Models\Product;
 use App\Models\ProductUnit;
 use App\Modules\RentalEngine\Application\RentalEngine;
 use Illuminate\Support\Collection;
@@ -15,13 +16,15 @@ class CheckAvailability
 
     public function execute(string $tenantId, array $criteria): Collection
     {
-        if (! $this->engine->usesRealtimeAvailability()) {
+        $engineCode = Product::query()->findOrFail($criteria['product_id'])->engine_code;
+
+        if (! $this->engine->usesRealtimeAvailability($engineCode)) {
             throw ValidationException::withMessages([
                 'availability' => ['Ketersediaan waktu nyata dinonaktifkan untuk usaha ini.'],
             ]);
         }
 
-        $criteria = $this->engine->prepareBooking($criteria);
+        $criteria = $this->engine->prepareBooking($engineCode, $criteria);
 
         return ProductUnit::query()
             ->where('product_id', $criteria['product_id'])

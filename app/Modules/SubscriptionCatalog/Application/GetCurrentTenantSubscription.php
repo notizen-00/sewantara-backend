@@ -3,6 +3,7 @@
 namespace App\Modules\SubscriptionCatalog\Application;
 
 use App\Models\Tenant;
+use App\Models\TenantEngine;
 use Laravelcm\Subscriptions\Models\Subscription;
 
 class GetCurrentTenantSubscription
@@ -52,6 +53,19 @@ class GetCurrentTenantSubscription
                     ])
                     ->values(),
             ],
+            'engines' => TenantEngine::query()
+                ->where('tenant_id', (string) $tenant->getKey())
+                ->with('engine')
+                ->get()
+                ->sortBy('engine.sort_order')
+                ->map(fn (TenantEngine $tenantEngine) => [
+                    'code' => $tenantEngine->engine->code,
+                    'name' => $tenantEngine->engine->name,
+                    'is_core' => $tenantEngine->engine->is_core,
+                    'is_enabled' => $tenantEngine->is_enabled,
+                    'price_snapshot' => number_format((float) $tenantEngine->price_snapshot, 2, '.', ''),
+                ])
+                ->values(),
         ];
     }
 

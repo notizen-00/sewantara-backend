@@ -38,7 +38,8 @@ class ManageBookings
 
     public function create(string $tenantId, ?int $creatorId, array $attributes): Booking
     {
-        $attributes = $this->engine->prepareBooking($attributes);
+        $engineCode = $this->resolveEngineCode($attributes['items'] ?? []);
+        $attributes = $this->engine->prepareBooking($engineCode, $attributes);
         $customer = Customer::query()->findOrFail($attributes['customer_id']);
 
         if ($customer->status === 'blacklisted') {
@@ -47,7 +48,7 @@ class ManageBookings
             ]);
         }
 
-        return DB::transaction(function () use ($attributes, $creatorId, $tenantId): Booking {
+        return DB::transaction(function () use ($attributes, $creatorId, $tenantId, $engineCode): Booking {
             $subtotal = 0;
             $deposit = 0;
             $preparedItems = [];
@@ -57,6 +58,7 @@ class ManageBookings
                 [$unitPrice, $duration, $pricingType] = $this->resolvePricing(
                     $product,
                     $attributes,
+                    $engineCode,
                 );
                 $lineTotal = $unitPrice * $duration * (int) $item['quantity'];
                 $lineDeposit = (float) $product->deposit_amount * (int) $item['quantity'];
@@ -77,6 +79,7 @@ class ManageBookings
             $preparedItems = $this->assignUnitsWhenConfigured(
                 $preparedItems,
                 $attributes,
+                $engineCode,
             );
             $this->guardUnitAvailability($preparedItems, $attributes);
 
@@ -226,12 +229,36 @@ class ManageBookings
         ]);
     }
 
+    private function resolveEngineCode(array $items): string
+    {
+        $productIds = array_column($items, 'product_id');
+
+        if ($productIds === []) {
+            throw ValidationException::withMessages([
+                'items' => ['Pesanan wajib memiliki minimal satu item.'],
+            ]);
+        }
+
+        $engineCodes = Product::query()
+            ->whereIn('id', $productIds)
+            ->pluck('engine_code')
+            ->unique();
+
+        if ($engineCodes->count() !== 1) {
+            throw ValidationException::withMessages([
+                'items' => ['Semua item pesanan harus berasal dari engine yang sama.'],
+            ]);
+        }
+
+        return $engineCodes->first();
+    }
+
     /**
      * @return array{0: float, 1: int, 2: string}
      */
-    private function resolvePricing(Product $product, array $attributes): array
+    private function resolvePricing(Product $product, array $attributes, string $engineCode): array
     {
-        $pricingType = $this->engine->pricingType();
+        $pricingType = $this->engine->pricingType($engineCode);
         $price = DB::table('product_prices')
             ->where('product_id', $product->getKey())
             ->where('pricing_type', $pricingType)
@@ -250,6 +277,7 @@ class ManageBookings
         }
 
         $duration = $this->engine->billableDuration(
+            $engineCode,
             $attributes['start_at'],
             $attributes['end_at'],
             (int) $price->duration,
@@ -261,8 +289,9 @@ class ManageBookings
     private function assignUnitsWhenConfigured(
         array $preparedItems,
         array $attributes,
+        string $engineCode,
     ): array {
-        if (! $this->engine->usesAutoAssignment()) {
+        if (! $this->engine->usesAutoAssignment($engineCode)) {
             return $preparedItems;
         }
 

@@ -39,7 +39,9 @@ class ManageTenantSettings
             'public' => $this->settings('public'),
             'homepage' => $this->settings('homepage'),
             'branch' => $this->branchPayload($branch),
-            'rental_engine' => RentalConfiguration::query()->firstOrFail(),
+            'rental_engine' => RentalConfiguration::query()
+                ->where('engine_code', $profile?->primary_engine_code ?? 'rental')
+                ->firstOrFail(),
         ];
     }
 
@@ -226,7 +228,8 @@ class ManageTenantSettings
     private function updateRentalEngine(array $attributes): void
     {
         if ($attributes !== []) {
-            RentalConfiguration::query()->firstOrFail()->update($attributes);
+            $engineCode = TenantBusinessProfile::query()->value('primary_engine_code') ?? 'rental';
+            RentalConfiguration::query()->where('engine_code', $engineCode)->firstOrFail()->update($attributes);
         }
     }
 

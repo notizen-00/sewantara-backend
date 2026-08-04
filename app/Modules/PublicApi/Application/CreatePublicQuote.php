@@ -30,7 +30,7 @@ class CreatePublicQuote
         $this->guardUnsupportedPricingInputs($attributes);
         $product = $this->product((string) $attributes['product_id']);
         $branch = $this->branch();
-        $prepared = $this->rentalEngine->prepareBooking([
+        $prepared = $this->rentalEngine->prepareBooking($product->engine_code, [
             'product_id' => $product->getKey(),
             'branch_id' => $branch->getKey(),
             'start_at' => $attributes['booking']['starts_at'],
@@ -62,6 +62,7 @@ class CreatePublicQuote
         $price = $this->price($product, $branch, $startsAt);
         $unitAmount = PublicMoney::fromDatabase($price->price, $currency);
         $duration = $this->rentalEngine->billableDuration(
+            $product->engine_code,
             $startsAt,
             $endsAt,
             (int) $price->duration,
@@ -194,7 +195,7 @@ class CreatePublicQuote
         Branch $branch,
         CarbonImmutable $startsAt,
     ): ProductPrice {
-        $pricingType = $this->rentalEngine->pricingType();
+        $pricingType = $this->rentalEngine->pricingType($product->engine_code);
         $price = ProductPrice::query()
             ->where('product_id', $product->getKey())
             ->where('pricing_type', $pricingType)

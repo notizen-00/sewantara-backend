@@ -7,9 +7,11 @@ use App\Http\Controllers\Api\Tenant\CategoryController;
 use App\Http\Controllers\Api\Tenant\CurrentTenantController;
 use App\Http\Controllers\Api\Tenant\CustomerController;
 use App\Http\Controllers\Api\Tenant\DashboardReportController;
+use App\Http\Controllers\Api\Tenant\EngineController;
 use App\Http\Controllers\Api\Tenant\InventoryMovementController;
 use App\Http\Controllers\Api\Tenant\InventoryStockController;
 use App\Http\Controllers\Api\Tenant\MaintenanceController;
+use App\Http\Controllers\Api\Tenant\MembershipController;
 use App\Http\Controllers\Api\Tenant\PaymentController;
 use App\Http\Controllers\Api\Tenant\PaymentWebhookController;
 use App\Http\Controllers\Api\Tenant\ProductController;
@@ -17,6 +19,7 @@ use App\Http\Controllers\Api\Tenant\ProductImageController;
 use App\Http\Controllers\Api\Tenant\ProductPriceController;
 use App\Http\Controllers\Api\Tenant\ProductUnitController;
 use App\Http\Controllers\Api\Tenant\PublicArticleController;
+use App\Http\Controllers\Api\Tenant\SalesOrderController;
 use App\Http\Controllers\Api\Tenant\SubscriptionPaymentController;
 use App\Http\Controllers\Api\Tenant\TenantAuthController;
 use App\Http\Controllers\Api\Tenant\TenantMediaController;
@@ -87,6 +90,12 @@ Route::prefix('tenant/{tenant}')
                     Route::delete('/settings/images/{image}', [TenantSettingController::class, 'destroyImage'])
                         ->name('settings.images.destroy');
 
+                    Route::get('/engines', [EngineController::class, 'index'])
+                        ->name('engines.index');
+                    Route::post('/engines/enable', [EngineController::class, 'enable'])
+                        ->name('engines.enable');
+                    Route::post('/engines/disable', [EngineController::class, 'disable'])
+                        ->name('engines.disable');
 
                     Route::apiResource('branches', BranchController::class)->only(['index', 'store', 'update']);
                     Route::post('/branches/{branch}/sync-master-data', [BranchController::class, 'syncMasterData'])
@@ -152,6 +161,16 @@ Route::prefix('tenant/{tenant}')
                     ->name('availability.check');
                 Route::get('/reports/dashboard', DashboardReportController::class)
                     ->name('reports.dashboard');
+
+                Route::middleware('tenant.engine:membership')->group(function () {
+                    Route::apiResource('memberships', MembershipController::class)
+                        ->only(['index', 'store', 'show', 'update']);
+                });
+                Route::middleware('tenant.engine:sales')->group(function () {
+                    Route::apiResource('sales-orders', SalesOrderController::class)
+                        ->parameters(['sales-orders' => 'salesOrder'])
+                        ->only(['index', 'store', 'show', 'update']);
+                });
             });
         });
     });

@@ -49,6 +49,7 @@ beforeEach(function () {
     Schema::create('tenant_business_profiles', function (Blueprint $table): void {
         $table->id();
         $table->string('tenant_id')->unique();
+        $table->string('primary_engine_code')->default('rental');
         $table->string('template_code');
         $table->integer('template_version');
         $table->string('business_name');
@@ -60,7 +61,8 @@ beforeEach(function () {
 
     Schema::create('rental_configurations', function (Blueprint $table): void {
         $table->id();
-        $table->string('tenant_id')->unique();
+        $table->string('tenant_id');
+        $table->string('engine_code');
         $table->string('rental_model');
         $table->string('booking_strategy');
         $table->string('allocation_strategy');
@@ -75,6 +77,7 @@ beforeEach(function () {
         $table->integer('auto_cancel_minutes')->nullable();
         $table->integer('engine_version');
         $table->timestamps();
+        $table->unique(['tenant_id', 'engine_code']);
     });
 
     Schema::create('tenant_onboarding', function (Blueprint $table): void {
@@ -167,15 +170,24 @@ test('registration creates a main branch from the business name for the owner', 
     $this->assertDatabaseCount('branch_users', 1);
     $this->assertDatabaseHas('tenant_business_profiles', [
         'tenant_id' => $tenantId,
+        'primary_engine_code' => 'rental',
         'template_code' => 'camera_rental',
         'business_name' => 'Kendo Kenceng',
     ]);
     $this->assertDatabaseHas('rental_configurations', [
         'tenant_id' => $tenantId,
+        'engine_code' => 'rental',
         'rental_model' => 'per_day',
         'booking_strategy' => 'date_range',
         'allocation_strategy' => 'auto_assign',
     ]);
+    $this->assertDatabaseHas('rental_configurations', [
+        'tenant_id' => $tenantId,
+        'engine_code' => 'booking',
+        'rental_model' => 'session',
+        'booking_strategy' => 'session',
+    ]);
+    $this->assertDatabaseCount('rental_configurations', 2);
     $this->assertDatabaseHas('tenant_onboarding', [
         'tenant_id' => $tenantId,
         'status' => 'in_progress',

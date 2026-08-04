@@ -4,6 +4,7 @@ namespace App\Modules\SubscriptionBilling\Application;
 
 use App\Models\SubscriptionPayment;
 use App\Models\Tenant;
+use App\Models\TenantEngine;
 use App\Modules\SubscriptionBilling\Application\Data\CheckoutSession;
 use App\Modules\SubscriptionBilling\Contracts\SubscriptionPaymentGateway;
 use Illuminate\Support\Str;
@@ -39,7 +40,24 @@ class CreateSubscriptionCheckout
             ]);
         }
 
-        $amount = (int) round((float) $plan->price);
+        $planAmount = (int) round((float) $plan->price);
+
+        $paidEngines = TenantEngine::query()
+            ->where('tenant_id', (string) $tenant->getKey())
+            ->where('is_enabled', true)
+            ->where('price_snapshot', '>', 0)
+            ->with('engine')
+            ->get();
+
+        $engineItems = $paidEngines->map(fn (TenantEngine $tenantEngine): array => [
+            'id' => 'engine-'.$tenantEngine->engine->code,
+            'price' => (int) round((float) $tenantEngine->price_snapshot),
+            'quantity' => 1,
+            'name' => 'Engine: '.$tenantEngine->engine->name,
+        ])->values();
+
+        $engineTotal = (int) $engineItems->sum('price');
+        $amount = $planAmount + $engineTotal;
 
         if ($amount < 1) {
             throw ValidationException::withMessages([
@@ -66,6 +84,10 @@ class CreateSubscriptionCheckout
                     'invoice_period' => $plan->invoice_period,
                     'invoice_interval' => $plan->invoice_interval,
                 ],
+                'engines' => $paidEngines->map(fn (TenantEngine $tenantEngine): array => [
+                    'code' => $tenantEngine->engine->code,
+                    'price' => (string) $tenantEngine->price_snapshot,
+                ])->values()->all(),
             ],
         ]));
 
@@ -74,12 +96,15 @@ class CreateSubscriptionCheckout
                 orderId: $paymentNumber,
                 grossAmount: $amount,
                 customer: $customer,
-                items: [[
-                    'id' => (string) $plan->slug,
-                    'price' => $amount,
-                    'quantity' => 1,
-                    'name' => 'Sewantara '.$plan->name,
-                ]],
+                items: [
+                    [
+                        'id' => (string) $plan->slug,
+                        'price' => $planAmount,
+                        'quantity' => 1,
+                        'name' => 'Sewantara '.$plan->name,
+                    ],
+                    ...$engineItems->all(),
+                ],
             );
         } catch (Throwable $exception) {
             $payment->forceFill(['status' => 'failed'])->save();

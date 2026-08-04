@@ -19,6 +19,7 @@ beforeEach(function () {
     Schema::create('rental_configurations', function (Blueprint $table): void {
         $table->id();
         $table->string('tenant_id');
+        $table->string('engine_code');
         $table->string('rental_model');
         $table->string('booking_strategy');
         $table->string('allocation_strategy');
@@ -34,6 +35,7 @@ test('queue rental derives its period pricing and allocation from tenant configu
     DB::table('rental_configurations')->insert([
         'id' => 1,
         'tenant_id' => 'tenant-a',
+        'engine_code' => 'booking',
         'rental_model' => 'per_hour',
         'booking_strategy' => 'queue',
         'allocation_strategy' => 'auto_assign',
@@ -43,15 +45,16 @@ test('queue rental derives its period pricing and allocation from tenant configu
     ]);
 
     $engine = app(RentalEngine::class);
-    $booking = $engine->prepareBooking([
+    $booking = $engine->prepareBooking('booking', [
         'start_at' => '2026-08-01 10:00:00',
         'end_at' => null,
     ]);
 
-    expect($engine->pricingType())->toBe('hourly')
-        ->and($engine->usesAutoAssignment())->toBeTrue()
+    expect($engine->pricingType('booking'))->toBe('hourly')
+        ->and($engine->usesAutoAssignment('booking'))->toBeTrue()
         ->and($booking['end_at']->format('H:i'))->toBe('11:00')
         ->and($engine->billableDuration(
+            'booking',
             $booking['start_at'],
             $booking['end_at'],
             1,
@@ -62,6 +65,7 @@ test('session rental rejects periods outside its configured slot', function () {
     DB::table('rental_configurations')->insert([
         'id' => 2,
         'tenant_id' => 'tenant-a',
+        'engine_code' => 'booking',
         'rental_model' => 'session',
         'booking_strategy' => 'session',
         'allocation_strategy' => 'manual',
@@ -70,7 +74,7 @@ test('session rental rejects periods outside its configured slot', function () {
         'updated_at' => now(),
     ]);
 
-    expect(fn () => app(RentalEngine::class)->prepareBooking([
+    expect(fn () => app(RentalEngine::class)->prepareBooking('booking', [
         'start_at' => '2026-08-01 10:00:00',
         'end_at' => '2026-08-01 11:30:00',
     ]))->toThrow(ValidationException::class);

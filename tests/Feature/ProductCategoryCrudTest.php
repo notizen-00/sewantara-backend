@@ -320,6 +320,8 @@ function createProductCategoryCrudTestTables(): void
         $table->id();
         $table->string('tenant_id')->index();
         $table->unsignedBigInteger('category_id')->nullable();
+        $table->string('engine_code')->default('rental');
+        $table->string('product_type')->nullable();
         $table->string('name');
         $table->string('slug');
         $table->string('sku')->nullable();

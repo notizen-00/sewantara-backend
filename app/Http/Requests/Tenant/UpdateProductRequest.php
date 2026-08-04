@@ -3,6 +3,8 @@
 namespace App\Http\Requests\Tenant;
 
 use App\Models\Product;
+use App\Modules\ProductEngine\Domain\EngineCode;
+use Closure;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -26,6 +28,25 @@ class UpdateProductRequest extends FormRequest
                 'integer',
                 'min:1',
                 Rule::exists('categories', 'id')->where('tenant_id', $tenantId),
+            ],
+            'engine_code' => ['sometimes', Rule::enum(EngineCode::class)],
+            'product_type' => [
+                'sometimes',
+                'string',
+                function (string $attribute, mixed $value, Closure $fail) use ($product): void {
+                    $engineCodeValue = $this->input('engine_code', $product instanceof Product ? $product->engine_code : null);
+                    $engineCode = EngineCode::tryFrom((string) $engineCodeValue);
+
+                    if ($engineCode === null) {
+                        return;
+                    }
+
+                    $allowed = array_map(fn ($type) => $type->value, $engineCode->productTypes());
+
+                    if (! in_array($value, $allowed, true)) {
+                        $fail("Tipe produk tidak sesuai dengan engine {$engineCode->value}.");
+                    }
+                },
             ],
             'name' => ['sometimes', 'string', 'max:200'],
             'slug' => [

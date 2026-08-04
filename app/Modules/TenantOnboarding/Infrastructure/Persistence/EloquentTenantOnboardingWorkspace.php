@@ -11,6 +11,7 @@ use App\Models\TenantPaymentMethod;
 use App\Modules\RentalEngine\Domain\BookingStrategy;
 use App\Modules\RentalEngine\Domain\RentalModel;
 use App\Modules\TenantOnboarding\Contracts\TenantOnboardingWorkspace;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 use Stancl\Tenancy\Tenancy;
@@ -41,7 +42,7 @@ class EloquentTenantOnboardingWorkspace implements TenantOnboardingWorkspace
             'current_step' => $progress->current_step,
             'completed_steps' => $progress->completed_steps,
             'profile' => TenantBusinessProfile::query()->firstOrFail(),
-            'rental_configuration' => RentalConfiguration::query()->firstOrFail(),
+            'rental_configuration' => RentalConfiguration::query()->get()->keyBy('engine_code'),
             'payment_methods' => TenantPaymentMethod::query()
                 ->orderBy('method')
                 ->get()
@@ -103,8 +104,16 @@ class EloquentTenantOnboardingWorkspace implements TenantOnboardingWorkspace
             ]);
         }
 
-        DB::transaction(function () use ($attributes): void {
-            RentalConfiguration::query()->firstOrFail()->update($attributes);
+        $engineCode = $attributes['engine_code'];
+
+        DB::transaction(function () use ($attributes, $engineCode): void {
+            RentalConfiguration::query()->updateOrCreate(
+                ['engine_code' => $engineCode],
+                Arr::except($attributes, ['engine_code']),
+            );
+            TenantBusinessProfile::query()->firstOrFail()->update([
+                'primary_engine_code' => $engineCode,
+            ]);
             $this->markCompleted('rental_configuration');
         });
 
@@ -113,8 +122,15 @@ class EloquentTenantOnboardingWorkspace implements TenantOnboardingWorkspace
 
     public function updateBookingConfiguration(string $tenantId, array $attributes): array
     {
-        DB::transaction(function () use ($attributes): void {
-            RentalConfiguration::query()->firstOrFail()->update($attributes);
+        $engineCode = $attributes['engine_code']
+            ?? TenantBusinessProfile::query()->value('primary_engine_code')
+            ?? 'rental';
+
+        DB::transaction(function () use ($attributes, $engineCode): void {
+            RentalConfiguration::query()
+                ->where('engine_code', $engineCode)
+                ->firstOrFail()
+                ->update(Arr::except($attributes, ['engine_code']));
             $this->markCompleted('booking_configuration');
         });
 
@@ -305,7 +321,9 @@ class EloquentTenantOnboardingWorkspace implements TenantOnboardingWorkspace
 
     private function hasCompatiblePricing(): bool
     {
+        $primaryEngineCode = TenantBusinessProfile::query()->value('primary_engine_code') ?? 'rental';
         $pricingType = RentalConfiguration::query()
+            ->where('engine_code', $primaryEngineCode)
             ->firstOrFail()
             ->rental_model
             ->pricingType();

@@ -115,6 +115,7 @@ function seedTenantOnboardingFlowData(): void
     DB::table('tenant_business_profiles')->insert([
         'id' => 1,
         'tenant_id' => 'tenant-a',
+        'primary_engine_code' => 'rental',
         'template_code' => 'camera_rental',
         'template_version' => 1,
         'business_name' => 'Rental Kamera',
@@ -127,6 +128,7 @@ function seedTenantOnboardingFlowData(): void
     DB::table('rental_configurations')->insert([
         'id' => 1,
         'tenant_id' => 'tenant-a',
+        'engine_code' => 'rental',
         'rental_model' => 'per_day',
         'booking_strategy' => 'date_range',
         'allocation_strategy' => 'auto_assign',
@@ -192,6 +194,7 @@ function createTenantOnboardingFlowTables(): void
     Schema::create('tenant_business_profiles', function (Blueprint $table): void {
         $table->id();
         $table->string('tenant_id');
+        $table->string('primary_engine_code')->default('rental');
         $table->string('template_code');
         $table->integer('template_version');
         $table->string('business_name');
@@ -203,6 +206,7 @@ function createTenantOnboardingFlowTables(): void
     Schema::create('rental_configurations', function (Blueprint $table): void {
         $table->id();
         $table->string('tenant_id');
+        $table->string('engine_code')->default('rental');
         $table->string('rental_model');
         $table->string('booking_strategy');
         $table->string('allocation_strategy');

@@ -434,4 +434,26 @@ function createTenantAuthenticationTestTables(): void
         $table->unique(['user_id', 'role_id', 'branch_id']);
         $table->index(['user_id', 'role_id']);
     });
+
+    Schema::create('engines', function (Blueprint $table): void {
+        $table->id();
+        $table->string('code');
+        $table->string('name');
+        $table->decimal('monthly_price', 18, 2)->default(0);
+        $table->boolean('is_core')->default(false);
+        $table->unsignedInteger('sort_order')->default(0);
+        $table->boolean('is_active')->default(true);
+        $table->timestamps();
+    });
+
+    Schema::create('tenant_engines', function (Blueprint $table): void {
+        $table->id();
+        $table->string('tenant_id');
+        $table->unsignedBigInteger('engine_id');
+        $table->boolean('is_enabled')->default(true);
+        $table->timestamp('enabled_at')->nullable();
+        $table->timestamp('disabled_at')->nullable();
+        $table->decimal('price_snapshot', 18, 2)->default(0);
+        $table->timestamps();
+    });
 }

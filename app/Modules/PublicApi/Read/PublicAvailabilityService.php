@@ -35,7 +35,7 @@ final class PublicAvailabilityService
 
         $timezone = (string) app('currentTenant')->timezone;
         $quantity = (int) ($criteria['quantity'] ?? 1);
-        $mode = $this->bookingMode->resolve($this->catalog->configuration());
+        $mode = $this->bookingMode->resolve($this->catalog->configurationFor($product->engine_code));
 
         if (isset($criteria['date'])) {
             return $this->slots(
@@ -101,7 +101,7 @@ final class PublicAvailabilityService
             $closesAt = $day->setTimeFromTimeString($close);
             $step = max(
                 15,
-                (int) ($this->catalog->configuration()?->slot_duration_minutes
+                (int) ($this->catalog->configurationFor($product->engine_code)?->slot_duration_minutes
                     ?? $durationMinutes),
             );
 

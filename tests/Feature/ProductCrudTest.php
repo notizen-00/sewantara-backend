@@ -2,6 +2,7 @@
 
 use App\Models\Tenant;
 use App\Models\User;
+use App\Modules\ProductEngine\Contracts\TenantEngineGate;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
@@ -35,6 +36,14 @@ beforeEach(function () {
     $resolver = Mockery::mock(PathTenantResolver::class);
     $resolver->shouldReceive('resolve')->andReturn($this->tenant);
     app()->instance(PathTenantResolver::class, $resolver);
+
+    app()->bind(TenantEngineGate::class, fn () => new class implements TenantEngineGate
+    {
+        public function isEnabled(string $tenantId, string $engineCode): bool
+        {
+            return true;
+        }
+    });
 
     $this->user = User::query()->create([
         'tenant_id' => 'tenant-a',
@@ -77,6 +86,8 @@ afterEach(function () {
 test('product master supports complete CRUD and tenant isolation', function () {
     $created = $this->postJson('/api/tenant/tenant-a/products', [
         'name' => 'Sony Alpha A7 IV',
+        'engine_code' => 'rental',
+        'product_type' => 'equipment',
         'sku' => 'CAM-SONY-A7IV',
         'brand' => 'Sony',
         'model' => 'A7 IV',
@@ -188,6 +199,8 @@ test('inventory API adjusts conditions transfers stock and reports every branch'
 
     $quantityProduct = $this->postJson('/api/tenant/tenant-a/products', [
         'name' => 'Tripod',
+        'engine_code' => 'rental',
+        'product_type' => 'equipment',
         'inventory_type' => 'quantity',
         'default_pricing_type' => 'daily',
     ], $this->headers)->assertCreated()->json('data.id');
@@ -231,6 +244,8 @@ test('inventory API adjusts conditions transfers stock and reports every branch'
 
     $serializedProduct = $this->postJson('/api/tenant/tenant-a/products', [
         'name' => 'Sony A7 IV',
+        'engine_code' => 'rental',
+        'product_type' => 'equipment',
         'inventory_type' => 'serialized',
         'default_pricing_type' => 'daily',
     ], $this->headers)->assertCreated()->json('data.id');
@@ -311,6 +326,8 @@ function createProductCrudTestTables(): void
         $table->id();
         $table->string('tenant_id')->index();
         $table->unsignedBigInteger('category_id')->nullable();
+        $table->string('engine_code')->default('rental');
+        $table->string('product_type')->nullable();
         $table->string('name');
         $table->string('slug');
         $table->string('sku')->nullable();
