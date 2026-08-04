@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\Public\InfrastructureHealthController;
 use App\Http\Controllers\Api\Public\ReadinessController;
+use App\Http\Controllers\Api\Public\TenantController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/healthz', InfrastructureHealthController::class)
@@ -25,5 +26,7 @@ Route::prefix('v1/public')
         'public.tenant.locale',
     ])
     ->group(function (): void {
-        // Public tenant endpoints are registered below as each domain module is enabled.
+        Route::get('/tenant', TenantController::class)
+            ->middleware('public.tenant.rate:read')
+            ->name('tenant');
     });
