@@ -36,6 +36,8 @@ class ManageTenantSettings
                 ...$this->settings('regular'),
             ], static fn ($value): bool => $value !== null),
             'branding' => $this->appendMediaUrls($branding),
+            'public' => $this->settings('public'),
+            'homepage' => $this->settings('homepage'),
             'branch' => $this->branchPayload($branch),
             'rental_engine' => RentalConfiguration::query()->firstOrFail(),
         ];
@@ -50,6 +52,8 @@ class ManageTenantSettings
         DB::transaction(function () use ($attributes): void {
             $this->updateRegular($attributes['regular'] ?? []);
             $this->upsertSettings('branding', $attributes['branding'] ?? []);
+            $this->upsertSettings('public', $attributes['public'] ?? []);
+            $this->upsertSettings('homepage', $attributes['homepage'] ?? []);
             $this->updateBranch($attributes['branch'] ?? []);
             $this->updateRentalEngine($attributes['rental_engine'] ?? []);
         });

@@ -40,9 +40,10 @@ class RegisterTenantRequest extends FormRequest
             'subdomain' => [
                 'required',
                 'string',
-                'min:3',
+                'min:2',
                 'max:63',
-                'regex:/^[a-z0-9](?:[a-z0-9-]{1,61}[a-z0-9])?$/',
+                'regex:/^[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?$/',
+                'not_regex:/--/',
                 Rule::notIn(config('tenancy.reserved_subdomains', [])),
                 function (string $attribute, mixed $value, Closure $fail): void {
                     $hostname = TenantHostname::fromSubdomain((string) $value);

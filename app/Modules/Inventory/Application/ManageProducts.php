@@ -8,6 +8,7 @@ use App\Models\Product;
 use App\Models\ProductUnit;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 
 class ManageProducts
@@ -46,6 +47,14 @@ class ManageProducts
         $attributes['is_featured'] ??= false;
         $attributes['is_active'] ??= true;
 
+        if (Schema::hasColumn('products', 'is_public')) {
+            $attributes['is_public'] ??= false;
+
+            if ($attributes['is_public']) {
+                $attributes['published_at'] ??= now();
+            }
+        }
+
         return Product::create($attributes)->load('images');
     }
 
@@ -62,6 +71,13 @@ class ManageProducts
 
     public function update(Product $product, array $attributes): Product
     {
+        if (array_key_exists('is_public', $attributes)
+            && Schema::hasColumn('products', 'published_at')) {
+            $attributes['published_at'] = $attributes['is_public']
+                ? ($product->published_at ?? now())
+                : null;
+        }
+
         $product->update($attributes);
 
         return $product->refresh()->load('images');

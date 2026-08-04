@@ -18,6 +18,7 @@ class CreateBookingPaymentCheckout
 {
     public function __construct(
         private readonly PaymentGatewayManager $gateways,
+        private readonly ?RegisterPaymentWebhookRoute $webhookRoutes = null,
     ) {}
 
     public function execute(
@@ -71,6 +72,14 @@ class CreateBookingPaymentCheckout
             return [$payment, $transaction];
         });
 
+        $webhookRoutes = $this->webhookRoutes
+            ?? app(RegisterPaymentWebhookRoute::class);
+        $webhookRoutes->register(
+            $tenantId,
+            $payment,
+            $gateway->code(),
+        );
+
         $booking->loadMissing('customer');
         $customer = $booking->customer;
         try {
@@ -92,6 +101,10 @@ class CreateBookingPaymentCheckout
                 notificationUrl: $notificationUrl,
             ));
         } catch (Throwable $exception) {
+            $webhookRoutes->markFailed(
+                $gateway->code(),
+                $payment->payment_number,
+            );
             $payment->update(['status' => 'failed']);
             $transaction->update([
                 'response_payload' => [

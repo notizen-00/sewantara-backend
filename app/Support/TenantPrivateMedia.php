@@ -16,6 +16,8 @@ class TenantPrivateMedia
         'branches/',
         'categories/',
         'products/',
+        'articles/',
+        'articles/',
     ];
 
     public function store(UploadedFile $file, string $directory): string

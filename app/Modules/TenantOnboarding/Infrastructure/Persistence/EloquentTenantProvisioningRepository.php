@@ -43,6 +43,8 @@ class EloquentTenantProvisioningRepository implements TenantProvisioningReposito
             'verification_status' => 'verified',
             'verified_at' => now(),
             'ssl_status' => 'pending',
+            'type' => 'subdomain',
+            'status' => 'active',
         ]);
 
         $ownerId = (string) Str::uuid();

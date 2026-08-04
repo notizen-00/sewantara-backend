@@ -205,6 +205,7 @@ class EloquentTenantOnboardingWorkspace implements TenantOnboardingWorkspace
 
         $tenant->update([
             'status' => 'active',
+            'public_web_enabled' => true,
             'activated_at' => now(),
         ]);
 

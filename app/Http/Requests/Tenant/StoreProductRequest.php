@@ -56,6 +56,13 @@ class StoreProductRequest extends FormRequest
             'late_fee_amount' => ['nullable', 'numeric', 'min:0'],
             'is_featured' => ['nullable', 'boolean'],
             'is_active' => ['nullable', 'boolean'],
+            'is_public' => ['nullable', 'boolean'],
+            'specifications' => ['nullable', 'array'],
+            'specifications.*' => ['nullable'],
+            'seo_title' => ['nullable', 'string', 'max:200'],
+            'seo_description' => ['nullable', 'string', 'max:1000'],
+            'booking_rules' => ['nullable', 'string', 'max:5000'],
+            'cancellation_policy' => ['nullable', 'string', 'max:5000'],
         ];
     }
 }

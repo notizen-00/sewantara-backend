@@ -21,11 +21,17 @@ class Branch extends Model
         'latitude',
         'longitude',
         'is_active',
+        'is_public',
+        'is_primary',
     ];
 
     protected function casts(): array
     {
-        return ['is_active' => 'boolean'];
+        return [
+            'is_active' => 'boolean',
+            'is_public' => 'boolean',
+            'is_primary' => 'boolean',
+        ];
     }
 
     public function users(): BelongsToMany

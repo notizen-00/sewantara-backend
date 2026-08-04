@@ -29,6 +29,8 @@ class BranchController extends Controller
             'latitude' => ['nullable', 'numeric'],
             'longitude' => ['nullable', 'numeric'],
             'is_active' => ['boolean'],
+            'is_public' => ['boolean'],
+            'is_primary' => ['boolean'],
         ]);
 
         return response()->json([
@@ -36,6 +38,39 @@ class BranchController extends Controller
             'message' => 'Cabang berhasil dibuat.',
             'data' => $branches->create($validated, $request->user()?->id),
         ], 201);
+    }
+
+    public function update(
+        Request $request,
+        Branch $branch,
+        ManageBranches $branches,
+    ): JsonResponse {
+        $tenantId = app('currentTenant')->id;
+        $validated = $request->validate([
+            'name' => ['sometimes', 'string', 'max:150'],
+            'code' => [
+                'sometimes',
+                'string',
+                'max:50',
+                Rule::unique('branches', 'code')
+                    ->where('tenant_id', $tenantId)
+                    ->ignore($branch->getKey()),
+            ],
+            'email' => ['sometimes', 'nullable', 'email', 'max:150'],
+            'phone' => ['sometimes', 'nullable', 'string', 'max:30'],
+            'address' => ['sometimes', 'nullable', 'string'],
+            'latitude' => ['sometimes', 'nullable', 'numeric'],
+            'longitude' => ['sometimes', 'nullable', 'numeric'],
+            'is_active' => ['sometimes', 'boolean'],
+            'is_public' => ['sometimes', 'boolean'],
+            'is_primary' => ['sometimes', 'boolean'],
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Cabang berhasil diperbarui.',
+            'data' => $branches->update($branch, $validated),
+        ]);
     }
 
     public function syncMasterData(

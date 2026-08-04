@@ -2,10 +2,13 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Str;
 use Stancl\Tenancy\Database\Concerns\BelongsToTenant;
 
 class Product extends Model
@@ -28,6 +31,14 @@ class Product extends Model
         'late_fee_amount',
         'is_featured',
         'is_active',
+        'public_id',
+        'is_public',
+        'published_at',
+        'specifications',
+        'seo_title',
+        'seo_description',
+        'booking_rules',
+        'cancellation_policy',
     ];
 
     protected function casts(): array
@@ -37,6 +48,9 @@ class Product extends Model
             'late_fee_amount' => 'decimal:2',
             'is_featured' => 'boolean',
             'is_active' => 'boolean',
+            'is_public' => 'boolean',
+            'published_at' => 'datetime',
+            'specifications' => 'array',
         ];
     }
 
@@ -56,5 +70,29 @@ class Product extends Model
             ->orderByDesc('is_primary')
             ->orderBy('sort_order')
             ->orderBy('id');
+    }
+
+    public function prices(): HasMany
+    {
+        return $this->hasMany(ProductPrice::class);
+    }
+
+    public function scopePubliclyVisible(Builder $query): Builder
+    {
+        return $query
+            ->where('is_active', true)
+            ->where('is_public', true)
+            ->whereNotNull('published_at')
+            ->where('published_at', '<=', now());
+    }
+
+    protected static function booted(): void
+    {
+        static::creating(function (self $product): void {
+            if (Schema::connection($product->getConnectionName())
+                ->hasColumn($product->getTable(), 'public_id')) {
+                $product->public_id ??= (string) Str::uuid();
+            }
+        });
     }
 }

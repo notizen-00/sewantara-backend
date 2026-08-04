@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Str;
 use Stancl\Tenancy\Database\Concerns\BelongsToTenant;
 
 class Booking extends Model
@@ -40,6 +42,9 @@ class Booking extends Model
         'confirmed_at',
         'cancelled_at',
         'completed_at',
+        'public_id',
+        'tracking_token_hash',
+        'expires_at',
     ];
 
     protected function casts(): array
@@ -52,6 +57,7 @@ class Booking extends Model
             'confirmed_at' => 'datetime',
             'cancelled_at' => 'datetime',
             'completed_at' => 'datetime',
+            'expires_at' => 'datetime',
         ];
     }
 
@@ -73,5 +79,15 @@ class Booking extends Model
     public function payments(): HasMany
     {
         return $this->hasMany(Payment::class);
+    }
+
+    protected static function booted(): void
+    {
+        static::creating(function (self $booking): void {
+            if (Schema::connection($booking->getConnectionName())
+                ->hasColumn($booking->getTable(), 'public_id')) {
+                $booking->public_id ??= (string) Str::uuid();
+            }
+        });
     }
 }

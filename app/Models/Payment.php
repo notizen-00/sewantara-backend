@@ -5,6 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Str;
 use Stancl\Tenancy\Database\Concerns\BelongsToTenant;
 
 class Payment extends Model
@@ -26,6 +28,7 @@ class Payment extends Model
         'expired_at',
         'notes',
         'created_by',
+        'public_id',
     ];
 
     protected function casts(): array
@@ -45,5 +48,15 @@ class Payment extends Model
     public function transactions(): HasMany
     {
         return $this->hasMany(PaymentTransaction::class);
+    }
+
+    protected static function booted(): void
+    {
+        static::creating(function (self $payment): void {
+            if (Schema::connection($payment->getConnectionName())
+                ->hasColumn($payment->getTable(), 'public_id')) {
+                $payment->public_id ??= (string) Str::uuid();
+            }
+        });
     }
 }

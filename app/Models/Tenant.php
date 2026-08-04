@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Str;
 use Laravelcm\Subscriptions\Traits\HasPlanSubscriptions;
 use Stancl\Tenancy\Contracts\TenantWithDatabase;
 use Stancl\Tenancy\Database\Concerns\HasDatabase;
@@ -20,6 +22,7 @@ class Tenant extends BaseTenant implements TenantWithDatabase
 
     protected $fillable = [
         'id',
+        'public_id',
         'name',
         'slug',
         'business_type',
@@ -30,6 +33,8 @@ class Tenant extends BaseTenant implements TenantWithDatabase
         'timezone',
         'currency',
         'status',
+        'public_web_enabled',
+        'locale',
         'data',
         'activated_at',
         'suspended_at',
@@ -42,6 +47,7 @@ class Tenant extends BaseTenant implements TenantWithDatabase
     {
         return [
             'id',
+            'public_id',
             'name',
             'slug',
             'business_type',
@@ -52,6 +58,8 @@ class Tenant extends BaseTenant implements TenantWithDatabase
             'timezone',
             'currency',
             'status',
+            'public_web_enabled',
+            'locale',
             'activated_at',
             'suspended_at',
             'created_at',
@@ -69,6 +77,17 @@ class Tenant extends BaseTenant implements TenantWithDatabase
             'activated_at' => 'datetime',
             'suspended_at' => 'datetime',
             'provisioned_at' => 'datetime',
+            'public_web_enabled' => 'boolean',
         ];
+    }
+
+    protected static function booted(): void
+    {
+        static::creating(function (self $tenant): void {
+            if (Schema::connection($tenant->getConnectionName())
+                ->hasColumn($tenant->getTable(), 'public_id')) {
+                $tenant->public_id ??= (string) Str::uuid();
+            }
+        });
     }
 }

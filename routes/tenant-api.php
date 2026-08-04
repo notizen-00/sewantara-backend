@@ -16,6 +16,7 @@ use App\Http\Controllers\Api\Tenant\ProductController;
 use App\Http\Controllers\Api\Tenant\ProductImageController;
 use App\Http\Controllers\Api\Tenant\ProductPriceController;
 use App\Http\Controllers\Api\Tenant\ProductUnitController;
+use App\Http\Controllers\Api\Tenant\PublicArticleController;
 use App\Http\Controllers\Api\Tenant\SubscriptionPaymentController;
 use App\Http\Controllers\Api\Tenant\TenantAuthController;
 use App\Http\Controllers\Api\Tenant\TenantMediaController;
@@ -85,7 +86,7 @@ Route::prefix('tenant/{tenant}')
                         ->where('path', '.*')
                         ->name('media.show');
 
-                    Route::apiResource('branches', BranchController::class)->only(['index', 'store']);
+                    Route::apiResource('branches', BranchController::class)->only(['index', 'store', 'update']);
                     Route::post('/branches/{branch}/sync-master-data', [BranchController::class, 'syncMasterData'])
                         ->name('branches.sync-master-data');
                     Route::post('/categories/{category}/image', [CategoryController::class, 'storeImage'])
@@ -100,6 +101,10 @@ Route::prefix('tenant/{tenant}')
                     Route::delete('/products/{product}/images/{productImage}', [ProductImageController::class, 'destroy'])
                         ->name('products.images.destroy');
                     Route::apiResource('products', ProductController::class);
+                    Route::post('/public-articles/{publicArticle}/cover', [PublicArticleController::class, 'cover'])
+                        ->name('public-articles.cover');
+                    Route::apiResource('public-articles', PublicArticleController::class)
+                        ->parameters(['public-articles' => 'publicArticle']);
                     Route::post('/product-units/{productUnit}/transfer', [ProductUnitController::class, 'transfer'])
                         ->name('product-units.transfer');
                     Route::apiResource('product-units', ProductUnitController::class)->only(['index', 'store']);

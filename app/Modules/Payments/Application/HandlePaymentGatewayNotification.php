@@ -17,7 +17,11 @@ class HandlePaymentGatewayNotification
     ) {}
 
     /** @param array<string, mixed> $payload */
-    public function execute(string $gatewayName, array $payload): Payment
+    public function execute(
+        string $gatewayName,
+        array $payload,
+        ?string $expectedPublicPaymentId = null,
+    ): Payment
     {
         $gateway = $this->gateways->driver($gatewayName);
         $notification = $gateway->parseNotification($payload);
@@ -25,10 +29,15 @@ class HandlePaymentGatewayNotification
         return DB::transaction(function () use (
             $gateway,
             $notification,
+            $expectedPublicPaymentId,
         ): Payment {
             $payment = Payment::query()
                 ->where('payment_number', $notification->orderId)
                 ->where('gateway', $gateway->code())
+                ->when(
+                    $expectedPublicPaymentId,
+                    fn ($query, string $publicId) => $query->where('public_id', $publicId),
+                )
                 ->lockForUpdate()
                 ->firstOrFail();
 

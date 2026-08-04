@@ -3,8 +3,11 @@
 namespace App\Models;
 
 use App\Support\TenantPrivateMedia;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Str;
 use Stancl\Tenancy\Database\Concerns\BelongsToTenant;
 
 class ProductImage extends Model
@@ -18,6 +21,7 @@ class ProductImage extends Model
         'alt_text',
         'is_primary',
         'sort_order',
+        'public_id',
     ];
 
     protected $appends = [
@@ -40,5 +44,23 @@ class ProductImage extends Model
     public function getImageUrlAttribute(): ?string
     {
         return app(TenantPrivateMedia::class)->url($this->image_path);
+    }
+
+    public function scopePubliclyVisible(Builder $query): Builder
+    {
+        return $query->whereHas(
+            'product',
+            fn (Builder $products): Builder => $products->publiclyVisible(),
+        );
+    }
+
+    protected static function booted(): void
+    {
+        static::creating(function (self $image): void {
+            if (Schema::connection($image->getConnectionName())
+                ->hasColumn($image->getTable(), 'public_id')) {
+                $image->public_id ??= (string) Str::uuid();
+            }
+        });
     }
 }

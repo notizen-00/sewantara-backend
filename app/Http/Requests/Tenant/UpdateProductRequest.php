@@ -62,6 +62,13 @@ class UpdateProductRequest extends FormRequest
             'late_fee_amount' => ['sometimes', 'numeric', 'min:0'],
             'is_featured' => ['sometimes', 'boolean'],
             'is_active' => ['sometimes', 'boolean'],
+            'is_public' => ['sometimes', 'boolean'],
+            'specifications' => ['sometimes', 'nullable', 'array'],
+            'specifications.*' => ['nullable'],
+            'seo_title' => ['sometimes', 'nullable', 'string', 'max:200'],
+            'seo_description' => ['sometimes', 'nullable', 'string', 'max:1000'],
+            'booking_rules' => ['sometimes', 'nullable', 'string', 'max:5000'],
+            'cancellation_policy' => ['sometimes', 'nullable', 'string', 'max:5000'],
         ];
     }
 }

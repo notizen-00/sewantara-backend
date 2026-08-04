@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use Database\Seeders\Concerns\SeedsDemoTenant;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 
 class TenantOrganizationSeeder extends Seeder
 {
@@ -13,6 +14,12 @@ class TenantOrganizationSeeder extends Seeder
     public function run(): void
     {
         $this->withinDemoTenant(function (string $tenantId): void {
+            if (Schema::hasColumn('branches', 'is_primary')) {
+                DB::table('branches')->where('tenant_id', $tenantId)->update([
+                    'is_primary' => false,
+                ]);
+            }
+
             $this->upsertTenantRow(
                 table: 'branches',
                 tenantId: $tenantId,
@@ -25,6 +32,8 @@ class TenantOrganizationSeeder extends Seeder
                     'latitude' => -8.1844866,
                     'longitude' => 113.6680747,
                     'is_active' => true,
+                    'is_public' => true,
+                    'is_primary' => true,
                     'deleted_at' => null,
                 ],
             );

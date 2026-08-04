@@ -6,6 +6,7 @@ use App\Models\Branch;
 use App\Models\User;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 
 class InitializeTenantDatabase
 {
@@ -39,17 +40,24 @@ class InitializeTenantDatabase
                 );
             }
 
+            $branchAttributes = [
+                'name' => $businessName,
+                'email' => $owner['email'] ?? null,
+                'phone' => $owner['phone'] ?? null,
+                'is_active' => true,
+            ];
+
+            if (Schema::hasColumns('branches', ['is_public', 'is_primary'])) {
+                $branchAttributes['is_public'] = true;
+                $branchAttributes['is_primary'] = true;
+            }
+
             $mainBranch = Branch::query()->firstOrCreate(
                 [
                     'tenant_id' => $tenantId,
                     'code' => 'MAIN',
                 ],
-                [
-                    'name' => $businessName,
-                    'email' => $owner['email'] ?? null,
-                    'phone' => $owner['phone'] ?? null,
-                    'is_active' => true,
-                ],
+                $branchAttributes,
             );
 
             DB::table('branch_users')->updateOrInsert(

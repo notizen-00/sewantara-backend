@@ -196,6 +196,7 @@ class TenantInventorySeeder extends Seeder
                 'late_fee_amount' => (int) round($price * 0.5),
                 'is_featured' => true,
                 'is_active' => true,
+                'is_public' => true,
                 'deleted_at' => null,
             ],
         );
