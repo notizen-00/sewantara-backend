@@ -31,7 +31,12 @@ Route::post('tenant/auth/login', [TenantAuthController::class, 'login'])
 Route::prefix('tenant/{tenant}')
     ->name('tenant.')
     ->middleware('tenant.path')
-    ->group(function () {
+    ->group(function (): void {
+
+        Route::get('/media/{path}', TenantMediaController::class)
+            ->where('path', '.*')
+            ->middleware('throttle:240,1')
+            ->name('media.show');
         Route::post('/payments/webhooks/{gateway}', PaymentWebhookController::class)
             ->middleware('throttle:120,1')
             ->name('payments.webhooks.handle');
@@ -82,9 +87,6 @@ Route::prefix('tenant/{tenant}')
                     Route::delete('/settings/images/{image}', [TenantSettingController::class, 'destroyImage'])
                         ->name('settings.images.destroy');
 
-                    Route::get('/media/{path}', TenantMediaController::class)
-                        ->where('path', '.*')
-                        ->name('media.show');
 
                     Route::apiResource('branches', BranchController::class)->only(['index', 'store', 'update']);
                     Route::post('/branches/{branch}/sync-master-data', [BranchController::class, 'syncMasterData'])
