@@ -80,7 +80,10 @@ Sewantara menggunakan satu database PostgreSQL dengan schema terpisah untuk seti
 
 Deployment production menggunakan Docker Compose, PostgreSQL, Redis, Nginx,
 queue worker, scheduler, dan Laravel Reverb dijelaskan pada
-[`docs/15_DOCKER_DEPLOYMENT.md`](docs/15_DOCKER_DEPLOYMENT.md).
+[`docs/15_DOCKER_DEPLOYMENT.md`](docs/15_DOCKER_DEPLOYMENT.md). Pipeline
+CI/CD GitHub Actions yang menjalankan lint, test, dan deployment otomatis ke
+server dijelaskan pada
+[`docs/21_CI_CD_GITHUB_ACTIONS.md`](docs/21_CI_CD_GITHUB_ACTIONS.md).
 
 Urutan middleware tenant API:
 
@@ -426,3 +429,4 @@ Dokumentasi lengkap berada di folder [`docs`](docs), termasuk:
 - Security Guide
 - Testing Guide
 - Deployment dan Roadmap
+- CI/CD GitHub Actions
