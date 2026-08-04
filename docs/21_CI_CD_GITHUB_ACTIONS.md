@@ -7,26 +7,23 @@ deployment otomatis ke server production melalui SSH.
 ## Ringkasan Alur
 
 ```text
-push / pull request ke master
-        │
-        ▼
-  Workflow "CI" (.github/workflows/ci.yml)
-  - Pint (code style)
-  - Pest/PHPUnit (test suite)
-  - Build aset frontend (Vite)
-        │
-        │ hanya saat push ke master DAN CI sukses
-        ▼
-  Workflow "Deploy" (.github/workflows/deploy.yml)
-  - SSH ke server production
-  - git fetch + reset ke origin/master
-  - docker compose build && up -d
-  - php artisan tenants:migrate --force
+pull request ke master          push ke master
+        │                             │
+        ▼                             ▼
+  Workflow "CI"                 Workflow "Deploy"
+  (.github/workflows/ci.yml)    (.github/workflows/deploy.yml)
+  - Pint (code style)           - SSH ke server production
+  - Pest/PHPUnit (test suite)   - git fetch + reset ke origin/master
+  - Build aset frontend (Vite)  - docker compose build && up -d
+                                 - php artisan tenants:migrate --force
 ```
 
-Workflow `Deploy` dipicu oleh event `workflow_run` dari workflow `CI`,
-sehingga deployment hanya berjalan setelah seluruh test dan lint dinyatakan
-lulus pada branch `master`. Pull request tidak pernah memicu deployment.
+`CI` dan `Deploy` berjalan independen. `Deploy` terpicu langsung oleh setiap
+push ke `master` dan **tidak menunggu** hasil `CI` — dipilih begitu supaya
+deployment tidak terhambat jika workflow `CI` gagal jalan karena masalah di
+luar kode (misalnya akun GitHub terkunci akibat isu billing). Konsekuensinya,
+kode yang belum lolos lint/test bisa saja ikut ter-deploy jika langsung
+di-push ke `master` tanpa melalui pull request terlebih dahulu.
 
 ## Workflow CI
 
@@ -116,9 +113,13 @@ onboarding tenant, sesuai penjelasan di
 
 ## Troubleshooting
 
-- **Deploy tidak jalan setelah push ke master**: periksa tab Actions pada
-  workflow `CI` terlebih dahulu — `Deploy` hanya terpicu jika `CI` berstatus
-  sukses (`workflow_run` dengan `conclusion == success`).
+- **Job tidak jalan sama sekali dengan pesan "account locked due to billing
+  issue"**: ini masalah di level akun GitHub (bukan repo, bukan konfigurasi
+  workflow) — semua job Actions pada akun tersebut ikut terkunci sampai
+  masalah tagihan di
+  [github.com/settings/billing](https://github.com/settings/billing)
+  diselesaikan. Setelah beres, buka tab Actions pada run yang gagal lalu
+  klik **Re-run jobs**.
 - **SSH gagal terkoneksi**: pastikan `SSH_HOST`/`SSH_PORT` dapat dijangkau
   dari internet (runner GitHub Actions memakai IP publik dinamis, sehingga
   firewall harus mengizinkan SSH dari luar, bukan hanya IP tertentu).
