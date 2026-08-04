@@ -430,3 +430,4 @@ Dokumentasi lengkap berada di folder [`docs`](docs), termasuk:
 - Testing Guide
 - Deployment dan Roadmap
 - CI/CD GitHub Actions
+- PRD Admin Dashboard (Nuxt)
