@@ -41,20 +41,24 @@ class EloquentPublicProductRepository implements PublicProductRepositoryContract
             ])
             ->with([
                 'category:id,public_id,name,slug',
+
                 'images:id,public_id,product_id,image_path,alt_text,is_primary,sort_order',
-                'prices' => fn(Builder $prices): Builder => $prices
-                    ->where('is_active', true)
-                    ->where(function (Builder $period): void {
-                        $period
-                            ->whereNull('start_at')
-                            ->orWhere('start_at', '<=', now());
-                    })
-                    ->where(function (Builder $period): void {
-                        $period
-                            ->whereNull('end_at')
-                            ->orWhere('end_at', '>=', now());
-                    })
-                    ->orderBy('price'),
+
+                'prices' => function ($prices): void {
+                    $prices
+                        ->where('is_active', true)
+                        ->where(function ($period): void {
+                            $period
+                                ->whereNull('start_at')
+                                ->orWhere('start_at', '<=', now());
+                        })
+                        ->where(function ($period): void {
+                            $period
+                                ->whereNull('end_at')
+                                ->orWhere('end_at', '>=', now());
+                        })
+                        ->orderBy('price');
+                },
             ]);
 
         $this->applySearch($builder, $query);
