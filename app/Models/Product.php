@@ -51,6 +51,7 @@ class Product extends Model
             'is_public' => 'boolean',
             'published_at' => 'datetime',
             'specifications' => 'array',
+            'booking_rules' => 'array',
         ];
     }
 
@@ -90,7 +91,8 @@ class Product extends Model
     {
         static::creating(function (self $product): void {
             if (Schema::connection($product->getConnectionName())
-                ->hasColumn($product->getTable(), 'public_id')) {
+                ->hasColumn($product->getTable(), 'public_id')
+            ) {
                 $product->public_id ??= (string) Str::uuid();
             }
         });
