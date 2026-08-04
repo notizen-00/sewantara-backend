@@ -18,6 +18,11 @@ class TenantPrivateMedia
         'categories/',
         'products/',
         'articles/',
+        'demo/branding/',
+        'demo/branches/',
+        'demo/categories/',
+        'demo/products/',
+        'demo/articles/',
     ];
 
     public function store(
@@ -99,8 +104,9 @@ class TenantPrivateMedia
             $path,
             basename($path),
             [
-                'Cache-Control' => 'public, max-age=3600',
+                'Cache-Control' => 'public, max-age=86400',
                 'Content-Disposition' => 'inline',
+                'X-Content-Type-Options' => 'nosniff',
             ],
         );
     }
@@ -115,9 +121,7 @@ class TenantPrivateMedia
 
     private function isAllowedPath(string $path): bool
     {
-        foreach (
-            self::ALLOWED_DIRECTORIES as $directory
-        ) {
+        foreach (self::ALLOWED_DIRECTORIES as $directory) {
             if (str_starts_with($path, $directory)) {
                 return true;
             }
