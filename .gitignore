@@ -5,6 +5,9 @@
 .env.local
 .env.development
 .env.docker
+.env
+.env.*
+!.env.example
 .phpactor.json
 .phpunit.result.cache
 /.codex
