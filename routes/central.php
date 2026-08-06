@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\Auth\GoogleAuthController;
 use App\Http\Controllers\Api\Auth\RegisterController;
+use App\Http\Controllers\Api\Auth\RegistrationOtpController;
 use App\Http\Controllers\Api\Central\BusinessTemplateController;
 use App\Http\Controllers\Api\Central\DokuSubscriptionWebhookController;
 use App\Http\Controllers\Api\Central\MidtransSubscriptionWebhookController;
@@ -29,6 +30,12 @@ Route::prefix('central')->name('central.')->group(function () {
     Route::post('/auth/register', RegisterController::class)
         ->middleware('throttle:5,1')
         ->name('auth.register');
+    Route::post('/auth/otp/request', [RegistrationOtpController::class, 'request'])
+        ->middleware('throttle:5,1')
+        ->name('auth.otp.request');
+    Route::post('/auth/otp/verify', [RegistrationOtpController::class, 'verify'])
+        ->middleware('throttle:10,1')
+        ->name('auth.otp.verify');
     Route::middleware(['web', 'throttle:20,1'])->group(function (): void {
         Route::get('/auth/google/redirect', [GoogleAuthController::class, 'redirect'])
             ->name('auth.google.redirect');

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\RegisterTenantRequest;
+use App\Modules\RegistrationVerification\Application\RegistrationOtp;
 use App\Modules\TenantOnboarding\Application\Data\RegisterTenantCommand;
 use App\Modules\TenantOnboarding\Application\RegisterTenant;
 use App\Support\TenantHostname;
@@ -15,10 +16,13 @@ class RegisterController extends Controller
     public function __invoke(
         RegisterTenantRequest $request,
         RegisterTenant $registerTenant,
+        RegistrationOtp $otp,
     ): JsonResponse {
         $result = $registerTenant->execute(
             RegisterTenantCommand::fromArray($request->validated()),
         );
+
+        $otp->forgetVerified($result->ownerEmail);
 
         return response()->json([
             'success' => true,

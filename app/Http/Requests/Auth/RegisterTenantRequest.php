@@ -5,6 +5,7 @@ namespace App\Http\Requests\Auth;
 use App\Models\BusinessTemplate;
 use App\Models\CentralUser;
 use App\Models\Domain;
+use App\Modules\RegistrationVerification\Application\RegistrationOtp;
 use App\Support\TenantHostname;
 use Closure;
 use Illuminate\Foundation\Http\FormRequest;
@@ -60,6 +61,11 @@ class RegisterTenantRequest extends FormRequest
                 'email:rfc,dns',
                 'max:150',
                 Rule::unique(CentralUser::class, 'email'),
+                function (string $attribute, mixed $value, Closure $fail): void {
+                    if (! app(RegistrationOtp::class)->isVerified((string) $value)) {
+                        $fail('Email belum diverifikasi. Silakan minta dan masukkan kode OTP terlebih dahulu.');
+                    }
+                },
             ],
             'owner.phone' => ['nullable', 'string', 'max:30'],
             'owner.password' => [
