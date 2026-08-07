@@ -333,6 +333,49 @@ private yang diisolasi per tenant oleh `FilesystemTenancyBootstrapper`.
 Dokumentasi request, response, validasi, dan integrasi frontend tersedia di
 [`16_TENANT_SETTINGS_PRIVATE_MEDIA_API.md`](16_TENANT_SETTINGS_PRIVATE_MEDIA_API.md).
 
+Response `GET /settings` menyertakan objek `website_status`:
+
+```json
+{
+  "website_status": {
+    "is_enabled": true,
+    "tenant_status": "active"
+  }
+}
+```
+
+`is_enabled` merefleksikan kolom `public_web_enabled` pada tenant (central).
+Nilai ini menentukan apakah domain publik tenant (`{tenant}.sewantara.id`)
+dapat diakses melalui Tenant Public API — lihat `ValidatePublicTenantEligibility`
+pada dokumen arsitektur multi-tenancy.
+
+## Status Website Publik Tenant
+
+```http
+PATCH /api/tenant/{tenant}/settings/website-status
+```
+
+```json
+{
+  "is_enabled": false
+}
+```
+
+Mengaktifkan atau menonaktifkan website publik tenant tanpa mengubah
+pengaturan lain. Berguna untuk menonaktifkan sementara website (mis. sedang
+maintenance internal) tanpa harus mengulang proses onboarding.
+
+Aturan:
+
+- `is_enabled` wajib boolean.
+- Mengirim `is_enabled: true` ditolak dengan validation error pada field
+  `is_enabled` apabila tenant belum berstatus `active` (belum menyelesaikan
+  Go Live).
+- Menonaktifkan (`is_enabled: false`) selalu diizinkan selama tenant dapat
+  diakses (`tenant.accessible`, `tenant.subscription`).
+- Response mengikuti bentuk yang sama dengan `GET /settings`, termasuk objek
+  `website_status` terbaru.
+
 ## Inventory Lifecycle
 
 Stok `quantity` dikelola per produk dan branch:

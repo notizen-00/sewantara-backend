@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\Tenant;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Tenant\UpdateTenantImagesRequest;
 use App\Http\Requests\Tenant\UpdateTenantSettingsRequest;
+use App\Http\Requests\Tenant\UpdateTenantWebsiteStatusRequest;
 use App\Modules\TenantSettings\Application\ManageTenantSettings;
 use Illuminate\Http\JsonResponse;
 
@@ -48,6 +49,21 @@ class TenantSettingController extends Controller
             'success' => true,
             'message' => 'Gambar tenant berhasil dihapus.',
             'data' => $settings->deleteImage($image),
+        ]);
+    }
+
+    public function updateWebsiteStatus(
+        UpdateTenantWebsiteStatusRequest $request,
+        ManageTenantSettings $settings,
+    ): JsonResponse {
+        $enabled = (bool) $request->validated('is_enabled');
+
+        return response()->json([
+            'success' => true,
+            'message' => $enabled
+                ? 'Website publik berhasil diaktifkan.'
+                : 'Website publik berhasil dinonaktifkan.',
+            'data' => $settings->updateWebsiteStatus($enabled),
         ]);
     }
 }

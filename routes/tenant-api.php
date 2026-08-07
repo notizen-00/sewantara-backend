@@ -89,6 +89,8 @@ Route::prefix('tenant/{tenant}')
                         ->name('settings.images.update');
                     Route::delete('/settings/images/{image}', [TenantSettingController::class, 'destroyImage'])
                         ->name('settings.images.destroy');
+                    Route::patch('/settings/website-status', [TenantSettingController::class, 'updateWebsiteStatus'])
+                        ->name('settings.website-status.update');
 
                     Route::get('/engines', [EngineController::class, 'index'])
                         ->name('engines.index');

@@ -4,18 +4,22 @@ namespace App\Modules\TenantSettings\Application;
 
 use App\Models\Branch;
 use App\Models\RentalConfiguration;
+use App\Models\Tenant;
 use App\Models\TenantBusinessProfile;
 use App\Models\TenantSetting;
 use App\Support\TenantPrivateMedia;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\ValidationException;
+use Stancl\Tenancy\Tenancy;
 use Throwable;
 
 class ManageTenantSettings
 {
     public function __construct(
         private readonly TenantPrivateMedia $media,
+        private readonly Tenancy $tenancy,
     ) {}
 
     /**
@@ -42,7 +46,26 @@ class ManageTenantSettings
             'rental_engine' => RentalConfiguration::query()
                 ->where('engine_code', $profile?->primary_engine_code ?? 'rental')
                 ->firstOrFail(),
+            'website_status' => $this->websiteStatusPayload(),
         ];
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function updateWebsiteStatus(bool $enabled): array
+    {
+        $tenant = $this->currentTenant();
+
+        if ($enabled && $tenant->status !== 'active') {
+            throw ValidationException::withMessages([
+                'is_enabled' => ['Selesaikan proses onboarding (Go Live) terlebih dahulu sebelum mengaktifkan website publik.'],
+            ]);
+        }
+
+        $tenant->update(['public_web_enabled' => $enabled]);
+
+        return $this->payload();
     }
 
     /**
@@ -134,6 +157,32 @@ class ManageTenantSettings
         }
 
         return $this->payload();
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private function websiteStatusPayload(): array
+    {
+        $tenant = $this->currentTenant();
+
+        return [
+            'is_enabled' => (bool) $tenant->public_web_enabled,
+            'tenant_status' => $tenant->status,
+        ];
+    }
+
+    private function currentTenant(): Tenant
+    {
+        $tenant = $this->tenancy->tenant;
+
+        if (! $tenant instanceof Tenant) {
+            throw ValidationException::withMessages([
+                'tenant' => ['Konteks akun usaha tidak valid.'],
+            ]);
+        }
+
+        return $tenant;
     }
 
     /**
