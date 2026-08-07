@@ -10,19 +10,19 @@ POST /api/central/auth/register
 
 ```json
 {
-  "business_name": "Rental Kamera Jember",
-  "business_type": "camera_rental",
-  "subdomain": "rentalkamerajember",
-  "owner": {
-    "name": "Owner Rental",
-    "email": "owner@example.test",
-    "phone": "081234567890",
-    "password": "<TENANT_PASSWORD>",
-    "password_confirmation": "<TENANT_PASSWORD>"
-  },
-  "plan_id": 1,
-  "billing_interval": "month",
-  "terms_accepted": true
+    "business_name": "Rental Kamera Jember",
+    "business_type": "camera_rental",
+    "subdomain": "rentalkamerajembers",
+    "owner": {
+        "name": "Owner Rental",
+        "email": "owner@example.test",
+        "phone": "081234567890",
+        "password": "<TENANT_PASSWORD>",
+        "password_confirmation": "<TENANT_PASSWORD>"
+    },
+    "plan_id": 1,
+    "billing_interval": "month",
+    "terms_accepted": true
 }
 ```
 
@@ -44,9 +44,9 @@ POST http://localhost/api/tenant/auth/login
 
 ```json
 {
-  "email": "owner@example.test",
-  "password": "<TENANT_PASSWORD>",
-  "device_name": "web"
+    "email": "owner@example.test",
+    "password": "<TENANT_PASSWORD>",
+    "device_name": "web"
 }
 ```
 
@@ -130,9 +130,9 @@ X-Branch-Id: 1
 
 ```json
 {
-  "sync_prices": true,
-  "prepare_stocks": true,
-  "overwrite_prices": false
+    "sync_prices": true,
+    "prepare_stocks": true,
+    "overwrite_prices": false
 }
 ```
 
@@ -142,11 +142,11 @@ keduanya harus mengikuti kondisi barang nyata di masing-masing cabang.
 
 Rental engine mendukung:
 
-| Rental model | Pricing | Booking strategy umum |
-|---|---|---|
-| `per_hour` | `hourly` | `queue` atau `date_range` |
-| `per_day` | `daily` | `date_range` |
-| `session` | `event` | `session` |
+| Rental model | Pricing  | Booking strategy umum     |
+| ------------ | -------- | ------------------------- |
+| `per_hour`   | `hourly` | `queue` atau `date_range` |
+| `per_day`    | `daily`  | `date_range`              |
+| `session`    | `event`  | `session`                 |
 
 `auto_assign` membuat engine memilih unit tersedia tanpa bergantung pada nama
 kategori. Queue dan session menggunakan `slot_duration_minutes`; jika
@@ -168,7 +168,7 @@ POST /api/tenant/{tenant}/engines/disable
 
 ```json
 {
-  "engine_code": "membership"
+    "engine_code": "membership"
 }
 ```
 
@@ -177,19 +177,19 @@ Response `GET /engines` berupa array katalog seluruh engine aktif di sistem:
 
 ```json
 {
-  "success": true,
-  "data": [
-    {
-      "code": "membership",
-      "name": "Membership",
-      "description": "...",
-      "is_core": false,
-      "monthly_price": "50000.00",
-      "is_enabled": true,
-      "price_snapshot": "50000.00",
-      "enabled_at": "2026-08-04T10:00:00+00:00"
-    }
-  ]
+    "success": true,
+    "data": [
+        {
+            "code": "membership",
+            "name": "Membership",
+            "description": "...",
+            "is_core": false,
+            "monthly_price": "50000.00",
+            "is_enabled": true,
+            "price_snapshot": "50000.00",
+            "enabled_at": "2026-08-04T10:00:00+00:00"
+        }
+    ]
 }
 ```
 
@@ -203,23 +203,23 @@ mengaktifkan engine terkait ditolak `403` dengan kode `ENGINE_NOT_ENABLED`:
 
 ```json
 {
-  "success": false,
-  "error": {
-    "code": "ENGINE_NOT_ENABLED",
-    "message": "Engine membership belum diaktifkan untuk akun usaha ini.",
-    "details": null
-  }
+    "success": false,
+    "error": {
+        "code": "ENGINE_NOT_ENABLED",
+        "message": "Engine membership belum diaktifkan untuk akun usaha ini.",
+        "details": null
+    }
 }
 ```
 
 Setiap engine hanya mengizinkan `product_type` tertentu pada produk:
 
-| Engine | Product type yang diizinkan |
-|---|---|
-| `rental` | `vehicle`, `equipment`, `accommodation` |
-| `booking` | `space`, `service` |
-| `membership` | `membership`, `package` |
-| `sales` | `goods` |
+| Engine       | Product type yang diizinkan             |
+| ------------ | --------------------------------------- |
+| `rental`     | `vehicle`, `equipment`, `accommodation` |
+| `booking`    | `space`, `service`                      |
+| `membership` | `membership`, `package`                 |
+| `sales`      | `goods`                                 |
 
 ## Membership
 
@@ -237,12 +237,12 @@ Contoh request create:
 
 ```json
 {
-  "product_id": 40,
-  "customer_id": 12,
-  "starts_on": "2026-08-05",
-  "ends_on": "2026-09-04",
-  "price_amount": 150000,
-  "notes": "Paket bulanan gym"
+    "product_id": 40,
+    "customer_id": 12,
+    "starts_on": "2026-08-05",
+    "ends_on": "2026-09-04",
+    "price_amount": 150000,
+    "notes": "Paket bulanan gym"
 }
 ```
 
@@ -267,11 +267,9 @@ Contoh request create:
 
 ```json
 {
-  "customer_id": 12,
-  "notes": "Pembelian aksesoris",
-  "items": [
-    { "product_id": 55, "quantity": 2, "unit_price": 75000 }
-  ]
+    "customer_id": 12,
+    "notes": "Pembelian aksesoris",
+    "items": [{ "product_id": 55, "quantity": 2, "unit_price": 75000 }]
 }
 ```
 
@@ -301,11 +299,11 @@ Contoh request create metadata:
 
 ```json
 {
-  "parent_id": null,
-  "name": "Kamera",
-  "description": "Peralatan kamera dan aksesorinya",
-  "sort_order": 10,
-  "is_active": true
+    "parent_id": null,
+    "name": "Kamera",
+    "description": "Peralatan kamera dan aksesorinya",
+    "sort_order": 10,
+    "is_active": true
 }
 ```
 
@@ -337,10 +335,10 @@ Response `GET /settings` menyertakan objek `website_status`:
 
 ```json
 {
-  "website_status": {
-    "is_enabled": true,
-    "tenant_status": "active"
-  }
+    "website_status": {
+        "is_enabled": true,
+        "tenant_status": "active"
+    }
 }
 ```
 
@@ -357,7 +355,7 @@ PATCH /api/tenant/{tenant}/settings/website-status
 
 ```json
 {
-  "is_enabled": false
+    "is_enabled": false
 }
 ```
 
@@ -393,10 +391,10 @@ Contoh penyesuaian stok:
 
 ```json
 {
-  "product_id": 10,
-  "quantity": 5,
-  "reason_type": "initial_stock",
-  "notes": "Stok awal gudang"
+    "product_id": 10,
+    "quantity": 5,
+    "reason_type": "initial_stock",
+    "notes": "Stok awal gudang"
 }
 ```
 
@@ -440,12 +438,12 @@ Contoh penjadwalan:
 
 ```json
 {
-  "product_unit_id": 25,
-  "type": "service",
-  "title": "Service sensor kamera",
-  "vendor": "Service Center",
-  "cost": 250000,
-  "scheduled_at": "2026-08-05T09:00:00+07:00"
+    "product_unit_id": 25,
+    "type": "service",
+    "title": "Service sensor kamera",
+    "vendor": "Service Center",
+    "cost": 250000,
+    "scheduled_at": "2026-08-05T09:00:00+07:00"
 }
 ```
 
@@ -468,19 +466,19 @@ Contoh request create:
 
 ```json
 {
-  "name": "Sony Alpha A7 IV",
-  "sku": "CAM-SONY-A7IV",
-  "brand": "Sony",
-  "model": "A7 IV",
-  "engine_code": "rental",
-  "product_type": "equipment",
-  "inventory_type": "serialized",
-  "default_pricing_type": "daily",
-  "minimum_rental_duration": 1,
-  "deposit_amount": 1000000,
-  "late_fee_amount": 250000,
-  "is_featured": true,
-  "is_active": true
+    "name": "Sony Alpha A7 IV",
+    "sku": "CAM-SONY-A7IV",
+    "brand": "Sony",
+    "model": "A7 IV",
+    "engine_code": "rental",
+    "product_type": "equipment",
+    "inventory_type": "serialized",
+    "default_pricing_type": "daily",
+    "minimum_rental_duration": 1,
+    "deposit_amount": 1000000,
+    "late_fee_amount": 250000,
+    "is_featured": true,
+    "is_active": true
 }
 ```
 
